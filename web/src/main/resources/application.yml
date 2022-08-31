@@ -1,0 +1,15 @@
+server:
+  port: 8081
+
+spring:
+  profiles:
+    active: dev
+  application:
+    name: web-application
+
+  #mybatis-plus:
+  #config-location: classpath:mapper/*.xml
+  #type-aliases-package: com.simple.speedbootdice.pojo
+logging:
+  level:
+    com.simple.web: trace

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ch" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>快艇骰子</title>
+    <script src="https://code.jquery.com/jquery-3.2.0.min.js"
+            integrity="sha256-JAW99MJVpJBGcbzEuXk4Az05s/XyDdBomFqNlM3ic+I=" crossorigin="anonymous"></script>
+    <script src="https://cdn.bootcss.com/sockjs-client/1.1.4/sockjs.min.js"></script>
+    <script src="https://cdn.bootcss.com/stomp.js/2.3.3/stomp.min.js"></script>
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="/bootstrap-3.4.1-dist/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+    <script src="/bootstrap-3.4.1-dist/js/template.js"></script>
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="/bootstrap-3.4.1-dist/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <!-- 可选的 Bootstrap 主题文件（一般不用引入） -->
+    <link rel="stylesheet" href="/bootstrap-3.4.1-dist/css/bootstrap-theme.min.css" integrity="sha384-6pzBo3FDv/PJ8r2KRkGHifhEocL+1X2rVCTTkUfGk7/0pbek5mMa1upzvWbrUbOZ" crossorigin="anonymous">
+    <link rel="stylesheet" href="/bootstrap-3.4.1-dist/css/all.min.css">
+    <link rel="stylesheet" href="/bootstrap-3.4.1-dist/css/quick-website.css">
+    <script type="text/html" id="user_info" th:inline="javascript">
+        <div class="card-body px-md-5 py-5">
+            <div class="mb-5">
+                <h6 class="h3">{{user.realname}}</h6>
+                <p class="text-muted mb-0">欢迎登录系统.</p>
+            </div>
+        </div>
+    </script>
+    <script type="text/html" id="no_user_info">
+        <div class="card-body px-md-5 py-5">
+            <div class="mb-5">
+                <h6 class="h3">登录</h6>
+                <p class="text-muted mb-0">登录你的账号开始游戏.</p>
+            </div>
+            <span class="clearfix"></span>
+            <form>
+                <div class="form-group">
+                    <label class="form-control-label">用户名</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></span>
+                        </div>
+                        <input type="text" class="form-control" id="username" placeholder="用户名">
+                    </div>
+                </div>
+                <div class="form-group mb-0">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <label class="form-control-label">密码</label>
+                        </div>
+                        <div class="mb-2">
+                            <a id="show-password" href="#" class="small text-muted text-underline--dashed border-primary" data-toggle="password-text" data-target="#password">显示密码</a>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-key"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path></svg></span>
+                        </div>
+                        <input type="password" class="form-control" id="password" placeholder="密码">
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <button id="login" type="button" class="btn btn-block btn-primary">登录</button></div>
+            </form>
+        </div>
+        <div class="card-footer px-md-5"><small>Not registered?</small>
+            <a href="#" class="small font-weight-bold">Create account</a></div>
+    </script>
+</head>
+<body data-aos-easing="ease-out-quad" data-aos-duration="700" data-aos-delay="0" onload="load()">
+<section>
+    <div class="container d-flex flex-column">
+        <div class="row align-items-center justify-content-center min-vh-100">
+            <div class="col-md-6 col-lg-5 col-xl-5 py-6 py-md-0">
+                <div id="login_card" class="card shadow zindex-100 mb-0">
+
+                </div>
+                <div class="card shadow zindex-100 mb-0">
+                    <div class="card-body px-md-5 py-5">
+                        <form action="/room/join" method="get">
+                            <label>房间号:
+                                <input type="number" name="id">
+                            </label>
+                            <button id="join" class="btn btn-block btn-primary" type="submit" disabled>加入房间</button>
+                        </form>
+                    </div>
+                    <div class="card-footer px-md-5">
+                        <form action="/room/create">
+                            <button id="create" class="btn btn-block btn-primary" type="submit" disabled>创建房间</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script type="text/javascript" th:inline="javascript">
+    function load(){
+        var user = [[${session.user}]];
+        if(user === null){
+            document.getElementById("login_card").innerHTML = template("no_user_info",{});
+        } else {
+            document.getElementById("login_card").innerHTML = template("user_info",{user});
+            document.getElementById("create").disabled = false;
+            document.getElementById("join").disabled = false;
+        }
+        var showPassword = document.getElementById("show-password");
+        showPassword.addEventListener('click',function () {
+            let password =  document.getElementById('password');
+            let type = password.type;
+            if (type === 'password'){
+                password.type = 'text';
+            }else{
+                password.type = 'password';
+            }
+            if (type === 'password'){
+                showPassword.innerText="隐藏密码";
+            }else{
+                showPassword.innerText="显示密码";
+            }
+        });
+
+        $(function () {
+            $("#login").click(function (){
+                username = $("#username").val();
+                password = $("#password").val();
+                $.ajax({
+                    url: '/login',
+                    type: 'POST',
+                    dataType : "json",
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        'username': username,
+                        'password': password
+                    }),
+                    success: function (arg) {
+                        if(arg.code === 200){
+                            document.getElementById("login_card").innerHTML = template("user_info",{user:arg.data});
+                            $("#create").removeAttr('disabled');
+                            $("#join").removeAttr('disabled');
+                        } else {
+                            alert(arg.message);
+                        }
+                    }
+                })
+            })
+        })
+    }
+</script>
+</body>
+</html>
