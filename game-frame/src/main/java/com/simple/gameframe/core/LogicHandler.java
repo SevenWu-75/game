@@ -1,56 +1,68 @@
 package com.simple.gameframe.core;
 
-import com.simple.api.common.SpeedBootException;
-import com.simple.api.common.SpeedBootExceptionEnum;
-import com.simple.api.game.Message;
+import com.simple.api.game.Player;
+import com.simple.api.game.Room;
+import com.simple.gameframe.common.GameException;
+import com.simple.gameframe.common.GameExceptionEnum;
 import com.simple.gameframe.util.MessagePublishUtil;
 
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 
 public interface LogicHandler {
 
-    Lock getLock();
+    ConcurrentHashMap<String, Message<?>> getReceivedMessageMap();
 
-    Condition getCondition();
+    default Long getWaitTimeSecond() {
+        return 60*5L;
+    }
 
-    Long getWaitTimeSecond();
+    default boolean preHandle(Player player, Room room, Object o) {
+        return true;
+    }
 
-    Message<?> getReceivedMessage();
+    Message<?> messageHandle(Player player, Room room, Object o);
 
-    void setReceivedMessage(Message<?> message);
-
-    boolean handle(Long userId, String roomId);
-
-    default Message<?> ask(Long userId, String roomId, Message<?> message) {
-        getLock().lock();
+    default Message<?> ask(Long userId, Room room, Message<?> message, Lock lock, Condition condition) {
+        lock.lock();
         try {
-            MessagePublishUtil.sendToRoomUser(String.valueOf(userId), roomId, message);
+            MessagePublishUtil.sendToRoomUser(String.valueOf(userId), room.getRoomId(), message);
             Long waitTime = getWaitTimeSecond();
             if(waitTime != null){
-                boolean await = getCondition().await(waitTime, TimeUnit.SECONDS);
+                boolean await = condition.await(waitTime, TimeUnit.SECONDS);
                 if(!await){
-                    throw new SpeedBootException(SpeedBootExceptionEnum.CLOSE_FOR_OPERATE_TIMEOUT);
+                    throw new GameException(GameExceptionEnum.CLOSE_FOR_OPERATE_TIMEOUT);
                 }
             } else {
-                getCondition().await();
+                condition.await();
             }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } finally {
-            getLock().unlock();
+            lock.unlock();
         }
-        return getReceivedMessage();
+        return getReceivedMessageMap().get(room.getRoomId());
     }
 
-    default void answer(Message<?> message) {
-        getLock().lock();
+    default Object postHandle(Player player, Room room, Message<?> message) {
+        return null;
+    }
+
+    default void answer(Lock lock, Room room,Condition condition, Message<?> message) {
+        lock.lock();
         try {
-            setReceivedMessage(message);
-            getCondition().signal();
+            getReceivedMessageMap().put(room.getRoomId(), message);
+            condition.signal();
         } finally {
-            getLock().unlock();
+            lock.unlock();
         }
     }
+
+    default void setNextHandler(LogicHandler logicHandler){
+
+    }
+
+    LogicHandler getNextHandler();
 }

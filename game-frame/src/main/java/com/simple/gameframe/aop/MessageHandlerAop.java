@@ -1,6 +1,6 @@
 package com.simple.gameframe.aop;
 
-import com.simple.api.game.Message;
+import com.simple.gameframe.core.Message;
 import com.simple.api.game.Room;
 import com.simple.api.util.ThreadLocalUtil;
 import lombok.SneakyThrows;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 public class MessageHandlerAop {
 
     @SneakyThrows
-    @Around("execution(* com.simple.gameframe.controller.CommandController.*(com.simple.api.game.Message))")
+    @Around("execution(* com.simple.gameframe.controller.CommandController.*(com.simple.gameframe.core.Message))")
     public Object handleMessage(ProceedingJoinPoint pjp){
         Object[] args = pjp.getArgs();
         if(args.length == 1){

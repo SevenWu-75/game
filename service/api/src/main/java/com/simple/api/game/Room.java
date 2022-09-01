@@ -3,8 +3,10 @@ package com.simple.api.game;
 import com.simple.api.user.entity.User;
 
 import java.util.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
-public interface Room extends Runnable {
+public interface Room {
 
     void join(User user);
 
@@ -28,4 +30,7 @@ public interface Room extends Runnable {
 
     Set<User> getOnlooker();
 
+    int getPlayCount();
+
+    int getPlayAtLeastNum();
 }

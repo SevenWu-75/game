@@ -1,17 +1,12 @@
 package com.simple.speedbootdice.pojo;
 
-import com.simple.api.common.SpeedBootException;
-import com.simple.api.common.SpeedBootExceptionEnum;
 import com.simple.api.game.Player;
 import com.simple.api.game.Room;
 import com.simple.api.user.entity.User;
-import com.simple.api.util.ThreadPoolUtil;
 import com.simple.gameframe.util.ApplicationContextUtil;
 import com.simple.gameframe.util.MessagePublishUtil;
-import com.simple.gameframe.util.RoomManagerUtil;
-import com.simple.speedbootdice.common.Command;
+import com.simple.speedbootdice.common.SpeedBootCommand;
 import com.simple.speedbootdice.common.ScoreEnum;
-import com.simple.speedbootdice.service.HistoryRankService;
 import com.simple.speedbootdice.util.*;
 import com.simple.speedbootdice.vo.*;
 import lombok.extern.slf4j.Slf4j;
@@ -207,7 +202,7 @@ public class SpeedBootRoom implements Room, Serializable {
         message.setFromId(player.getUserVo().getId());
         message.setSeat(player.getId());
         message.setContent(diceList);
-        message.setCode(Command.ANSWER_DICE.ordinal());
+        message.setCode(SpeedBootCommand.ANSWER_DICE.getCode());
         messagePublishUtil.sendToRoomPublic(roomId, message);
     }
 
@@ -215,7 +210,7 @@ public class SpeedBootRoom implements Room, Serializable {
         log.debug("询问玩家{}选择分数还是继续抛骰子",player.getUserVo().getId());
         SpeedBootMessage<?> resMessage = askAnswerUtil.askSelectScore(player,playTimes);
         //如果是继续投骰子
-        if(resMessage.getCode() == Command.ANSWER_DICE.ordinal()){
+        if(resMessage.getCode() == SpeedBootCommand.ANSWER_DICE.getCode()){
             return (int[])resMessage.getContent();
         } else {
             int index = (Integer) resMessage.getContent();
@@ -229,7 +224,7 @@ public class SpeedBootRoom implements Room, Serializable {
 
     private void sendSelectScoreResultToPublic(@NotNull SpeedBootPlayer player){
         SpeedBootMessage<int[]> message = new SpeedBootMessage<>();
-        message.setCode(Command.SELECT_SCORE.ordinal());
+        message.setCode(SpeedBootCommand.SELECT_SCORE.getCode());
         message.setFromId(player.getUserVo().getId());
         message.setSeat(player.getId());
         message.setRoomId(roomId);
@@ -240,12 +235,12 @@ public class SpeedBootRoom implements Room, Serializable {
     private void sendGameOverResultToPublic(){
         SpeedBootMessage<GameResultVo> message = new SpeedBootMessage<>();
         message.setRoomId(roomId);
-        message.setCode(Command.GAME_OVER.ordinal());
+        message.setCode(SpeedBootCommand.GAME_OVER.getCode());
         SpeedBootPlayer winner = null;
-        Optional<SpeedBootPlayer> winnerOptional = playerList.stream().max(Comparator.comparing(player -> player.getScores()[ScoreEnum.TOTAL_SUM.ordinal()]));
+        Optional<SpeedBootPlayer> winnerOptional = playerList.stream().max(Comparator.comparing(player -> player.getScores()[ScoreEnum.TOTAL_SUM.getCode()]));
         if(winnerOptional.isPresent()){
             long count = playerList.stream().filter(
-                            player -> player.getScores()[ScoreEnum.TOTAL_SUM.ordinal()] == winnerOptional.get().getScores()[ScoreEnum.TOTAL_SUM.ordinal()])
+                            player -> player.getScores()[ScoreEnum.TOTAL_SUM.getCode()] == winnerOptional.get().getScores()[ScoreEnum.TOTAL_SUM.getCode()])
                     .count();
             if(count == 1){
                 //非平局
@@ -259,106 +254,27 @@ public class SpeedBootRoom implements Room, Serializable {
         for (SpeedBootPlayer player : playerList) {
             historyRankService.saveHistory(player.getUserVo().getId(), 1,
                     winner != null && winner.getUserVo().getId().equals(player.getUserVo().getId()),
-                    player.getScores()[ScoreEnum.TOTAL_SUM.ordinal()]);
+                    player.getScores()[ScoreEnum.TOTAL_SUM.getCode()]);
         }
     }
 
     private void sendRoomTimeout(){
         SpeedBootMessage<GameResultVo> message = new SpeedBootMessage<>();
         message.setRoomId(roomId);
-        message.setCode(Command.TIME_OUT.ordinal());
+        message.setCode(SpeedBootCommand.TIME_OUT.getCode());
         log.info("房间{}超时结束", roomId);
         messagePublishUtil.sendToRoomPublic(roomId, message);
     }
 
     private void sendTurnNextMessage(Integer seat, Integer playerCount){
         SpeedBootMessage<Integer> message = new SpeedBootMessage<>();
-        message.setCode(Command.TURN_NEXT.ordinal());
+        message.setCode(SpeedBootCommand.TURN_NEXT.getCode());
         message.setContent(playerCount);
         message.setSeat(seat);
         messagePublishUtil.sendToRoomPublic(roomId, message);
     }
 
-    @NotNull
-    @Contract("_ -> new")
-    private int[] calculate(@NotNull List<Integer> numbers) {
-        int oneSum = 0;
-        int twoSum = 0;
-        int threeSum = 0;
-        int fourSum = 0;
-        int fiveSum = 0;
-        int sixSum = 0;
-        int sum = 0;
-        int kind4 = 0;
-        int fullHouse = 0;
-        int smallStraight = 0;
-        int straight = 0;
-        int Yahtzee = 0;
-        for (int number : numbers) {
-            if (number == 1) {
-                oneSum += number;
-            }
-            if (number == 2) {
-                twoSum += number;
-            }
-            if (number == 3) {
-                threeSum += number;
-            }
-            if (number == 4) {
-                fourSum += number;
-            }
-            if (number == 5) {
-                fiveSum += number;
-            }
-            if (number == 6) {
-                sixSum += number;
-            }
-            sum += number;
-        }
 
-        Map<Integer, Long> map = numbers.stream().collect(Collectors.groupingBy(num -> num, Collectors.counting()));
-        for (Map.Entry<Integer, Long> entry : map.entrySet()) {
-            //只有四骰同花和葫芦两种可能是只有两组的情况
-            if(map.size() == 2){
-                if(entry.getValue() == 2 || entry.getValue() == 3){
-                    fullHouse += entry.getKey() * entry.getValue();
-                } else {
-                    kind4 += entry.getKey() * entry.getValue();
-                }
-            }
-            //一组的情况是快艇、四骰同花、葫芦
-            if(map.size() == 1){
-                Yahtzee = 50;
-                fullHouse += entry.getKey() * entry.getValue();
-                kind4 += entry.getKey() * entry.getValue();
-            }
-            if(map.size() >= 4){
-                Set<Integer> integers = map.keySet();
-                if((integers.contains(1) && integers.contains(2) && integers.contains(3) && integers.contains(4))
-                        || (integers.contains(2) && integers.contains(3) && integers.contains(4) && integers.contains(5))
-                        || (integers.contains(3) && integers.contains(4) && integers.contains(5) && integers.contains(6))){
-                    smallStraight = 15;
-                }
-            }
-            if(map.size() == 5){
-                Set<Integer> integers = map.keySet();
-                if((integers.contains(1)
-                        && integers.contains(2)
-                        && integers.contains(3)
-                        && integers.contains(4)
-                        && integers.contains(5)) ||
-                        (integers.contains(2)
-                                && integers.contains(3)
-                                && integers.contains(4)
-                                && integers.contains(5)
-                                && integers.contains(6))){
-                    straight = 30;
-                    break;
-                }
-            }
-        }
-        return new int[]{oneSum,twoSum,threeSum,fourSum,fiveSum,sixSum,sum,kind4,fullHouse,smallStraight,straight,Yahtzee};
-    }
 
     public RoomVo toRoomVo(){
         return new RoomVo().setStartTime(startTime)
@@ -377,7 +293,7 @@ public class SpeedBootRoom implements Room, Serializable {
     public void dismissRoom(){
         log.trace("房间{}已解散",this.roomId);
         SpeedBootMessage<Void> message = new SpeedBootMessage<>();
-        message.setCode(Command.DISMISS_ROOM.ordinal());
+        message.setCode(SpeedBootCommand.DISMISS_ROOM.getCode());
         messagePublishUtil.sendToRoomPublic(roomId, message);
     }
 
@@ -396,7 +312,7 @@ public class SpeedBootRoom implements Room, Serializable {
         Optional<SpeedBootPlayer> first = playerList.stream().filter(player -> player.getUserVo().getId().equals(userId)).findFirst();
         if(first.isPresent()){
             SpeedBootMessage<Long> message = new SpeedBootMessage<>();
-            message.setCode(Command.DISCONNECT.ordinal());
+            message.setCode(SpeedBootCommand.DISCONNECT.getCode());
             message.setContent(userId);
             message.setSeat(first.get().getId());
             messagePublishUtil.sendToRoomPublic(roomId, message);
@@ -407,15 +323,10 @@ public class SpeedBootRoom implements Room, Serializable {
         Optional<SpeedBootPlayer> first = playerList.stream().filter(player -> player.getUserVo().getId().equals(userId)).findFirst();
         if(first.isPresent()){
             SpeedBootMessage<Long> message = new SpeedBootMessage<>();
-            message.setCode(Command.CONNECT.ordinal());
+            message.setCode(SpeedBootCommand.CONNECT.getCode());
             message.setContent(userId);
             message.setSeat(first.get().getId());
             messagePublishUtil.sendToRoomPublic(roomId, message);
         }
-    }
-
-    @Override
-    public void run() {
-        playLogic();
     }
 }

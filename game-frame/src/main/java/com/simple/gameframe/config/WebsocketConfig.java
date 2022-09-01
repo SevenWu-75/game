@@ -1,7 +1,7 @@
 package com.simple.gameframe.config;
 
-import com.simple.speedbootdice.interceptor.RoomInterceptor;
-import com.simple.speedbootdice.interceptor.SessionAuthHandshakeInterceptor;
+import com.simple.gameframe.interceptor.RoomInterceptor;
+import com.simple.gameframe.interceptor.SessionAuthHandshakeInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;

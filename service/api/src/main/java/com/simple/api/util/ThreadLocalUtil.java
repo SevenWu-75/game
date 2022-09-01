@@ -1,7 +1,7 @@
 package com.simple.api.util;
 
-import com.simple.api.game.Room;
 import com.simple.api.user.entity.User;
+import com.simple.api.game.Room;
 
 public class ThreadLocalUtil {
 

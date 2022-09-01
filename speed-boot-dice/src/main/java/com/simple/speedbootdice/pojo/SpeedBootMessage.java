@@ -1,7 +1,7 @@
 package com.simple.speedbootdice.pojo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.simple.api.game.Message;
+import com.simple.gameframe.core.Message;
 import lombok.Data;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;

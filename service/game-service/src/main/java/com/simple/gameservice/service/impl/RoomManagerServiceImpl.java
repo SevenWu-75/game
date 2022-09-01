@@ -4,7 +4,6 @@ import com.simple.api.game.Room;
 import com.simple.api.game.service.RoomManagerService;
 import com.simple.api.game.service.RoomService;
 import com.simple.api.user.entity.User;
-import com.simple.gameservice.util.ThreadPoolUtil;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 
@@ -33,7 +32,6 @@ public class RoomManagerServiceImpl implements RoomManagerService {
     public Room createRoomByGameName(String gameName, User user) {
         Room room = roomService.createRoom(user);
         roomMap.put(room.getRoomId(), room);
-        ThreadPoolUtil.handlerTask(room);
         return room;
     }
 }

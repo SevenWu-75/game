@@ -1,6 +1,6 @@
 package com.simple.gameframe.controller;
 
-import com.simple.api.game.Message;
+import com.simple.gameframe.core.Message;
 import com.simple.api.game.Room;
 import com.simple.api.util.ThreadLocalUtil;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -49,7 +49,7 @@ public class CommandController {
     public void subscribeRoomPrivate(@DestinationVariable("userId") String userId, @DestinationVariable("roomId") String roomId){
         //发送重连包
         messagePublishUtil.sendMessageForReconnect(roomId, userId);
-        com.simple.api.game.Room room = ThreadLocalUtil.getRoom();
+        Room room = ThreadLocalUtil.getRoom();
         //先发送在线状态包
         room.sendPublicConnectMessage(Long.parseLong(userId));
         //游戏未开始且进来的玩家并未坐下则自动让他坐下

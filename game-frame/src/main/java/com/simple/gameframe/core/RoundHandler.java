@@ -1,10 +1,23 @@
 package com.simple.gameframe.core;
 
 import com.simple.api.game.Player;
+import com.simple.api.game.Room;
 
-public interface RoundHandler {
+import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.function.BiFunction;
 
-    Player getNextPlayer();
+public interface RoundHandler extends Runnable {
 
-    void handle();
+    BiFunction<List<Player>, Integer, Player> getNextPlayerFunction();
+
+    LogicHandlerProcessor getLogicHandlerProcessor();
+
+    Room getRoom();
+
+    void setRoom(Room room);
+
+    Lock getLock();
+
+    void startLogic(Room room);
 }

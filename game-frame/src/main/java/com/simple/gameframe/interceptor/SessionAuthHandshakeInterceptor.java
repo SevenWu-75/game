@@ -1,7 +1,7 @@
 package com.simple.gameframe.interceptor;
 
-import com.simple.api.common.SpeedBootException;
-import com.simple.api.common.SpeedBootExceptionEnum;
+import com.simple.gameframe.common.GameException;
+import com.simple.gameframe.common.GameExceptionEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
@@ -20,7 +20,7 @@ public class SessionAuthHandshakeInterceptor implements HandshakeInterceptor {
         if(session == null || session.getAttribute("user") == null || session.getAttribute("room") == null){
             log.error("websocket权限拒绝");
 //            return false;
-            throw new SpeedBootException(SpeedBootExceptionEnum.WEBSOCKET_TIMEOUT);
+            throw new GameException(GameExceptionEnum.WEBSOCKET_TIMEOUT);
         }
         attributes.put("user",session.getAttribute("user"));
         attributes.put("room",session.getAttribute("room"));

@@ -2,7 +2,15 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/service/api/api.iml" filepath="$PROJECT_DIR$/service/api/api.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/game.iml" filepath="$PROJECT_DIR$/.idea/game.iml" />
+      <module fileurl="file://$PROJECT_DIR$/game-frame/game-frame.iml" filepath="$PROJECT_DIR$/game-frame/game-frame.iml" />
+      <module fileurl="file://$PROJECT_DIR$/service/game-service/game-service.iml" filepath="$PROJECT_DIR$/service/game-service/game-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/parent/parent.iml" filepath="$PROJECT_DIR$/parent/parent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/service/service.iml" filepath="$PROJECT_DIR$/service/service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/speed-boot-dice/speed-boot-dice.iml" filepath="$PROJECT_DIR$/speed-boot-dice/speed-boot-dice.iml" />
+      <module fileurl="file://$PROJECT_DIR$/service/user-service/user-service.iml" filepath="$PROJECT_DIR$/service/user-service/user-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/web/web.iml" filepath="$PROJECT_DIR$/web/web.iml" />
     </modules>
   </component>
 </project>

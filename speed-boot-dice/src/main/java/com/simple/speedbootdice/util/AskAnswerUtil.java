@@ -1,11 +1,9 @@
 package com.simple.speedbootdice.util;
 
-import com.simple.api.common.SpeedBootException;
-import com.simple.api.common.SpeedBootExceptionEnum;
-import com.simple.api.game.Message;
+import com.simple.gameframe.core.Message;
 import com.simple.api.util.ThreadLocalUtil;
 import com.simple.gameframe.util.MessagePublishUtil;
-import com.simple.speedbootdice.common.Command;
+import com.simple.speedbootdice.common.SpeedBootCommand;
 import com.simple.speedbootdice.pojo.Player;
 import com.simple.speedbootdice.pojo.Room;
 import com.simple.speedbootdice.pojo.SpeedBootMessage;
@@ -57,7 +55,7 @@ public class AskAnswerUtil {
         lock.lock();
         try {
             Message<Void> message = new Message<>();
-            message.setCode(Command.START_GAME.ordinal());
+            message.setCode(SpeedBootCommand.START_GAME.getCode());
             message.setFromId(id);
             message.setRoomId(roomId);
             log.debug("询问房主{}是否开始",id);
@@ -77,7 +75,7 @@ public class AskAnswerUtil {
         lock.lock();
         try {
             Message<Integer> message = new Message<>();
-            message.setCode(Command.ASK_DICE.ordinal());
+            message.setCode(SpeedBootCommand.ASK_DICE.getCode());
             message.setFromId(player.getUserVo().getId());
             message.setSeat(player.getId());
             message.setRoomId(roomId);
@@ -99,7 +97,7 @@ public class AskAnswerUtil {
         lock.lock();
         try {
             Message<Integer> message = new SpeedBootMessage<>();
-            message.setCode(Command.SELECT_SCORE.ordinal());
+            message.setCode(SpeedBootCommand.SELECT_SCORE.getCode());
             message.setFromId(player.getUser().getId());
             message.setSeat(player.getId());
             message.setRoomId(roomId);
@@ -176,7 +174,7 @@ public class AskAnswerUtil {
             if(room.getRoomStatus() == 0){
                 int seatNum = room.seatDown(userVo);
                 Message<SeatVo> message = new Message<>();
-                message.setCode(Command.SEAT_DOWN.ordinal());
+                message.setCode(SpeedBootCommand.SEAT_DOWN.getCode());
                 SeatVo content = new SeatVo();
                 content.setUser(userVo);
                 content.setSeat(seatNum);
