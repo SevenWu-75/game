@@ -3,7 +3,7 @@ package com.simple.speedbootdice.core;
 import com.simple.api.game.Player;
 import com.simple.api.game.Room;
 import com.simple.gameframe.core.DefaultMessage;
-import com.simple.gameframe.core.LogicHandler;
+import com.simple.gameframe.core.ask.LogicHandler;
 import com.simple.gameframe.core.Message;
 import com.simple.gameframe.util.MessagePublishUtil;
 import com.simple.speedbootdice.common.SpeedBootCommand;
@@ -46,8 +46,12 @@ public class PlayDiceLogicHandler implements LogicHandler {
     }
 
     @Override
-    public Object postHandle(Player player, Room room, Message<?> message) {
+    public Object postHandle(Player player, Room room, Message<?> message, Object o) {
         int[] lockDice = new int[]{-1,-1,-1,-1,-1};
+        if(o instanceof int[]){
+            lockDice = (int[]) o;
+        }
+
         return playDiceLogic((SpeedBootPlayer) player, lockDice, room.getRoomId());
     }
 
@@ -57,7 +61,8 @@ public class PlayDiceLogicHandler implements LogicHandler {
     }
 
     private DiceResultVo playDiceLogic(@NotNull SpeedBootPlayer player, int[] lockDice, String roomId){
-        player.setPlayTimes(player.getPlayTimes() - 1);
+        //抛骰子次数减少1
+        player.costPlayTimes();
         log.debug("询问{}抛骰子，次数为{}",player.getUser().getId(), player.getPlayTimes());
         List<Integer> diceList = player.playDices(lockDice);
         DiceResultVo diceResultVo = new DiceResultVo();

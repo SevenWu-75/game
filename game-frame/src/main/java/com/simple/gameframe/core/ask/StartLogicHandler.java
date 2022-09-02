@@ -1,15 +1,15 @@
-package com.simple.gameframe.core;
+package com.simple.gameframe.core.ask;
 
 import com.simple.api.game.Player;
 import com.simple.api.game.Room;
 import com.simple.gameframe.common.Command;
+import com.simple.gameframe.core.DefaultMessage;
+import com.simple.gameframe.core.Message;
 import com.simple.gameframe.util.MessagePublishUtil;
 
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
 
-public class WaitStartLogicHandler implements LogicHandler {
+public class StartLogicHandler implements LogicHandler {
 
     private ConcurrentHashMap<String, Message<?>> receivedMessageMap = new ConcurrentHashMap<>();
 
@@ -30,7 +30,7 @@ public class WaitStartLogicHandler implements LogicHandler {
     }
 
     @Override
-    public Object postHandle(Player player, Room room, Message<?> message){
+    public Object postHandle(Player player, Room room, Message<?> message, Object o){
         //广播开始游戏
         Message<Void> newMessage = new DefaultMessage<>();
         newMessage.setCode(Command.START_GAME.getCode());

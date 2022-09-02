@@ -27,7 +27,7 @@ public class SpeedBootPlayer implements Player {
 
     private final int[] scores;
 
-    private int playTimes;
+    private int playTimes = 3;
 
     public SpeedBootPlayer(int id, User user){
         this.id = id;
@@ -61,5 +61,17 @@ public class SpeedBootPlayer implements Player {
             this.scores[ScoreEnum.BONUS.getCode()] = 35;
             this.scores[ScoreEnum.TOTAL_SUM.getCode()] += 35;
         }
+    }
+
+    public void costPlayTimes(){
+        this.playTimes--;
+    }
+
+    public void resetPlayTimes(){
+        this.playTimes = 3;
+    }
+
+    public boolean enoughPlayTimes(){
+        return this.playTimes != 0;
     }
 }

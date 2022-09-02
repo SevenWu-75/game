@@ -1,4 +1,4 @@
-package com.simple.gameframe.core;
+package com.simple.gameframe.core.ask;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -31,5 +31,10 @@ public class AskAnswerLockConditionManager {
             conditionMap.put(roomId + logicId, condition);
             return condition;
         }
+    }
+
+    public static void clean(String roomId, String logicId){
+        conditionMap.remove(roomId + logicId);
+        lockMap.remove(roomId);
     }
 }

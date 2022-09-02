@@ -4,9 +4,12 @@ import com.simple.api.game.Player;
 import com.simple.api.game.Room;
 import com.simple.gameframe.common.GameException;
 import com.simple.gameframe.common.GameExceptionEnum;
+import com.simple.gameframe.core.ask.AskAnswerLockConditionManager;
+import com.simple.gameframe.core.ask.LogicHandlerProcessor;
 import lombok.Builder;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -17,16 +20,11 @@ public class RoundHandlerProcessor implements RoundHandler {
 
     LogicHandlerProcessor logicHandlerProcessor;
 
-    BiFunction<List<Player>, Integer, Player> nextPlayerFunction;
-
     Room room;
 
     Lock lock = new ReentrantLock();
 
-    @Override
-    public BiFunction<List<Player>, Integer, Player> getNextPlayerFunction() {
-        return this.nextPlayerFunction;
-    }
+    SeatHandler seatHandler;
 
     @Override
     public LogicHandlerProcessor getLogicHandlerProcessor() {
@@ -48,24 +46,36 @@ public class RoundHandlerProcessor implements RoundHandler {
         return this.lock;
     }
 
-    public RoundHandlerProcessor(LogicHandlerProcessor logicHandlerProcessor){
+    public RoundHandlerProcessor(LogicHandlerProcessor logicHandlerProcessor, SeatHandler seatHandler){
         this.logicHandlerProcessor = logicHandlerProcessor;
+        this.seatHandler = seatHandler;
     }
 
     @Override
     public void startLogic(@NotNull Room room) {
-        if(nextPlayerFunction == null){
-            throw new GameException(GameExceptionEnum.NO_NEXT_PLAYER_LOGIC);
-        }
-        Player nextPlayer = room.getPlayerList().get(0);
-        for (int i = 0; i < room.getPlayCount() * room.getPlayerList().size(); i++) {
-            handle(nextPlayer, room, AskAnswerLockConditionManager.getLock(room.getRoomId()));
-            nextPlayer = getNextPlayerFunction().apply(room.getPlayerList(), nextPlayer.getId());
+        final LinkedList<Player> playerList = room.getPlayerList();
+        Object roundResult = null;
+        for (int i = 0; i < room.getPlayCount(); i++) {
+            roundResult = round(room, seatHandler.getRoundPlayer(i, playerList, roundResult));
         }
     }
 
-    public void handle(Player player, Room room, Lock lock) {
-        getLogicHandlerProcessor().process(player, room, lock);
+    @Override
+    public Object round(Room room, List<Player> players) {
+        Object o = null;
+        for (Player player : players) {
+            o = handle(player, room, AskAnswerLockConditionManager.getLock(room.getRoomId()));
+        }
+        return o;
+    }
+
+    @Override
+    public SeatHandler getSeatHandler() {
+        return this.seatHandler;
+    }
+
+    public Object handle(Player player, Room room, Lock lock) {
+        return getLogicHandlerProcessor().process(player, room, lock);
     }
 
     @Override

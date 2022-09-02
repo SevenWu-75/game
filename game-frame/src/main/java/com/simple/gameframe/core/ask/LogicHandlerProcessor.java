@@ -1,8 +1,9 @@
-package com.simple.gameframe.core;
+package com.simple.gameframe.core.ask;
 
 import com.simple.api.game.Player;
 import com.simple.api.game.Room;
 import com.simple.gameframe.common.GameException;
+import com.simple.gameframe.core.Message;
 import lombok.Builder;
 
 import java.util.List;
@@ -19,9 +20,9 @@ public class LogicHandlerProcessor {
         this.logicHandlerList = logicHandlerList;
     }
 
-    public void process(Player player, Room room, Lock lock){
+    public Object process(Player player, Room room, Lock lock){
         preHandle(player, room, lock);
-        handle(player, room, lock);
+        return handle(player, room, lock);
     }
 
     private void preHandle(Player player, Room room, Lock lock){
@@ -31,14 +32,14 @@ public class LogicHandlerProcessor {
                 Message<?> sendMessage = waitStartLogicHandler.messageHandle(player, room, null);
                 Message<?> receiveMessage = waitStartLogicHandler.ask(player.getUser().getId(), room, sendMessage, lock,
                         AskAnswerLockConditionManager.getCondition(room.getRoomId(), waitStartLogicHandler.toString()));
-                waitStartLogicHandler.postHandle(player, room, receiveMessage);
+                waitStartLogicHandler.postHandle(player, room, receiveMessage, null);
             } catch (GameException e){
 
             }
         }
     }
 
-    private void handle(Player player, Room room, Lock lock){
+    private Object handle(Player player, Room room, Lock lock){
         Object o = null;
         if (logicHandlerList.size() > 0) {
             //灵活设置下一个处理器，链式执行的方式
@@ -55,7 +56,7 @@ public class LogicHandlerProcessor {
                         Message<?> sendMessage = nextHandler.messageHandle(player, room, o);
                         Message<?> receiveMessage = nextHandler.ask(player.getUser().getId(), room, sendMessage, lock,
                                 AskAnswerLockConditionManager.getCondition(room.getRoomId(), nextHandler.toString()));
-                        o = nextHandler.postHandle(player, room, receiveMessage);
+                        o = nextHandler.postHandle(player, room, receiveMessage, o);
                     } catch (GameException e){
                         break;
                     }
@@ -73,12 +74,13 @@ public class LogicHandlerProcessor {
                         Message<?> sendMessage = logicHandler.messageHandle(player, room, o);
                         Message<?> receiveMessage = logicHandler.ask(player.getUser().getId(), room, sendMessage, lock,
                                 AskAnswerLockConditionManager.getCondition(room.getRoomId(), logicHandler.toString()));
-                        o = logicHandler.postHandle(player, room, receiveMessage);
+                        o = logicHandler.postHandle(player, room, receiveMessage, o);
                     } catch (GameException e){
                         break;
                     }
                 }
             }
         }
+        return o;
     }
 }

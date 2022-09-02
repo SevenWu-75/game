@@ -10,8 +10,6 @@ import com.simple.speedbootdice.common.ScoreEnum;
 import com.simple.speedbootdice.util.*;
 import com.simple.speedbootdice.vo.*;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 import java.util.*;
@@ -181,55 +179,6 @@ public class SpeedBootRoom implements Room, Serializable {
         } finally {
             closeRoom();
         }
-    }
-
-    private DiceResultVo playDiceLogic(@NotNull SpeedBootPlayer player, AtomicInteger playTimes, int[] lockDice){
-        log.debug("询问{}抛骰子，次数为{}",player.getUserVo().getId(),playTimes.get());
-        List<Integer> diceList = player.playDices(lockDice);
-        DiceResultVo diceResultVo = new DiceResultVo();
-        diceResultVo.setNumbers(diceList);
-        diceResultVo.setScores(calculate(diceList));
-        diceResultVo.setTimes(playTimes.decrementAndGet());
-        diceResultVo.setHaveScores(player.getScores());
-        //广播玩家投掷骰子结果 =====》
-        sendDiceResultToPublic(player, diceResultVo);
-        return diceResultVo;
-    }
-
-    private void sendDiceResultToPublic(@NotNull SpeedBootPlayer player, DiceResultVo diceList){
-        SpeedBootMessage<DiceResultVo> message = new SpeedBootMessage<>();
-        message.setRoomId(roomId);
-        message.setFromId(player.getUserVo().getId());
-        message.setSeat(player.getId());
-        message.setContent(diceList);
-        message.setCode(SpeedBootCommand.ANSWER_DICE.getCode());
-        messagePublishUtil.sendToRoomPublic(roomId, message);
-    }
-
-    private int[] selectScoreOrContinuePlayDiceLogic(@NotNull SpeedBootPlayer player, @NotNull DiceResultVo diceResultVo, AtomicInteger playTimes){
-        log.debug("询问玩家{}选择分数还是继续抛骰子",player.getUserVo().getId());
-        SpeedBootMessage<?> resMessage = askAnswerUtil.askSelectScore(player,playTimes);
-        //如果是继续投骰子
-        if(resMessage.getCode() == SpeedBootCommand.ANSWER_DICE.getCode()){
-            return (int[])resMessage.getContent();
-        } else {
-            int index = (Integer) resMessage.getContent();
-            int score = diceResultVo.getScores()[index];
-            player.updateScores(index,score);
-            //广播玩家投掷骰子结果 =====》
-            sendSelectScoreResultToPublic(player);
-        }
-        return null;
-    }
-
-    private void sendSelectScoreResultToPublic(@NotNull SpeedBootPlayer player){
-        SpeedBootMessage<int[]> message = new SpeedBootMessage<>();
-        message.setCode(SpeedBootCommand.SELECT_SCORE.getCode());
-        message.setFromId(player.getUserVo().getId());
-        message.setSeat(player.getId());
-        message.setRoomId(roomId);
-        message.setContent(player.getScores());
-        messagePublishUtil.sendToRoomPublic(roomId, message);
     }
 
     private void sendGameOverResultToPublic(){

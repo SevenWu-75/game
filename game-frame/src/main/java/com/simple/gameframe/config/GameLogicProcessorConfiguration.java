@@ -1,6 +1,9 @@
 package com.simple.gameframe.config;
 
 import com.simple.gameframe.core.*;
+import com.simple.gameframe.core.ask.LogicHandler;
+import com.simple.gameframe.core.ask.LogicHandlerProcessor;
+import com.simple.gameframe.core.ask.StartLogicHandler;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,14 +20,8 @@ public class GameLogicProcessorConfiguration {
                 .logicHandlerProcessor(
                         LogicHandlerProcessor.builder()
                                 .logicHandlerList(logicHandlerList)
-                                .waitStartLogicHandler(new WaitStartLogicHandler()).build())
-                .nextPlayerFunction((players, integer) -> {
-                    int size = players.size();
-                    if(integer + 1 < size)
-                        return players.get(integer + 1);
-                    else
-                        return players.get(0);
-                })
+                                .waitStartLogicHandler(new StartLogicHandler()).build())
+                .seatHandler(new SeatHandlerProcessor())
                 .build();
     }
 }

@@ -1,10 +1,12 @@
-package com.simple.gameframe.core;
+package com.simple.gameframe.core.ask;
 
 import com.simple.api.game.Player;
 import com.simple.api.game.Room;
 import com.simple.gameframe.common.GameException;
 import com.simple.gameframe.common.GameExceptionEnum;
+import com.simple.gameframe.core.Message;
 import com.simple.gameframe.util.MessagePublishUtil;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -25,7 +27,7 @@ public interface LogicHandler {
 
     Message<?> messageHandle(Player player, Room room, Object o);
 
-    default Message<?> ask(Long userId, Room room, Message<?> message, Lock lock, Condition condition) {
+    default Message<?> ask(Long userId, @NotNull Room room, Message<?> message, @NotNull Lock lock, Condition condition) {
         lock.lock();
         try {
             MessagePublishUtil.sendToRoomUser(String.valueOf(userId), room.getRoomId(), message);
@@ -46,11 +48,11 @@ public interface LogicHandler {
         return getReceivedMessageMap().get(room.getRoomId());
     }
 
-    default Object postHandle(Player player, Room room, Message<?> message) {
+    default Object postHandle(Player player, Room room, Message<?> message, Object o) {
         return null;
     }
 
-    default void answer(Lock lock, Room room,Condition condition, Message<?> message) {
+    default void answer(@NotNull Lock lock, @NotNull Room room, @NotNull Condition condition, Message<?> message) {
         lock.lock();
         try {
             getReceivedMessageMap().put(room.getRoomId(), message);
