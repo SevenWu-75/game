@@ -8,16 +8,21 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.List;
+
 @Configuration
 public class GameEventProcessorConfiguration {
 
     @Bean
+    public DefaultEventListener defaultEventListener(){
+        return new DefaultEventListener();
+    }
+
+    @Bean
     @ConditionalOnMissingBean(EventPublisher.class)
-    public RoomEventPublisher roomEventPublisher(){
+    public RoomEventPublisher roomEventPublisher(EventListener<?>... eventListenerList){
         RoomEventPublisher roomEventPublisher = new RoomEventPublisher();
-        DefaultEventListener defaultEventListener = new DefaultEventListener();
-        defaultEventListener.setMessageHandler(new DefaultMessageHandler());
-        roomEventPublisher.addListener(defaultEventListener);
+        roomEventPublisher.addListener(eventListenerList);
         return roomEventPublisher;
     }
 }

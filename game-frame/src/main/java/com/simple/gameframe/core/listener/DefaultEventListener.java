@@ -5,13 +5,7 @@ import com.simple.gameframe.core.event.*;
 import com.simple.gameframe.core.send.DefaultMessageHandler;
 import com.simple.gameframe.core.send.MessageHandler;
 
-public class DefaultEventListener implements EventListener<Event> {
-
-    private MessageHandler messageHandler;
-
-    public void setMessageHandler(MessageHandler messageHandler){
-        this.messageHandler = messageHandler;
-    }
+public class DefaultEventListener extends AbstractEventListener<Event> {
 
     @Override
     public void eventHandle(Event event) {
@@ -38,7 +32,10 @@ public class DefaultEventListener implements EventListener<Event> {
             command = Command.TURN_NEXT;
         if(event instanceof VoteDismissEvent)
             command = Command.VOTE_DISMISS;
-        ((DefaultMessageHandler)messageHandler).setCommand(command);
+        if(event instanceof TimeOutEvent){
+            command = Command.TIMEOUT;
+        }
+        messageHandler.setCommand(command);
         messageHandler.messageHandle(event.getRoom(),event.getO());
     }
 }

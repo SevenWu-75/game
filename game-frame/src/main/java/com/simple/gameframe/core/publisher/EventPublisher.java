@@ -27,5 +27,9 @@ public interface EventPublisher {
 
     void reconnect(Room room, Object o);
 
-    void addListener(EventListener<?> listener);
+    void timeout(Room room, Object o);
+
+    void gameResult(Room room, Object o);
+
+    void addListener(EventListener<?>... listeners);
 }

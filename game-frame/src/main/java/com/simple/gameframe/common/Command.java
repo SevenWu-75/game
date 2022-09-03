@@ -12,7 +12,9 @@ public enum Command {
     RECONNECT(107,"重连"),
     DISMISS_ROOM(108,"解散房间"),
     VOTE_DISMISS(109,"投票解散"),
-    GAME_OVER(110,"游戏结束"),
+    GAME_RESULT(110,"游戏结果"),
+    GAME_OVER(111,"游戏结束"),
+    TIMEOUT(112,"超时结束"),
     ;
 
     private int code;

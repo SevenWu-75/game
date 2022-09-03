@@ -2,8 +2,8 @@ package com.simple.gameframe.core.ask;
 
 import com.simple.api.game.Player;
 import com.simple.api.game.Room;
-import com.simple.gameframe.common.GameException;
-import com.simple.gameframe.common.GameExceptionEnum;
+import com.simple.api.game.exception.GameException;
+import com.simple.api.game.exception.GameExceptionEnum;
 import com.simple.gameframe.core.Message;
 import com.simple.gameframe.util.MessagePublishUtil;
 import org.jetbrains.annotations.NotNull;
@@ -15,7 +15,14 @@ import java.util.concurrent.locks.Lock;
 
 public interface LogicHandler {
 
-    ConcurrentHashMap<String, Message<?>> getReceivedMessageMap();
+    /**
+     * 如果需要ask后获取answer返回的message，则需要重写这个方法
+     *
+     * @return 返回一个有对象ConcurrentHashMap
+     */
+    default ConcurrentHashMap<String, Message<?>> getReceivedMessageMap() {
+        return null;
+    }
 
     default Long getWaitTimeSecond() {
         return 60*5L;
@@ -45,6 +52,9 @@ public interface LogicHandler {
         } finally {
             lock.unlock();
         }
+        if(getReceivedMessageMap() == null){
+            return null;
+        }
         return getReceivedMessageMap().get(room.getRoomId());
     }
 
@@ -55,7 +65,8 @@ public interface LogicHandler {
     default void answer(@NotNull Lock lock, @NotNull Room room, @NotNull Condition condition, Message<?> message) {
         lock.lock();
         try {
-            getReceivedMessageMap().put(room.getRoomId(), message);
+            if(getReceivedMessageMap() != null && message != null)
+                getReceivedMessageMap().put(room.getRoomId(), message);
             condition.signal();
         } finally {
             lock.unlock();

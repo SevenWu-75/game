@@ -19,9 +19,9 @@ public class GameLogicProcessorConfiguration {
         return RoundHandlerProcessor.builder()
                 .logicHandlerProcessor(
                         LogicHandlerProcessor.builder()
-                                .logicHandlerList(logicHandlerList)
-                                .waitStartLogicHandler(new StartLogicHandler()).build())
+                                .logicHandlerList(logicHandlerList).build())
                 .seatHandler(new SeatHandlerProcessor())
+                .startLogicHandler(new StartLogicHandler())
                 .build();
     }
 }

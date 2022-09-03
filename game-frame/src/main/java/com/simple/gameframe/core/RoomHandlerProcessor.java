@@ -4,37 +4,60 @@ import com.simple.api.game.Room;
 import com.simple.api.user.entity.User;
 import com.simple.api.util.ThreadLocalUtil;
 import com.simple.gameframe.common.Command;
-import com.simple.gameframe.common.GameException;
-import com.simple.gameframe.common.GameExceptionEnum;
-import org.springframework.stereotype.Component;
+import com.simple.api.game.exception.GameException;
+import com.simple.api.game.exception.GameExceptionEnum;
+import com.simple.gameframe.core.ask.AskAnswerLockConditionManager;
+import com.simple.gameframe.core.publisher.EventPublisher;
+import com.simple.gameframe.core.publisher.RoomEventPublisher;
+import com.simple.gameframe.util.ApplicationContextUtil;
+import lombok.Builder;
 
-import java.util.concurrent.ConcurrentHashMap;
+import javax.ws.rs.core.Application;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
+@Builder
 public class RoomHandlerProcessor implements RoomHandler {
-
-    private ConcurrentHashMap<String, CountDownLatch> countDownMap = new ConcurrentHashMap<>();
 
     private long waitTimeOutToCloseRoom = 5L;
 
+    private RoundHandler roundHandler;
+
+    private Room room;
+
+    private Lock lock = new ReentrantLock();
+
     @Override
-    public CountDownLatch getCountDownLatch(String roomId, int minPlayer) {
-        if(countDownMap.containsKey(roomId))
-            return countDownMap.get(roomId);
-        CountDownLatch countDownLatch = new CountDownLatch(minPlayer);
-        countDownMap.put(roomId, countDownLatch);
-        return countDownLatch;
+    public Lock getLock(){
+        return lock;
     }
 
     @Override
-    public void cleanCountDownLatch(String roomId) {
-        countDownMap.remove(roomId);
+    public void setRoom(Room room){
+        this.room = room;
     }
 
-    public void start(Room room){
-        CountDownLatch countDownLatch = getCountDownLatch(room.getRoomId(), room.getPlayCount());
-        awaitStart(countDownLatch);
+    public void start(Room room) {
+        EventPublisher eventPublisher = ApplicationContextUtil.getEventPublisher();
+        try{
+            //创建房间
+            eventPublisher.create(room,null);
+            CountDownLatch countDownLatch = AskAnswerLockConditionManager.getCountDownLatch(room.getRoomId(), room.getPlayCount());
+            awaitStart(countDownLatch);
+            //可以开始
+            eventPublisher.canStart(room, null);
+            if(roundHandler == null){
+                throw new GameException(GameExceptionEnum.FAILED);
+            }
+            roundHandler.startLogic(room);
+        } catch (GameException e) {
+            if (e.getCode().equals(GameExceptionEnum.CLOSE_FOR_OPERATE_TIMEOUT)) {
+                eventPublisher.timeout(room, null);
+            }
+        }
+
     }
 
     public void awaitStart(CountDownLatch countDownLatch){
@@ -51,7 +74,7 @@ public class RoomHandlerProcessor implements RoomHandler {
     public void signalSeatDown(){
         Room room = ThreadLocalUtil.getRoom();
         User userVo = ThreadLocalUtil.getUser();
-        lock.lock();
+        AskAnswerLockConditionManager.getLock(room.getRoomId()).lock();
         try{
             if(room.getRoomStatus() == 0){
                 int seatNum = room.seatDown(userVo);
@@ -62,10 +85,18 @@ public class RoomHandlerProcessor implements RoomHandler {
                 content.setSeat(seatNum);
                 message.setContent(content);
                 messagePublishUtil.sendToRoomPublic(room.getRoomId(),message);
-                countDownLatch.countDown();
+                AskAnswerLockConditionManager.getCountDownLatch(room.getRoomId(),room.getPlayCount()).countDown();
             }
         } finally {
-            lock.unlock();
+            AskAnswerLockConditionManager.getLock(room.getRoomId()).unlock();
         }
+    }
+
+    @Override
+    public void run() {
+        final Room currentRoom = this.room;
+        this.room = null;
+        lock.unlock();
+        start(currentRoom);
     }
 }

@@ -1,7 +1,7 @@
 package com.simple.gameframe.interceptor;
 
-import com.simple.gameframe.common.GameException;
-import com.simple.gameframe.common.GameExceptionEnum;
+import com.simple.api.game.exception.GameException;
+import com.simple.api.game.exception.GameExceptionEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;

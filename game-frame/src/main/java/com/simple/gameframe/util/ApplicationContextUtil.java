@@ -1,9 +1,11 @@
 package com.simple.gameframe.util;
 
+import com.simple.gameframe.core.publisher.EventPublisher;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.core.env.Environment;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +16,8 @@ import java.util.Map;
 public class ApplicationContextUtil implements ApplicationContextAware {
 
     private static ApplicationContext context;
+
+    private static EventPublisher eventPublisher;
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -34,11 +38,14 @@ public class ApplicationContextUtil implements ApplicationContextAware {
         return context.getBean(name);
     }
 
-    public static MessagePublishUtil getMessagePublishUtil(){
-        return getBean(MessagePublishUtil.class);
-    }
-
     public static SimpMessagingTemplate getSimpMessageTemplate(){
         return getBean(SimpMessagingTemplate.class);
+    }
+
+    public static EventPublisher getEventPublisher() {
+        if(eventPublisher == null){
+            eventPublisher = getBean(EventPublisher.class);
+        }
+        return eventPublisher;
     }
 }

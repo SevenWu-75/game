@@ -11,13 +11,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class StartLogicHandler implements LogicHandler {
 
-    private ConcurrentHashMap<String, Message<?>> receivedMessageMap = new ConcurrentHashMap<>();
-
-    @Override
-    public ConcurrentHashMap<String, Message<?>> getReceivedMessageMap() {
-        return this.receivedMessageMap;
-    }
-
     @Override
     public Message<?> messageHandle(Player player, Room room, Object o) {
         //询问是否开始游戏

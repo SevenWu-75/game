@@ -1,4 +1,8 @@
 package com.simple.gameframe.util;
+import com.simple.api.game.Player;
+import com.simple.api.game.Room;
+import com.simple.api.game.exception.GameException;
+import com.simple.api.game.exception.GameExceptionEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -27,6 +31,32 @@ public class PackageUtil {
 
     //扫描  scanPackages 下的文件的匹配符
     protected static final String DEFAULT_RESOURCE_PATTERN = "**/*.class";
+
+    private static Class<?> roomClass;
+
+    private static Class<?> playerClass;
+
+    public static Class<?> getRoomImpl(String scanPackages) {
+        if(roomClass == null){
+            try {
+                roomClass = findOneClassByInterface(scanPackages, Room.class);
+            } catch (ClassNotFoundException e) {
+                throw new GameException(GameExceptionEnum.NOT_FOUND_ROOM_IMPL);
+            }
+        }
+        return roomClass;
+    }
+
+    public static Class<?> getPlayerImpl(String scanPackages) {
+        if(playerClass == null){
+            try {
+                playerClass = findOneClassByInterface(scanPackages, Player.class);
+            } catch (ClassNotFoundException e) {
+                throw new GameException(GameExceptionEnum.NOT_FOUND_PLAYER_IMPL);
+            }
+        }
+        return playerClass;
+    }
 
 
     /**

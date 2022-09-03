@@ -11,6 +11,4 @@ public interface Player {
     User getUser();
 
     int getStatus();
-
-    int[] getScores();
 }

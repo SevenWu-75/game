@@ -8,19 +8,12 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.function.BiFunction;
 
-public interface RoundHandler extends Runnable {
+public interface RoundHandler {
 
     LogicHandlerProcessor getLogicHandlerProcessor();
-
-    Room getRoom();
-
     void setRoom(Room room);
-
-    Lock getLock();
 
     void startLogic(Room room);
 
     Object round(Room room, List<Player> players);
-
-    SeatHandler getSeatHandler();
 }
