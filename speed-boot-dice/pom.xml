@@ -45,13 +45,13 @@
         </dependency>
         <dependency>
             <groupId>com.simple</groupId>
-            <artifactId>api</artifactId>
+            <artifactId>game-frame</artifactId>
             <version>1.0.0</version>
         </dependency>
         <dependency>
-            <groupId>com.simple</groupId>
-            <artifactId>game-frame</artifactId>
-            <version>1.0.0</version>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>13.0</version>
         </dependency>
     </dependencies>
 

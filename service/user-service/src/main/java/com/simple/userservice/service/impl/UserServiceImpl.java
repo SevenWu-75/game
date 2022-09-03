@@ -6,6 +6,7 @@ import com.simple.api.user.entity.User;
 import com.simple.api.user.service.UserService;
 import com.simple.userservice.mapper.UserMapper;
 import org.apache.dubbo.config.annotation.DubboService;
+import org.springframework.stereotype.Service;
 
 @DubboService
 @Service

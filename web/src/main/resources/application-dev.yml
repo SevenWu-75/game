@@ -3,9 +3,9 @@ dubbo:
     id: user-service
   protocol:
     name: dubbo
-    port: 20881
+    port: -1
   registry:
-    address: spring-cloud://localhost
+    address: spring-cloud://172.30.60.82
     check: false
   consumer:
     check: false
@@ -16,4 +16,9 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: localhost:8848
+        server-addr: 172.30.60.82:8848
+  main:
+    allow-circular-references: true
+
+websocket:
+  url: https://localhost/speedBoot

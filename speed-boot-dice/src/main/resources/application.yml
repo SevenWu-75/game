@@ -5,9 +5,6 @@ spring:
   profiles:
     active: dev
 
-#mybatis-plus:
-  #config-location: classpath:mapper/*.xml
-  #type-aliases-package: com.simple.speedbootdice.pojo
 logging:
   level:
     com.simple.speedbootdice: trace

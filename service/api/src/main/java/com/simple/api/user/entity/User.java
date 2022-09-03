@@ -1,6 +1,5 @@
 package com.simple.api.user.entity;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.simple.api.game.entity.HistoryRank;
 import lombok.Data;
 
@@ -17,7 +16,6 @@ public class User {
 
     private String realname;
 
-    @TableField(exist = false)
     private HistoryRank historyRank;
 
     @Override

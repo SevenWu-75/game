@@ -1,25 +1,27 @@
 game-frame:
   scan: com.simple.speedbootdice
 
-websocket:
-  url: https://187f67320w.zicp.fun/speedBoot
+#websocket:
+#  url: https://localhost/speedBoot
 
 spring:
   cloud:
     nacos:
       discovery:
-        server-addr: localhost:8848
+        server-addr: 172.30.60.82:8848
   application:
     name: speed-boot
+  main:
+    allow-circular-references: true
 
 dubbo:
   application:
     id: speed-boot
   protocol:
     name: dubbo
-    port: 20881
+    port: -1
   registry:
-    address: spring-cloud://localhost
+    address: spring-cloud://172.30.60.82
     check: false
   consumer:
     check: false

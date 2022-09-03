@@ -1,10 +1,9 @@
 package com.simple.api.user.service;
 
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.simple.api.user.entity.User;
 
-public interface UserService extends IService<User> {
+public interface UserService {
 
     User getUserByUsername(String username);
 
