@@ -2,6 +2,8 @@ package com.simple.speedbootdice.pojo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.simple.api.game.Player;
+import com.simple.api.game.exception.GameException;
+import com.simple.api.game.exception.GameExceptionEnum;
 import com.simple.api.user.entity.User;
 import com.simple.speedbootdice.common.ScoreEnum;
 import lombok.Data;
@@ -50,16 +52,16 @@ public class SpeedBootPlayer implements Player {
     }
 
     public void updateScores(int index, int score){
-        if(index > ScoreEnum.TOTAL_SUM.getCode()){
-            throw new SpeedBootException(SpeedBootExceptionEnum.UPDATE_SCORE_FAILED);
+        if(index > ScoreEnum.TOTAL_SUM.ordinal()){
+            throw new GameException(GameExceptionEnum.UPDATE_SCORE_FAILED);
         }
         this.scores[index] = score;
-        this.scores[ScoreEnum.TOTAL_SUM.getCode()] += score;
-        if(index <= ScoreEnum.SIX.getCode())
-            this.scores[ScoreEnum.SMALL_SUM.getCode()] += score;
-        if(this.scores[ScoreEnum.BONUS.getCode()] != 35 && this.scores[ScoreEnum.SMALL_SUM.getCode()] >= 63){
-            this.scores[ScoreEnum.BONUS.getCode()] = 35;
-            this.scores[ScoreEnum.TOTAL_SUM.getCode()] += 35;
+        this.scores[ScoreEnum.TOTAL_SUM.ordinal()] += score;
+        if(index <= ScoreEnum.SIX.ordinal())
+            this.scores[ScoreEnum.SMALL_SUM.ordinal()] += score;
+        if(this.scores[ScoreEnum.BONUS.ordinal()] != 35 && this.scores[ScoreEnum.SMALL_SUM.ordinal()] >= 63){
+            this.scores[ScoreEnum.BONUS.ordinal()] = 35;
+            this.scores[ScoreEnum.TOTAL_SUM.ordinal()] += 35;
         }
     }
 

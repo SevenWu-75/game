@@ -1,5 +1,6 @@
 package com.simple.gameframe.config;
 
+import com.simple.gameframe.core.event.Event;
 import com.simple.gameframe.core.listener.*;
 import com.simple.gameframe.core.publisher.EventPublisher;
 import com.simple.gameframe.core.publisher.RoomEventPublisher;

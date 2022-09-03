@@ -4,8 +4,10 @@ import com.simple.api.game.Player;
 import com.simple.api.game.Room;
 import com.simple.api.game.exception.GameException;
 import com.simple.api.game.exception.GameExceptionEnum;
+import com.simple.gameframe.common.Command;
 import com.simple.gameframe.core.Message;
 import com.simple.gameframe.util.MessagePublishUtil;
+import com.simple.gameframe.util.RoomPropertyManagerUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -13,7 +15,14 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 
-public interface LogicHandler {
+public interface LogicHandler<T extends Command> {
+
+    /**
+     * 用于通过指令枚举获取本对象
+     *
+     * @return 返回本对象属于的指令
+     */
+    T getCommand();
 
     /**
      * 如果需要ask后获取answer返回的message，则需要重写这个方法
@@ -28,15 +37,16 @@ public interface LogicHandler {
         return 60*5L;
     }
 
-    default boolean preHandle(Player player, Room room, Object o) {
+    default boolean preHandle(Player player, Room<? extends Player> room, Object o) {
         return true;
     }
 
-    Message<?> messageHandle(Player player, Room room, Object o);
+    Message<?> messageHandle(Player player, Room<? extends Player> room, Object o);
 
-    default Message<?> ask(Long userId, @NotNull Room room, Message<?> message, @NotNull Lock lock, Condition condition) {
+    default Message<?> ask(Long userId, @NotNull Room<? extends Player> room, Message<?> message, @NotNull Lock lock, Condition condition) {
         lock.lock();
         try {
+            message.setId(RoomPropertyManagerUtil.incrementAndGetPackageId(room.getRoomId(), this.toString()));
             MessagePublishUtil.sendToRoomUser(String.valueOf(userId), room.getRoomId(), message);
             Long waitTime = getWaitTimeSecond();
             if(waitTime != null){
@@ -58,24 +68,26 @@ public interface LogicHandler {
         return getReceivedMessageMap().get(room.getRoomId());
     }
 
-    default Object postHandle(Player player, Room room, Message<?> message, Object o) {
+    default Object postHandle(Player player, Room<? extends Player> room, Message<?> message, Object o) {
         return null;
     }
 
-    default void answer(@NotNull Lock lock, @NotNull Room room, @NotNull Condition condition, Message<?> message) {
+    default void answer(@NotNull Lock lock, @NotNull Room<? extends Player> room, @NotNull Condition condition, Message<?> message) {
         lock.lock();
         try {
-            if(getReceivedMessageMap() != null && message != null)
-                getReceivedMessageMap().put(room.getRoomId(), message);
-            condition.signal();
+            if(message != null && message.getId() == RoomPropertyManagerUtil.getPackageIdMap(room.getRoomId(), this.toString())){
+                if(getReceivedMessageMap() != null)
+                    getReceivedMessageMap().put(room.getRoomId(), message);
+                condition.signal();
+            }
         } finally {
             lock.unlock();
         }
     }
 
-    default void setNextHandler(LogicHandler logicHandler){
+    default void setNextHandler(LogicHandler<?> logicHandler){
 
     }
 
-    LogicHandler getNextHandler();
+    LogicHandler<?> getNextHandler();
 }

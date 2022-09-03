@@ -80,12 +80,12 @@
                 console.log('Connected: ' + frame);
                 stompClient.subscribe('/topic/'+[[${session.room.roomId}]], function (response) {
                     var parse = JSON.parse(response.body);
-                    if((messageId == null || messageId < parse.id) && parse.code != 1 && parse.code != 11 && parse.code != 12){
+                    if(messageId == null || messageId < parse.id){
                         messageId = parse.id;
                     }
                     if(parse.reconnectUserId === null || parse.reconnectUserId === [[${session.user.id}]]){
                         //坐下，显示玩家的信息
-                        if(parse.code === 1){
+                        if(parse.code === 102){
                             document.getElementById("seat_list").innerHTML += template("seat-html", {content:parse.content});
                             if(parse.content.user.id != [[${session.user.id}]]){
                                 document.getElementById("pre-half").innerHTML += template("pre-half-html",{user:parse.content.user});
@@ -106,7 +106,7 @@
                         var ids = playerScoreIdList[parse.seat];
                         var playDice = document.getElementById("playDice");
                         //收到广播开始游戏
-                        if(parse.code === 2){
+                        if(parse.code === 104){
 
                         }
                         //收到抛出骰子的结果，需要填入到各项中
@@ -148,7 +148,7 @@
                             }
                         }
                         //收到游戏结束
-                        if(parse.code === 6){
+                        if(parse.code === 111){
                             if(parse.content.winner != null){
                                 alert("赢家为"+parse.content.winner.userVo.realname+"！");
                             } else {
@@ -157,23 +157,23 @@
                             window.location.href = '/';
                         }
                         //收到解散消息
-                        if(parse.code === 9){
+                        if(parse.code === 109){
                             alert("房间已解散!")
                             window.location.href = '/';
                         }
                         //收到换人play的消息
-                        if(parse.code === 10){
+                        if(parse.code === 105){
                             for (let i = 0; i < parse.content; i++) {
                                 document.getElementById(i.toString()).style.backgroundColor = "#FFF";
                             }
                             document.getElementById(parse.seat.toString()).style.backgroundColor = "#FFEEBB";
                         }
                         //收到有人断线的消息
-                        if(parse.code === 11){
+                        if(parse.code === 107){
                             document.getElementById("img-"+parse.seat).style.filter = "grayscale(100%)";
                         }
                         //收到有人在线的消息
-                        if(parse.code === 12){
+                        if(parse.code === 108){
                             document.getElementById("img-"+parse.seat).style.filter = "";
                         }
                     }
@@ -184,7 +184,7 @@
                         messageId = parse.id;
                     }
                     var playDice = document.getElementById("playDice");
-                    if(parse.code === 2){
+                    if(parse.code === 103){
                         document.getElementById("start-game").disabled = false;
                     }
                     //询问投骰子
@@ -217,18 +217,18 @@
         }
 
         function playDice() {
-            stompClient.send("/playDice",{}, JSON.stringify({'id': messageId, 'code': 4 ,'content': lockDiceIndexList}));
+            stompClient.send("/command",{}, JSON.stringify({'id': messageId, 'code': 4 ,'content': lockDiceIndexList}));
         }
 
         function startGame(){
             document.getElementById("start-game").disabled = true;
-            stompClient.send("/startGame",{}, JSON.stringify({'id': messageId, 'code': 2}));
+            stompClient.send("/command",{}, JSON.stringify({'id': messageId, 'code': 104}));
         }
 
         function selectScore(index, id, seat){
             if(document.getElementById(id).style.color === "red"){
                 document.getElementById(id).onmousedown = function (){
-                    stompClient.send("/selectScoreOrContinue",{}, JSON.stringify({'id': messageId, 'code': 5,'content': index}));
+                    stompClient.send("/command",{}, JSON.stringify({'id': messageId, 'code': 5,'content': index}));
                     for (var i=0;i < 12; i++)
                     {
                         document.getElementById(playerScoreIdList[seat][i]).onmousedown = null;
@@ -261,8 +261,8 @@
         }
 
         function dismissRoom(){
-            stompClient.send("/dismissRoom",{},
-                JSON.stringify({'code': 9}));
+            stompClient.send("/command",{},
+                JSON.stringify({'code': 109}));
         }
     </script>
 </head>

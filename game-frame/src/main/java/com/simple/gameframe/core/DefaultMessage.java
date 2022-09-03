@@ -2,23 +2,23 @@ package com.simple.gameframe.core;
 
 public class DefaultMessage<T> implements Message<T> {
 
-    private int code;
+    protected int code;
 
-    private Long fromId;
+    protected Long fromId;
 
-    private String roomId;
+    protected String roomId;
 
-    private Long toId;
+    protected Long toId;
 
-    private T content;
+    protected T content;
 
-    private int id;
+    protected long id;
 
-    private Integer seat;
+    protected Integer seat;
 
-    private Long reconnectUserId;
+    protected Long reconnectUserId;
 
-    private boolean privateMessage;
+    protected boolean privateMessage;
 
     @Override
     public int getCode() {
@@ -71,8 +71,13 @@ public class DefaultMessage<T> implements Message<T> {
     }
 
     @Override
-    public int getId() {
+    public long getId() {
         return this.id;
+    }
+
+    @Override
+    public void setId(long id) {
+        this.id = id;
     }
 
     @Override

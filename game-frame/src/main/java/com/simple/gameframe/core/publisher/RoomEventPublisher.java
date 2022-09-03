@@ -1,5 +1,6 @@
 package com.simple.gameframe.core.publisher;
 
+import com.simple.api.game.Player;
 import com.simple.api.game.Room;
 import com.simple.gameframe.core.event.*;
 import com.simple.gameframe.core.listener.EventListener;
@@ -12,10 +13,10 @@ import java.util.List;
 @Slf4j
 public class RoomEventPublisher implements EventPublisher {
 
-    private List<EventListener> listenerList = new ArrayList<>();
+    private final List<EventListener> listenerList = new ArrayList<>();
 
     @Override
-    public void create(Room room, Object o) {
+    public void create(Room<? extends Player> room, Object o) {
         Event event = new CreateEvent(room, o);
         listenerList.forEach(listener -> {
             try{
@@ -27,7 +28,7 @@ public class RoomEventPublisher implements EventPublisher {
     }
 
     @Override
-    public void join(Room room, Object o) {
+    public void join(Room<? extends Player> room, Object o) {
         Event event = new JoinEvent(room, o);
         listenerList.forEach(listener -> {
             try{
@@ -39,7 +40,7 @@ public class RoomEventPublisher implements EventPublisher {
     }
 
     @Override
-    public void canStart(Room room, Object o) {
+    public void canStart(Room<? extends Player> room, Object o) {
         Event event = new CanStartEvent(room, o);
         listenerList.forEach(listener -> {
             try{
@@ -51,7 +52,7 @@ public class RoomEventPublisher implements EventPublisher {
     }
 
     @Override
-    public void start(Room room, Object o) {
+    public void start(Room<? extends Player> room, Object o) {
         Event event = new StartEvent(room, o);
         listenerList.forEach(listener -> {
             try{
@@ -63,7 +64,7 @@ public class RoomEventPublisher implements EventPublisher {
     }
 
     @Override
-    public void turnNext(Room room, Object o) {
+    public void turnNext(Room<? extends Player> room, Object o) {
         Event event = new TurnNextEvent(room, o);
         listenerList.forEach(listener -> {
             try{
@@ -75,7 +76,7 @@ public class RoomEventPublisher implements EventPublisher {
     }
 
     @Override
-    public void turnRound(Room room, Object o) {
+    public void turnRound(Room<? extends Player> room, Object o) {
         Event event = new TurnRoundEvent(room, o);
         listenerList.forEach(listener -> {
             try{
@@ -87,7 +88,7 @@ public class RoomEventPublisher implements EventPublisher {
     }
 
     @Override
-    public void voteDismiss(Room room, Object o) {
+    public void voteDismiss(Room<? extends Player> room, Object o) {
         Event event = new VoteDismissEvent(room, o);
         listenerList.forEach(listener -> {
             try{
@@ -99,7 +100,7 @@ public class RoomEventPublisher implements EventPublisher {
     }
 
     @Override
-    public void dismiss(Room room, Object o) {
+    public void dismiss(Room<? extends Player> room, Object o) {
         Event event = new DismissEvent(room, o);
         listenerList.forEach(listener -> {
             try{
@@ -111,7 +112,7 @@ public class RoomEventPublisher implements EventPublisher {
     }
 
     @Override
-    public void gameOver(Room room, Object o) {
+    public void gameOver(Room<? extends Player> room, Object o) {
         Event event = new GameOverEvent(room, o);
         listenerList.forEach(listener -> {
             try{
@@ -123,7 +124,7 @@ public class RoomEventPublisher implements EventPublisher {
     }
 
     @Override
-    public void disconnect(Room room, Object o) {
+    public void disconnect(Room<? extends Player> room, Object o) {
         Event event = new DisconnectEvent(room, o);
         listenerList.forEach(listener -> {
             try{
@@ -135,7 +136,7 @@ public class RoomEventPublisher implements EventPublisher {
     }
 
     @Override
-    public void reconnect(Room room, Object o) {
+    public void reconnect(Room<? extends Player> room, Object o) {
         Event event = new ReconnectEvent(room, o);
         listenerList.forEach(listener -> {
             try{
@@ -147,7 +148,7 @@ public class RoomEventPublisher implements EventPublisher {
     }
 
     @Override
-    public void timeout(Room room, Object o) {
+    public void timeout(Room<? extends Player> room, Object o) {
         Event event = new TimeOutEvent(room, o);
         listenerList.forEach(listener -> {
             try{
@@ -159,8 +160,20 @@ public class RoomEventPublisher implements EventPublisher {
     }
 
     @Override
-    public void gameResult(Room room, Object o){
+    public void gameResult(Room<? extends Player> room, Object o){
         Event event = new GameResultEvent(room, o);
+        listenerList.forEach(listener -> {
+            try{
+                listener.eventHandle(event);
+            } catch (ClassCastException e){
+                log.trace("跳过不符合的监听事件",e);
+            }
+        });
+    }
+
+    @Override
+    public void seatDown(Room<? extends Player> room, Object o){
+        Event event = new SeatDownEvent(room, o);
         listenerList.forEach(listener -> {
             try{
                 listener.eventHandle(event);

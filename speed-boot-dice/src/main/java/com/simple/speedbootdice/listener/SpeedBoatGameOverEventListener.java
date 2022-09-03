@@ -1,7 +1,7 @@
 package com.simple.speedbootdice.listener;
 
 import com.simple.api.game.service.HistoryRankService;
-import com.simple.gameframe.common.Command;
+import com.simple.gameframe.common.GameCommand;
 import com.simple.gameframe.core.event.GameResultEvent;
 import com.simple.gameframe.core.listener.AbstractEventListener;
 import com.simple.speedbootdice.common.ScoreEnum;
@@ -37,7 +37,7 @@ public class SpeedBoatGameOverEventListener extends AbstractEventListener<GameRe
             }
         }
         GameResultVo gameResultVo = new GameResultVo(winner, playerList);
-        messageHandler.setCommand(Command.GAME_RESULT);
+        messageHandler.setCommand(GameCommand.GAME_RESULT);
         messageHandler.messageHandle(event.getRoom(), gameResultVo);
 
         //保存历史记录

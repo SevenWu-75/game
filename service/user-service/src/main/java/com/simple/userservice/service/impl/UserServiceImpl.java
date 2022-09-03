@@ -8,6 +8,7 @@ import com.simple.userservice.mapper.UserMapper;
 import org.apache.dubbo.config.annotation.DubboService;
 
 @DubboService
+@Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
     @Override

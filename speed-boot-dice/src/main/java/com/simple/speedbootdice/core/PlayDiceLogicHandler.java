@@ -7,12 +7,12 @@ import com.simple.gameframe.core.ask.LogicHandler;
 import com.simple.gameframe.core.Message;
 import com.simple.gameframe.util.MessagePublishUtil;
 import com.simple.speedbootdice.common.SpeedBootCommand;
-import com.simple.speedbootdice.pojo.SpeedBootMessage;
 import com.simple.speedbootdice.pojo.SpeedBootPlayer;
 import com.simple.speedbootdice.vo.DiceResultVo;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -25,9 +25,12 @@ import java.util.stream.Collectors;
 @Component()
 @Order(1)
 @Slf4j
-public class PlayDiceLogicHandler implements LogicHandler {
+public class PlayDiceLogicHandler implements LogicHandler<SpeedBootCommand> {
 
-    private ConcurrentHashMap<String, Message<?>> receivedMessageMap = new ConcurrentHashMap<>();
+    @Autowired
+    LogicHandler<SpeedBootCommand> selectScoreLogicHandler;
+
+    private final ConcurrentHashMap<String, Message<?>> receivedMessageMap = new ConcurrentHashMap<>();
 
     @Override
     public ConcurrentHashMap<String, Message<?>> getReceivedMessageMap() {
@@ -35,7 +38,12 @@ public class PlayDiceLogicHandler implements LogicHandler {
     }
 
     @Override
-    public Message<?> messageHandle(Player player, Room room, Object o) {
+    public SpeedBootCommand getCommand(){
+        return SpeedBootCommand.SELECT_SCORE;
+    }
+
+    @Override
+    public Message<?> messageHandle(Player player, Room<? extends Player> room, Object o) {
         Message<Integer> message = new DefaultMessage<>();
         message.setCode(SpeedBootCommand.ASK_DICE.getCode());
         message.setFromId(player.getUser().getId());
@@ -46,7 +54,7 @@ public class PlayDiceLogicHandler implements LogicHandler {
     }
 
     @Override
-    public Object postHandle(Player player, Room room, Message<?> message, Object o) {
+    public Object postHandle(Player player, Room<? extends Player> room, Message<?> message, Object o) {
         int[] lockDice = new int[]{-1,-1,-1,-1,-1};
         if(o instanceof int[]){
             lockDice = (int[]) o;
@@ -56,8 +64,8 @@ public class PlayDiceLogicHandler implements LogicHandler {
     }
 
     @Override
-    public LogicHandler getNextHandler() {
-        return new SelectScoreLogicHandler();
+    public LogicHandler<?> getNextHandler() {
+        return selectScoreLogicHandler;
     }
 
     private DiceResultVo playDiceLogic(@NotNull SpeedBootPlayer player, int[] lockDice, String roomId){
@@ -76,7 +84,7 @@ public class PlayDiceLogicHandler implements LogicHandler {
     }
 
     private void sendDiceResultToPublic(@NotNull SpeedBootPlayer player, String roomId, DiceResultVo diceList){
-        SpeedBootMessage<DiceResultVo> message = new SpeedBootMessage<>();
+        Message<DiceResultVo> message = new DefaultMessage<>();
         message.setRoomId(roomId);
         message.setFromId(player.getUser().getId());
         message.setSeat(player.getId());

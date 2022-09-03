@@ -1,20 +1,21 @@
 package com.simple.gameframe.core.event;
 
+import com.simple.api.game.Player;
 import com.simple.api.game.Room;
 
 public class AbstractEvent implements Event{
 
-    private Room room;
+    private final Room<? extends Player> room;
 
-    private Object o;
+    private final Object o;
 
-    public AbstractEvent(Room room, Object o){
+    public AbstractEvent(Room<? extends Player> room, Object o){
         this.room = room;
         this.o = o;
     }
 
     @Override
-    public Room getRoom() {
+    public Room<? extends Player> getRoom() {
         return this.room;
     }
 

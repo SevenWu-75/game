@@ -14,14 +14,9 @@ import java.util.List;
 public class GameLogicProcessorConfiguration {
 
     @Bean
-    @ConditionalOnMissingBean(RoundHandler.class)
-    public RoundHandler roundHandlerProcessor(List<LogicHandler> logicHandlerList){
-        return RoundHandlerProcessor.builder()
-                .logicHandlerProcessor(
-                        LogicHandlerProcessor.builder()
-                                .logicHandlerList(logicHandlerList).build())
-                .seatHandler(new SeatHandlerProcessor())
-                .startLogicHandler(new StartLogicHandler())
-                .build();
+    @ConditionalOnMissingBean(RoomHandler.class)
+    public RoomHandler roundHandlerProcessor(List<LogicHandler<?>> logicHandlerList){
+        return RoomHandlerProcessor.builder().roundHandler(new RoundHandlerProcessor(
+                new LogicHandlerProcessor(logicHandlerList),new SeatHandlerProcessor(),new StartLogicHandler())).build();
     }
 }

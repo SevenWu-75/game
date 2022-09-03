@@ -6,10 +6,12 @@ import com.simple.api.game.entity.HistoryRank;
 import com.simple.api.game.service.HistoryRankService;
 import com.simple.gameservice.mapper.HistoryRankMapper;
 import org.apache.dubbo.config.annotation.DubboService;
+import org.springframework.stereotype.Service;
 
 import java.util.Date;
 
 @DubboService
+@Service
 public class HistoryRankServiceImpl extends ServiceImpl<HistoryRankMapper, HistoryRank> implements HistoryRankService {
 
     @Override

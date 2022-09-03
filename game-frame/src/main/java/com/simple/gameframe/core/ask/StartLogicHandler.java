@@ -2,20 +2,24 @@ package com.simple.gameframe.core.ask;
 
 import com.simple.api.game.Player;
 import com.simple.api.game.Room;
-import com.simple.gameframe.common.Command;
+import com.simple.gameframe.common.GameCommand;
 import com.simple.gameframe.core.DefaultMessage;
 import com.simple.gameframe.core.Message;
 import com.simple.gameframe.util.MessagePublishUtil;
+import com.simple.gameframe.util.RoomPropertyManagerUtil;
 
-import java.util.concurrent.ConcurrentHashMap;
-
-public class StartLogicHandler implements LogicHandler {
+public class StartLogicHandler implements LogicHandler<GameCommand> {
 
     @Override
-    public Message<?> messageHandle(Player player, Room room, Object o) {
+    public GameCommand getCommand(){
+        return GameCommand.START_GAME;
+    }
+
+    @Override
+    public Message<?> messageHandle(Player player, Room<? extends Player> room, Object o) {
         //询问是否开始游戏
         Message<Void> message = new DefaultMessage<>();
-        message.setCode(Command.START_GAME.getCode());
+        message.setCode(GameCommand.START_GAME.getCode());
         message.setFromId(player.getUser().getId());
         message.setRoomId(room.getRoomId());
         message.setSeat(player.getId());
@@ -23,10 +27,10 @@ public class StartLogicHandler implements LogicHandler {
     }
 
     @Override
-    public Object postHandle(Player player, Room room, Message<?> message, Object o){
+    public Object postHandle(Player player, Room<? extends Player> room, Message<?> message, Object o){
         //广播开始游戏
         Message<Void> newMessage = new DefaultMessage<>();
-        newMessage.setCode(Command.START_GAME.getCode());
+        newMessage.setCode(GameCommand.START_GAME.getCode());
         MessagePublishUtil.sendToRoomPublic(room.getRoomId(), newMessage);
         return null;
     }

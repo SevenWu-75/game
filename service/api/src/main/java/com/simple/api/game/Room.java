@@ -34,7 +34,7 @@ public interface Room<T extends Player> {
 
     int getPlayAtLeastNum();
 
-    int seatDown(User user);
+    Player seatDown(User user);
 
     void start();
 

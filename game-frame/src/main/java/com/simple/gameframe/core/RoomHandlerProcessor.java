@@ -1,18 +1,18 @@
 package com.simple.gameframe.core;
 
+import com.simple.api.game.Player;
 import com.simple.api.game.Room;
 import com.simple.api.user.entity.User;
 import com.simple.api.util.ThreadLocalUtil;
-import com.simple.gameframe.common.Command;
+import com.simple.gameframe.common.GameCommand;
 import com.simple.api.game.exception.GameException;
 import com.simple.api.game.exception.GameExceptionEnum;
-import com.simple.gameframe.core.ask.AskAnswerLockConditionManager;
+import com.simple.gameframe.util.RoomPropertyManagerUtil;
 import com.simple.gameframe.core.publisher.EventPublisher;
-import com.simple.gameframe.core.publisher.RoomEventPublisher;
 import com.simple.gameframe.util.ApplicationContextUtil;
 import lombok.Builder;
+import org.jetbrains.annotations.NotNull;
 
-import javax.ws.rs.core.Application;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
@@ -25,7 +25,7 @@ public class RoomHandlerProcessor implements RoomHandler {
 
     private RoundHandler roundHandler;
 
-    private Room room;
+    private Room<? extends Player> room;
 
     private Lock lock = new ReentrantLock();
 
@@ -35,16 +35,16 @@ public class RoomHandlerProcessor implements RoomHandler {
     }
 
     @Override
-    public void setRoom(Room room){
+    public void setRoom(Room<? extends Player> room){
         this.room = room;
     }
 
-    public void start(Room room) {
+    public void start(Room<? extends Player> room) {
         EventPublisher eventPublisher = ApplicationContextUtil.getEventPublisher();
         try{
             //创建房间
             eventPublisher.create(room,null);
-            CountDownLatch countDownLatch = AskAnswerLockConditionManager.getCountDownLatch(room.getRoomId(), room.getPlayCount());
+            CountDownLatch countDownLatch = RoomPropertyManagerUtil.getCountDownLatch(room.getRoomId(), room.getPlayCount());
             awaitStart(countDownLatch);
             //可以开始
             eventPublisher.canStart(room, null);
@@ -60,7 +60,7 @@ public class RoomHandlerProcessor implements RoomHandler {
 
     }
 
-    public void awaitStart(CountDownLatch countDownLatch){
+    public void awaitStart(@NotNull CountDownLatch countDownLatch){
         try {
             boolean await = countDownLatch.await(waitTimeOutToCloseRoom, TimeUnit.MINUTES);
             if(!await){
@@ -71,30 +71,26 @@ public class RoomHandlerProcessor implements RoomHandler {
         }
     }
 
+    @Override
     public void signalSeatDown(){
-        Room room = ThreadLocalUtil.getRoom();
-        User userVo = ThreadLocalUtil.getUser();
-        AskAnswerLockConditionManager.getLock(room.getRoomId()).lock();
+        EventPublisher eventPublisher = ApplicationContextUtil.getEventPublisher();
+        Room<? extends Player> room = ThreadLocalUtil.getRoom();
+        User user = ThreadLocalUtil.getUser();
+        RoomPropertyManagerUtil.getLock(room.getRoomId()).lock();
         try{
             if(room.getRoomStatus() == 0){
-                int seatNum = room.seatDown(userVo);
-                Message<SeatVo> message = new Message<>();
-                message.setCode(Command.SEAT_DOWN.getCode());
-                SeatVo content = new SeatVo();
-                content.setUser(userVo);
-                content.setSeat(seatNum);
-                message.setContent(content);
-                messagePublishUtil.sendToRoomPublic(room.getRoomId(),message);
-                AskAnswerLockConditionManager.getCountDownLatch(room.getRoomId(),room.getPlayCount()).countDown();
+                Player player = room.seatDown(user);
+                eventPublisher.seatDown(room, player);
+                RoomPropertyManagerUtil.getCountDownLatch(room.getRoomId(),room.getPlayCount()).countDown();
             }
         } finally {
-            AskAnswerLockConditionManager.getLock(room.getRoomId()).unlock();
+            RoomPropertyManagerUtil.getLock(room.getRoomId()).unlock();
         }
     }
 
     @Override
     public void run() {
-        final Room currentRoom = this.room;
+        final Room<? extends Player> currentRoom = this.room;
         this.room = null;
         lock.unlock();
         start(currentRoom);

@@ -22,7 +22,9 @@ public interface Message<T> {
 
     void setContent(T content);
 
-    int getId();
+    long getId();
+
+    void setId(long id);
 
     Integer getSeat();
 

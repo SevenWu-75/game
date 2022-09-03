@@ -11,9 +11,9 @@ import java.util.function.BiFunction;
 public interface RoundHandler {
 
     LogicHandlerProcessor getLogicHandlerProcessor();
-    void setRoom(Room room);
+    void setRoom(Room<? extends Player> room);
 
-    void startLogic(Room room);
+    void startLogic(Room<? extends Player> room);
 
-    Object round(Room room, List<Player> players);
+    Object round(Room<? extends Player> room, List<? extends Player> players);
 }

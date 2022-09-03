@@ -1,6 +1,5 @@
 package com.simple.speedbootdice.vo;
 
-import com.simple.speedbootdice.entity.User;
 import com.simple.speedbootdice.pojo.SpeedBootPlayer;
 import lombok.Data;
 import lombok.experimental.Accessors;

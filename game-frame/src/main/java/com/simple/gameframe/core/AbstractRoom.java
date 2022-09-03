@@ -109,7 +109,7 @@ public abstract class AbstractRoom<T extends Player> implements Room<T> {
     }
 
     @Override
-    public int seatDown(User user) {
+    public Player seatDown(User user) {
         checkUser(user.getId());
         Class<?> playerImpl = PackageUtil.getPlayerImpl(gameFrameProperty.getScan());
         T player = null;
@@ -124,7 +124,7 @@ public abstract class AbstractRoom<T extends Player> implements Room<T> {
         } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
             throw new RuntimeException("Room实现类实例化失败！",e);
         }
-        return player.getId();
+        return player;
     }
 
     public void checkUser(Long userId) {

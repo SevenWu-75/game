@@ -2,8 +2,10 @@ package com.simple.gameframe.interceptor;
 
 import com.simple.api.game.Player;
 import com.simple.api.game.Room;
-import com.simple.gameframe.common.Command;
+import com.simple.gameframe.common.GameCommand;
 import com.simple.gameframe.core.DefaultMessage;
+import com.simple.gameframe.core.publisher.EventPublisher;
+import com.simple.gameframe.util.ApplicationContextUtil;
 import com.simple.gameframe.util.MessagePublishUtil;
 import com.simple.api.util.ThreadLocalUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -29,12 +32,12 @@ public class RoomInterceptor implements HandlerInterceptor, ExecutorChannelInter
         StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
         if(accessor != null){
             if(accessor.getSessionAttributes() != null){
-                Room room = (Room)accessor.getSessionAttributes().get("room");
+                Room<? extends Player> room = (Room<? extends Player>)accessor.getSessionAttributes().get("room");
                 ThreadLocalUtil.setRoom(room);
                 if (StompCommand.DISCONNECT.equals(accessor.getCommand())) {
                     //可能是解散房间获取不到房间对象的情况
                     if(ThreadLocalUtil.getRoom() != null){
-                        sendPublicDisconnectMessage();
+                        sendPublicDisconnectMessage(room);
                     }
                     log.trace("用户{}断线",ThreadLocalUtil.getUser().getId());
                 }
@@ -49,16 +52,14 @@ public class RoomInterceptor implements HandlerInterceptor, ExecutorChannelInter
         ExecutorChannelInterceptor.super.afterMessageHandled(message, channel, handler, ex);
     }
 
-    private void sendPublicDisconnectMessage(){
-        LinkedList<Player> playerList = ThreadLocalUtil.getRoom().getPlayerList();
-        Optional<Player> first = playerList.stream().filter(
+    private void sendPublicDisconnectMessage(Room<? extends Player> room){
+        List<? extends Player> playerList = ThreadLocalUtil.getRoom().getPlayerList();
+        EventPublisher eventPublisher = ApplicationContextUtil.getEventPublisher();
+        
+        Optional<? extends Player> first = playerList.stream().filter(
                 player -> player.getUser().getId().equals(ThreadLocalUtil.getUser().getId())).findFirst();
         if(first.isPresent()){
-            DefaultMessage<Long> message = new DefaultMessage<>();
-            message.setCode(Command.DISCONNECT.getCode());
-            message.setContent(first.get().getUser().getId());
-            message.setSeat(first.get().getId());
-            MessagePublishUtil.sendToRoomPublic(ThreadLocalUtil.getRoom().getRoomId(), message);
+            eventPublisher.disconnect(room, first);
         }
     }
 }
