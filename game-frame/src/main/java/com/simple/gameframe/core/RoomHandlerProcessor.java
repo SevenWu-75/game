@@ -2,6 +2,7 @@ package com.simple.gameframe.core;
 
 import com.simple.api.game.Player;
 import com.simple.api.game.Room;
+import com.simple.api.game.UserVO;
 import com.simple.api.user.entity.User;
 import com.simple.api.util.ThreadLocalUtil;
 import com.simple.gameframe.common.Command;
@@ -61,13 +62,10 @@ public class RoomHandlerProcessor implements RoomHandler {
             preHandle(playerList.get(0),room, RoomPropertyManagerUtil.getLock(room.getRoomId()));
             //开始游戏
             eventPublisher.start(room, null);
-            AbstractRoom<? extends Player> abstractRoom = (AbstractRoom<? extends Player>) room;
-            abstractRoom.start();
             //开始回合
             Object roundResult = roundHandler.startLogic(room);
             //游戏结束
             eventPublisher.gameOver(room,roundResult);
-            abstractRoom.end();
         } catch (GameException e) {
             if (e.getCode().equals(GameExceptionEnum.CLOSE_FOR_OPERATE_TIMEOUT)) {
                 eventPublisher.timeout(room, null);
@@ -99,8 +97,8 @@ public class RoomHandlerProcessor implements RoomHandler {
     @Override
     public void signalSeatDown(){
         EventPublisher eventPublisher = ApplicationContextUtil.getEventPublisher();
-        AbstractRoom<? extends Player> room = (AbstractRoom<? extends Player>)ThreadLocalUtil.getRoom();
-        User user = ThreadLocalUtil.getUser();
+        AbstractRoom<? extends Player> room = (AbstractRoom<? extends Player>)RoomPropertyManagerUtil.getRoomImpl(ThreadLocalUtil.getRoom().getRoomId());
+        UserVO user = ThreadLocalUtil.getUser();
         RoomPropertyManagerUtil.getLock(room.getRoomId()).lock();
         try{
             if(room.getRoomStatus() == 0){

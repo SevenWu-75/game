@@ -2,6 +2,8 @@ package com.simple.web.controller;
 
 import com.simple.api.common.Result;
 import com.simple.api.common.ResultCode;
+import com.simple.api.game.UserVO;
+import com.simple.api.game.entity.HistoryRank;
 import com.simple.api.user.entity.User;
 import com.simple.api.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +27,7 @@ public class LoginController {
     public Result<User> login(HttpSession session, @RequestBody User user){
         User one = userService.getUserByUsername(user.getUsername());
         if(one != null && user.getPassword().equals(one.getPassword())){
-            session.setAttribute("user", one);
+            session.setAttribute("user", new UserVO(user));
             log.info("用户{}登录系统",one.getUsername());
             return Result.success(one);
         }

@@ -2,6 +2,7 @@ package com.simple.web.interceptor;
 
 import com.simple.api.game.Player;
 import com.simple.api.game.Room;
+import com.simple.api.game.RoomVO;
 import com.simple.api.util.ThreadLocalUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -18,7 +19,7 @@ public class RoomInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        Room<? extends Player> room = (Room<? extends Player>) request.getSession().getAttribute("room");
+        RoomVO<? extends Player> room = (RoomVO<? extends Player>) request.getSession().getAttribute("room");
         if(room != null){
             ThreadLocalUtil.setRoom(room);
         }

@@ -1,6 +1,7 @@
 package com.simple.gameframe.interceptor;
 
 import com.alibaba.fastjson.JSONObject;
+import com.simple.api.game.UserVO;
 import com.simple.api.user.entity.User;
 import com.simple.api.util.ThreadLocalUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -23,11 +24,11 @@ public class UserInterceptor implements ExecutorChannelInterceptor {
     public Message<?> beforeHandle(Message<?> message, MessageChannel channel, MessageHandler handler) {
         StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
         if(accessor != null && accessor.getSessionAttributes() != null){
-            User user = (User)accessor.getSessionAttributes().get("user");
+            UserVO user = (UserVO)accessor.getSessionAttributes().get("user");
             if(user == null){
                 try{
                     String userString = (((Map<String, ArrayList>)message.getHeaders().get("nativeHeaders")).get("user").get(0)).toString();
-                    user = JSONObject.parseObject(userString, User.class);
+                    user = JSONObject.parseObject(userString, UserVO.class);
                     accessor.getSessionAttributes().put("user",user);
                 } catch (Exception e){
                     log.error("获取用户信息失败",e);

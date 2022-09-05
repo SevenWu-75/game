@@ -2,6 +2,7 @@ package com.simple.speedbootdice.pojo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.simple.api.game.Player;
+import com.simple.api.game.UserVO;
 import com.simple.api.game.exception.GameException;
 import com.simple.api.game.exception.GameExceptionEnum;
 import com.simple.api.user.entity.User;
@@ -19,7 +20,7 @@ public class SpeedBootPlayer implements Player {
 
     private int id;
 
-    private User user;
+    private UserVO user;
 
     @JsonIgnore
     private final List<Dice> diceList;
@@ -33,7 +34,7 @@ public class SpeedBootPlayer implements Player {
 
     private int playTimes = 3;
 
-    public SpeedBootPlayer(int id, User user){
+    public SpeedBootPlayer(Integer id, UserVO user){
         this.id = id;
         this.user = user;
         diceList = Arrays.asList(new Dice(0), new Dice(1), new Dice(2), new Dice(3), new Dice(4));

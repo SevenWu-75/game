@@ -1,5 +1,6 @@
 package com.simple.web.controller;
 
+import com.simple.api.game.UserVO;
 import com.simple.api.user.entity.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -13,7 +14,7 @@ public class IndexController {
 
     @GetMapping({"/","/index"})
     public String index(HttpSession session){
-        User user = (User) session.getAttribute("user");
+        UserVO user = (UserVO) session.getAttribute("user");
         if(user != null){
             session.setAttribute("user", user);
             log.info("用户{}登录系统",user.getUsername());

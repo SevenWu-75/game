@@ -3,6 +3,7 @@ package com.simple.web.controller;
 import com.simple.api.game.Player;
 import com.simple.api.game.Room;
 import com.simple.api.game.RoomVO;
+import com.simple.api.game.UserVO;
 import com.simple.api.game.entity.HistoryRank;
 import com.simple.api.game.service.RoomManagerService;
 import com.simple.api.user.entity.User;
@@ -31,7 +32,7 @@ public class RoomController {
 
     @GetMapping("/create")
     public String createRoom(HttpSession session){
-        User user = ThreadLocalUtil.getUser();
+        UserVO user = ThreadLocalUtil.getUser();
         RoomVO<? extends Player> room = ThreadLocalUtil.getRoom();
         if(room == null){
             log.trace("尝试创建房间");
@@ -45,7 +46,7 @@ public class RoomController {
 
     @GetMapping("/join")
     public String joinRoom(HttpSession session, @RequestParam("id") String id){
-        User user = ThreadLocalUtil.getUser();
+        UserVO user = ThreadLocalUtil.getUser();
         RoomVO<? extends Player> room = ThreadLocalUtil.getRoom();
         if(room == null){
             room = roomManagerService.createRoomByGameName("", user);

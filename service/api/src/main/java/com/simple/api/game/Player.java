@@ -9,7 +9,7 @@ public interface Player extends Serializable {
 
     int getId();
 
-    User getUser();
+    UserVO getUser();
 
     int getStatus();
 }

@@ -117,9 +117,9 @@ public abstract class AbstractRoom<T extends Player> extends RoomVO<T> {
             getPlayerList().add(player);
             getOnlooker().remove(user);
         } catch (NoSuchMethodException e) {
-            throw new RuntimeException("Room实现类未实现传入User类的构造函数！",e);
+            throw new RuntimeException("Player实现类未实现传入相应参数的构造函数！",e);
         } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException("Room实现类实例化失败！",e);
+            throw new RuntimeException("Player实现类实例化失败！",e);
         }
         return player;
     }

@@ -1,25 +1,18 @@
 package com.simple.gameframe.service.impl;
 
-import com.simple.api.game.Player;
-import com.simple.api.game.Room;
-import com.simple.api.game.RoomVO;
+import com.simple.api.game.*;
 import com.simple.api.game.entity.HistoryRank;
 import com.simple.api.game.service.HistoryRankService;
 import com.simple.api.game.service.RoomService;
 import com.simple.api.user.entity.User;
 import com.simple.gameframe.config.GameFrameProperty;
 import com.simple.gameframe.core.RoomHandler;
-import com.simple.gameframe.core.RoomHandlerProcessor;
-import com.simple.gameframe.core.RoundHandler;
 import com.simple.gameframe.util.PackageUtil;
 import com.simple.gameframe.util.ThreadPoolUtil;
-import com.simple.gameframe.vo.HistoryRankVO;
-import com.simple.gameframe.vo.UserVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Constructor;
@@ -41,7 +34,7 @@ public class RoomServiceImpl implements RoomService {
     HistoryRankService historyRankService;
 
     @Override
-    public RoomVO<? extends Player> createRoom(User user) {
+    public RoomVO<? extends Player> createRoom(UserVO user) {
         Room<? extends Player> room;
         try {
             Class<?> roomImpl = PackageUtil.getRoomImpl(gameFrameProperty.getScan());
@@ -56,9 +49,9 @@ public class RoomServiceImpl implements RoomService {
                 historyRank.setWinCount(0);
                 historyRank.setLastPlayTime(new Date());
             }
-            UserVO userVO = new UserVO(user, historyRank);
+            user.setHistoryRankVO(new HistoryRankVO(historyRank));
             Constructor<?> constructor = roomImpl.getConstructor(User.class, GameFrameProperty.class);
-            room = (Room<? extends Player>)constructor.newInstance(userVO, gameFrameProperty);
+            room = (Room<? extends Player>)constructor.newInstance(user, gameFrameProperty);
             log.trace("创建房间成功");
             //执行房间运行逻辑
             roomHandler.setRoom(room);

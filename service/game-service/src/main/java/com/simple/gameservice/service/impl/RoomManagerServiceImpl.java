@@ -3,6 +3,7 @@ package com.simple.gameservice.service.impl;
 import com.simple.api.game.Player;
 import com.simple.api.game.Room;
 import com.simple.api.game.RoomVO;
+import com.simple.api.game.UserVO;
 import com.simple.api.game.service.RoomManagerService;
 import com.simple.api.game.service.RoomService;
 import com.simple.api.user.entity.User;
@@ -39,7 +40,7 @@ public class RoomManagerServiceImpl implements RoomManagerService {
     }
 
     @Override
-    public RoomVO<? extends Player> createRoomByGameName(String gameName, User user) {
+    public RoomVO<? extends Player> createRoomByGameName(String gameName, UserVO user) {
         log.trace("房间管理器尝试创建房间");
         RoomVO<? extends Player> room = roomService.createRoom(user);
         roomMap.put(room.getRoomId(), room);
