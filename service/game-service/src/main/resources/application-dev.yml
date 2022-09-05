@@ -2,14 +2,12 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: 172.30.60.82:8848
+        server-addr: localhost:8848
   application:
     name: game-service
-  thymeleaf:
-    cache: false
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://172.30.60.82:3306/yzhtzee
+    url: jdbc:mysql://localhost:3306/yzhtzee
     username: root
     password: 123456
   flyway:
@@ -25,21 +23,23 @@ spring:
 
 dubbo:
   application:
-    id: game-service
+    name: game-service
   protocol:
     name: dubbo
     port: -1
   scan:
     base-packages: com.simple.gameservice.service.impl
   registry:
-    address: spring-cloud://172.30.60.82
+    address: spring-cloud://localhost
     check: false
   consumer:
+    timeout: 60000
+    retries: 0
     check: false
   cloud:
-    subscribed-services: game-service
+    subscribed-services: speed-boot
 
 logging:
   level:
-    com.simple.speedbootdice: trace
+    com.simple.gameservice: trace
     org.springframework.messaging.simp: debug

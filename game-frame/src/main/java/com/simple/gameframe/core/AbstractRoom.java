@@ -2,6 +2,7 @@ package com.simple.gameframe.core;
 
 import com.simple.api.game.Player;
 import com.simple.api.game.Room;
+import com.simple.api.game.RoomVO;
 import com.simple.api.game.exception.GameException;
 import com.simple.api.game.exception.GameExceptionEnum;
 import com.simple.api.user.entity.User;
@@ -15,7 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public abstract class AbstractRoom<T extends Player> implements Room<T> {
+public abstract class AbstractRoom<T extends Player> extends RoomVO<T> {
 
     private final GameFrameProperty gameFrameProperty;
 
@@ -50,7 +51,6 @@ public abstract class AbstractRoom<T extends Player> implements Room<T> {
         this.playerList = new LinkedList<>();
     }
 
-    @Override
     public void join(User user) {
         checkUser(user.getId());
         this.onlooker.add(user);
@@ -96,19 +96,16 @@ public abstract class AbstractRoom<T extends Player> implements Room<T> {
         return this.onlooker;
     }
 
-    @Override
     public void start(){
         this.startTime = new Date();
         this.roomStatus = 1;
     }
 
-    @Override
     public void end(){
         this.endTime = new Date();
         this.roomStatus = 2;
     }
 
-    @Override
     public Player seatDown(User user) {
         checkUser(user.getId());
         Class<?> playerImpl = PackageUtil.getPlayerImpl(gameFrameProperty.getScan());

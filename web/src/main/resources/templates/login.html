@@ -140,6 +140,9 @@
                         } else {
                             alert(arg.message);
                         }
+                    },
+                    error: function (arg) {
+                        alert(arg.message());
                     }
                 })
             })

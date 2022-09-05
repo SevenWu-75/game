@@ -1,0 +1,5 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.simple.gameframe.config.GameFrameAutoConfiguration,\
+  com.simple.gameframe.config.WebsocketConfig,\
+  com.simple.gameframe.service.impl.RoomServiceImpl,\
+  com.simple.gameframe.util.ApplicationContextUtil

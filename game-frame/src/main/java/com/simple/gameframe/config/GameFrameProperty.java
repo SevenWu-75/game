@@ -2,10 +2,22 @@ package com.simple.gameframe.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.io.Serializable;
+
 @ConfigurationProperties(
         prefix = "game-frame"
 )
-public class GameFrameProperty {
+public class GameFrameProperty implements Serializable {
+
+    private int gameId;
+
+    public int getGameId() {
+        return this.gameId;
+    }
+
+    public void setGameId(int gameId) {
+        this.gameId = gameId;
+    }
 
     private String scan;
 

@@ -3,20 +3,19 @@ package com.simple.api.user.entity;
 import com.simple.api.game.entity.HistoryRank;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 @Data
-public class User {
+public class User implements Serializable {
 
-    private Long id;
+    protected Long id;
 
-    private String username;
+    protected String username;
 
-    private String password;
+    protected String password;
 
-    private String realname;
-
-    private HistoryRank historyRank;
+    protected String realname;
 
     @Override
     public boolean equals(Object o) {

@@ -3,6 +3,7 @@ import com.simple.api.game.Player;
 import com.simple.api.game.Room;
 import com.simple.api.game.exception.GameException;
 import com.simple.api.game.exception.GameExceptionEnum;
+import com.simple.gameframe.core.ClassInject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -39,7 +40,7 @@ public class PackageUtil {
     public static Class<?> getRoomImpl(String scanPackages) {
         if(roomClass == null){
             try {
-                roomClass = findOneClassByInterface(scanPackages, Room.class);
+                roomClass = findOneClassByAnnotationValue(scanPackages, "com.simple.api.game.Room");
             } catch (ClassNotFoundException e) {
                 throw new GameException(GameExceptionEnum.NOT_FOUND_ROOM_IMPL);
             }
@@ -50,7 +51,7 @@ public class PackageUtil {
     public static Class<?> getPlayerImpl(String scanPackages) {
         if(playerClass == null){
             try {
-                playerClass = findOneClassByInterface(scanPackages, Player.class);
+                playerClass = findOneClassByAnnotationValue(scanPackages, "com.simple.api.game.Player");
             } catch (ClassNotFoundException e) {
                 throw new GameException(GameExceptionEnum.NOT_FOUND_PLAYER_IMPL);
             }
@@ -90,20 +91,20 @@ public class PackageUtil {
      * 扫描包路径，根据接口获取一个类
      *
      * @param scanPackages 需要扫描的包路径
-     * @param targetInterface 目标接口
+     * @param targetPackage 目标包名
      * @return 返回的类
      * @throws ClassNotFoundException 加载不到类时报错
      */
-    public static Class<?> findOneClassByInterface(String scanPackages, Class<?> targetInterface) throws ClassNotFoundException {
+    public static Class<?> findOneClassByAnnotationValue(String scanPackages, String targetPackage) throws ClassNotFoundException {
         //获取所有的类
         Set<String> clazzSet = findPackageClass(scanPackages);
         //遍历类，查询相应的annotation方法
         for (String clazz : clazzSet) {
             Class<?> aClass = Class.forName(clazz);
-            Class<?>[] interfaces = aClass.getInterfaces();
-            for (Class<?> anInterface : interfaces) {
-                if(anInterface.equals(targetInterface)){
-                    return anInterface;
+            if(aClass.isAnnotationPresent(ClassInject.class)){
+                ClassInject annotation = aClass.getAnnotation(ClassInject.class);
+                if(annotation.value().equals(targetPackage)){
+                    return aClass;
                 }
             }
         }

@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>game-frame</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <name>game-frame</name>
     <description>game-frame</description>
     <properties>

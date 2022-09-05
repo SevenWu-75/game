@@ -8,4 +8,5 @@ spring:
 logging:
   level:
     com.simple.speedbootdice: trace
+    com.simple.gameframe: trace
     org.springframework.messaging.simp: debug

@@ -1,7 +1,9 @@
 package com.simple.gameframe.core.listener;
 
 import com.simple.gameframe.common.GameCommand;
+import com.simple.gameframe.core.Message;
 import com.simple.gameframe.core.event.*;
+import com.simple.gameframe.util.MessagePublishUtil;
 
 public class DefaultEventListener extends AbstractEventListener<Event> {
 
@@ -34,6 +36,7 @@ public class DefaultEventListener extends AbstractEventListener<Event> {
             command = GameCommand.TIMEOUT;
         }
         messageHandler.setCommand(command);
-        messageHandler.messageHandle(event.getRoom(),event.getO());
+        Message<?> message = messageHandler.messageHandle(event.getRoom(), event.getO());
+        MessagePublishUtil.sendToRoomPublic(event.getRoom().getRoomId(),message);
     }
 }

@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>speed-boot-dice</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>speed-boot-dice</name>
     <description>speed-boot-dice</description>
     <properties>
@@ -46,7 +46,7 @@
         <dependency>
             <groupId>com.simple</groupId>
             <artifactId>game-frame</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>

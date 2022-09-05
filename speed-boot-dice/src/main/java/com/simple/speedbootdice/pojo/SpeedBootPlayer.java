@@ -5,6 +5,7 @@ import com.simple.api.game.Player;
 import com.simple.api.game.exception.GameException;
 import com.simple.api.game.exception.GameExceptionEnum;
 import com.simple.api.user.entity.User;
+import com.simple.gameframe.core.ClassInject;
 import com.simple.speedbootdice.common.ScoreEnum;
 import lombok.Data;
 
@@ -12,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@ClassInject("com.simple.api.game.Player")
 @Data
 public class SpeedBootPlayer implements Player {
 

@@ -10,25 +10,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
 
-@Controller
+@RestController
 @Slf4j
 public class LoginController {
 
     @DubboReference
     UserService userService;
-
-    @GetMapping({"/","/index"})
-    public String index(HttpSession session){
-        User user = (User) session.getAttribute("user");
-        if(user != null){
-            session.setAttribute("user", user);
-            log.info("用户{}登录系统",user.getUsername());
-        }
-        return "login";
-    }
 
     @PostMapping("/login")
     public Result<User> login(HttpSession session, @RequestBody User user){

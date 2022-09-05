@@ -1,7 +1,10 @@
 package com.simple.gameframe.interceptor;
 
+import com.alibaba.fastjson.JSONObject;
 import com.simple.api.game.Player;
 import com.simple.api.game.Room;
+import com.simple.api.game.RoomVO;
+import com.simple.api.user.entity.User;
 import com.simple.gameframe.common.GameCommand;
 import com.simple.gameframe.core.DefaultMessage;
 import com.simple.gameframe.core.publisher.EventPublisher;
@@ -19,20 +22,27 @@ import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Component
 @Slf4j
-public class RoomInterceptor implements HandlerInterceptor, ExecutorChannelInterceptor {
+public class RoomInterceptor implements ExecutorChannelInterceptor {
 
     @Override
     public Message<?> beforeHandle(Message<?> message, MessageChannel channel, MessageHandler handler) {
         StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
         if(accessor != null){
             if(accessor.getSessionAttributes() != null){
-                Room<? extends Player> room = (Room<? extends Player>)accessor.getSessionAttributes().get("room");
+                RoomVO<? extends Player> room = (RoomVO<? extends Player>)accessor.getSessionAttributes().get("room");
+                 if(room == null){
+                    try{
+                        String roomString = (((Map<String, ArrayList>)message.getHeaders().get("nativeHeaders")).get("room").get(0)).toString();
+                        room = JSONObject.parseObject(roomString, RoomVO.class);
+                        accessor.getSessionAttributes().put("room",room);
+                    } catch (Exception e){
+                        log.error("获取用户信息失败",e);
+                    }
+                }
                 ThreadLocalUtil.setRoom(room);
                 if (StompCommand.DISCONNECT.equals(accessor.getCommand())) {
                     //可能是解散房间获取不到房间对象的情况

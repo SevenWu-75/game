@@ -2,6 +2,7 @@ package com.simple.gameframe.config;
 
 import com.simple.gameframe.interceptor.RoomInterceptor;
 import com.simple.gameframe.interceptor.SessionAuthHandshakeInterceptor;
+import com.simple.gameframe.interceptor.UserInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
@@ -15,12 +16,6 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
-
-    @Autowired
-    ChannelInterceptor userInterceptor;
-
-    @Autowired
-    RoomInterceptor roomInterceptor;
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
@@ -39,13 +34,13 @@ public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
         //registry.addEndpoint("/publicServer").setAllowedOriginPatterns("*").withSockJS();
         //点对点
         //registry.addEndpoint("/privateServer").setAllowedOriginPatterns("*").withSockJS();
-        registry.addEndpoint("/speedBoot").setAllowedOriginPatterns("*").withSockJS()
-                .setInterceptors(new SessionAuthHandshakeInterceptor());
+        registry.addEndpoint("/speedBoot").setAllowedOriginPatterns("*").withSockJS();
+                //.setInterceptors(new SessionAuthHandshakeInterceptor());
     }
 
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
-        ChannelRegistration channelRegistration = registration.interceptors(userInterceptor, roomInterceptor);
+        ChannelRegistration channelRegistration = registration.interceptors(new UserInterceptor(), new RoomInterceptor());
         WebSocketMessageBrokerConfigurer.super.configureClientInboundChannel(registration);
     }
 

@@ -22,7 +22,7 @@ public class RoomEventPublisher implements EventPublisher {
             try{
                 listener.eventHandle(event);
             } catch (ClassCastException e){
-                log.trace("跳过不符合的监听事件",e);
+                log.trace("跳过不符合的监听事件");
             }
         });
     }
@@ -34,7 +34,7 @@ public class RoomEventPublisher implements EventPublisher {
             try{
                 listener.eventHandle(event);
             } catch (ClassCastException e){
-                log.trace("跳过不符合的监听事件",e);
+                log.trace("跳过不符合的监听事件");
             }
         });
     }
@@ -46,7 +46,7 @@ public class RoomEventPublisher implements EventPublisher {
             try{
                 listener.eventHandle(event);
             } catch (ClassCastException e){
-                log.trace("跳过不符合的监听事件",e);
+                log.trace("跳过不符合的监听事件");
             }
         });
     }
@@ -58,7 +58,7 @@ public class RoomEventPublisher implements EventPublisher {
             try{
                 listener.eventHandle(event);
             } catch (ClassCastException e){
-                log.trace("跳过不符合的监听事件",e);
+                log.trace("跳过不符合的监听事件");
             }
         });
     }
@@ -70,7 +70,7 @@ public class RoomEventPublisher implements EventPublisher {
             try{
                 listener.eventHandle(event);
             } catch (ClassCastException e){
-                log.trace("跳过不符合的监听事件",e);
+                log.trace("跳过不符合的监听事件");
             }
         });
     }
@@ -82,7 +82,7 @@ public class RoomEventPublisher implements EventPublisher {
             try{
                 listener.eventHandle(event);
             } catch (ClassCastException e){
-                log.trace("跳过不符合的监听事件",e);
+                log.trace("跳过不符合的监听事件");
             }
         });
     }
@@ -94,7 +94,7 @@ public class RoomEventPublisher implements EventPublisher {
             try{
                 listener.eventHandle(event);
             } catch (ClassCastException e){
-                log.trace("跳过不符合的监听事件",e);
+                log.trace("跳过不符合的监听事件");
             }
         });
     }
@@ -106,7 +106,7 @@ public class RoomEventPublisher implements EventPublisher {
             try{
                 listener.eventHandle(event);
             } catch (ClassCastException e){
-                log.trace("跳过不符合的监听事件",e);
+                log.trace("跳过不符合的监听事件");
             }
         });
     }
@@ -118,7 +118,7 @@ public class RoomEventPublisher implements EventPublisher {
             try{
                 listener.eventHandle(event);
             } catch (ClassCastException e){
-                log.trace("跳过不符合的监听事件",e);
+                log.trace("跳过不符合的监听事件");
             }
         });
     }
@@ -130,7 +130,7 @@ public class RoomEventPublisher implements EventPublisher {
             try{
                 listener.eventHandle(event);
             } catch (ClassCastException e){
-                log.trace("跳过不符合的监听事件",e);
+                log.trace("跳过不符合的监听事件");
             }
         });
     }
@@ -142,7 +142,7 @@ public class RoomEventPublisher implements EventPublisher {
             try{
                 listener.eventHandle(event);
             } catch (ClassCastException e){
-                log.trace("跳过不符合的监听事件",e);
+                log.trace("跳过不符合的监听事件");
             }
         });
     }
@@ -154,7 +154,7 @@ public class RoomEventPublisher implements EventPublisher {
             try{
                 listener.eventHandle(event);
             } catch (ClassCastException e){
-                log.trace("跳过不符合的监听事件",e);
+                log.trace("跳过不符合的监听事件");
             }
         });
     }
@@ -166,7 +166,7 @@ public class RoomEventPublisher implements EventPublisher {
             try{
                 listener.eventHandle(event);
             } catch (ClassCastException e){
-                log.trace("跳过不符合的监听事件",e);
+                log.trace("跳过不符合的监听事件");
             }
         });
     }
@@ -178,7 +178,7 @@ public class RoomEventPublisher implements EventPublisher {
             try{
                 listener.eventHandle(event);
             } catch (ClassCastException e){
-                log.trace("跳过不符合的监听事件",e);
+                log.trace("跳过不符合的监听事件");
             }
         });
     }

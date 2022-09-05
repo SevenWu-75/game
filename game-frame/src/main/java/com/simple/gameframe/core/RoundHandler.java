@@ -13,7 +13,7 @@ public interface RoundHandler {
     LogicHandlerProcessor getLogicHandlerProcessor();
     void setRoom(Room<? extends Player> room);
 
-    void startLogic(Room<? extends Player> room);
+    Object startLogic(Room<? extends Player> room);
 
     Object round(Room<? extends Player> room, List<? extends Player> players);
 }

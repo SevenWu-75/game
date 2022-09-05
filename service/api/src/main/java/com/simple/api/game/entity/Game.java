@@ -2,8 +2,10 @@ package com.simple.api.game.entity;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
-public class Game {
+public class Game implements Serializable {
 
     private Integer id;
 

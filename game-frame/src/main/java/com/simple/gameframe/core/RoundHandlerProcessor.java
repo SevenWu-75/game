@@ -22,8 +22,6 @@ public class RoundHandlerProcessor implements RoundHandler {
 
     SeatHandler seatHandler;
 
-    private final LogicHandler<? extends Command> startLogicHandler;
-
     @Override
     public LogicHandlerProcessor getLogicHandlerProcessor() {
         return this.logicHandlerProcessor;
@@ -34,29 +32,22 @@ public class RoundHandlerProcessor implements RoundHandler {
         this.room = room;
     }
 
-    public RoundHandlerProcessor(LogicHandlerProcessor logicHandlerProcessor,
-                                 SeatHandler seatHandler, LogicHandler<? extends Command> startLogicHandler){
+    public RoundHandlerProcessor(LogicHandlerProcessor logicHandlerProcessor, SeatHandler seatHandler){
         this.logicHandlerProcessor = logicHandlerProcessor;
         this.seatHandler = seatHandler;
-        this.startLogicHandler = startLogicHandler;
     }
 
     @Override
-    public void startLogic(@NotNull Room<? extends Player> room) {
+    public Object startLogic(@NotNull Room<? extends Player> room) {
         EventPublisher eventPublisher = ApplicationContextUtil.getEventPublisher();
         final List<? extends Player> playerList = room.getPlayerList();
-        preHandle(playerList.get(0),room, RoomPropertyManagerUtil.getLock(room.getRoomId()));
-        //开始游戏
-        eventPublisher.start(room, null);
-        room.start();
         Object roundResult = null;
         for (int i = 0; i < room.getPlayCount(); i++) {
             //开始回合
             eventPublisher.turnRound(room,i);
             roundResult = round(room, seatHandler.getRoundPlayer(i, playerList, roundResult));
         }
-        eventPublisher.gameOver(room,roundResult);
-        room.end();
+        return roundResult;
     }
 
     @Override
@@ -69,16 +60,6 @@ public class RoundHandlerProcessor implements RoundHandler {
             o = handle(player, room, RoomPropertyManagerUtil.getLock(room.getRoomId()));
         }
         return o;
-    }
-
-    private void preHandle(Player player, Room<? extends Player> room, Lock lock){
-        if(startLogicHandler != null){
-            startLogicHandler.preHandle(player, room, null);
-            Message<?> sendMessage = startLogicHandler.messageHandle(player, room, null);
-            Message<?> receiveMessage = startLogicHandler.ask(player.getUser().getId(), room, sendMessage, lock,
-                    RoomPropertyManagerUtil.getCondition(room.getRoomId(), startLogicHandler.toString()));
-            startLogicHandler.postHandle(player, room, receiveMessage, null);
-        }
     }
 
 

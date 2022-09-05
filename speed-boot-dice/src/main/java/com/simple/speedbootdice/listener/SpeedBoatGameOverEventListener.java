@@ -9,6 +9,7 @@ import com.simple.speedbootdice.pojo.SpeedBootPlayer;
 import com.simple.speedbootdice.pojo.SpeedBootRoom;
 import com.simple.speedbootdice.vo.GameResultVo;
 import org.apache.dubbo.config.annotation.DubboReference;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Comparator;
@@ -20,6 +21,9 @@ public class SpeedBoatGameOverEventListener extends AbstractEventListener<GameRe
 
     @DubboReference
     HistoryRankService historyRankService;
+
+    @Value("${game-frame.game-id}")
+    Integer gameId;
 
     @Override
     public void eventHandle(GameResultEvent event) {
@@ -42,7 +46,7 @@ public class SpeedBoatGameOverEventListener extends AbstractEventListener<GameRe
 
         //保存历史记录
         for (SpeedBootPlayer player : playerList) {
-            historyRankService.saveHistory(player.getUser().getId(), 1,
+            historyRankService.saveHistory(player.getUser().getId(), gameId,
                     winner != null && winner.getUser().getId().equals(player.getUser().getId()),
                     player.getScores()[ScoreEnum.TOTAL_SUM.ordinal()]);
         }

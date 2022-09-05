@@ -1,6 +1,10 @@
 package com.simple.gameframe.service.impl;
 
+import com.simple.api.game.Player;
 import com.simple.api.game.Room;
+import com.simple.api.game.RoomVO;
+import com.simple.api.game.entity.HistoryRank;
+import com.simple.api.game.service.HistoryRankService;
 import com.simple.api.game.service.RoomService;
 import com.simple.api.user.entity.User;
 import com.simple.gameframe.config.GameFrameProperty;
@@ -9,6 +13,10 @@ import com.simple.gameframe.core.RoomHandlerProcessor;
 import com.simple.gameframe.core.RoundHandler;
 import com.simple.gameframe.util.PackageUtil;
 import com.simple.gameframe.util.ThreadPoolUtil;
+import com.simple.gameframe.vo.HistoryRankVO;
+import com.simple.gameframe.vo.UserVO;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,9 +24,11 @@ import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Date;
 
 @DubboService
 @Service
+@Slf4j
 public class RoomServiceImpl implements RoomService {
 
     @Autowired
@@ -27,16 +37,30 @@ public class RoomServiceImpl implements RoomService {
     @Autowired
     RoomHandler roomHandler;
 
+    @DubboReference
+    HistoryRankService historyRankService;
+
     @Override
-    public Room createRoom(User user) {
-        Room room;
+    public RoomVO<? extends Player> createRoom(User user) {
+        Room<? extends Player> room;
         try {
             Class<?> roomImpl = PackageUtil.getRoomImpl(gameFrameProperty.getScan());
             //生成房间实例
-            Constructor<?> constructor = roomImpl.getConstructor(User.class);
-            room = (Room)constructor.newInstance(user);
+            HistoryRank historyRank = historyRankService.getHistoryRank(user.getId(), gameFrameProperty.getGameId());
+            if(historyRank == null){
+                historyRank = new HistoryRank();
+                historyRank.setUserId(user.getId());
+                historyRank.setGameId(gameFrameProperty.getGameId());
+                historyRank.setBestScore(0L);
+                historyRank.setPlayCount(0L);
+                historyRank.setWinCount(0);
+                historyRank.setLastPlayTime(new Date());
+            }
+            UserVO userVO = new UserVO(user, historyRank);
+            Constructor<?> constructor = roomImpl.getConstructor(User.class, GameFrameProperty.class);
+            room = (Room<? extends Player>)constructor.newInstance(userVO, gameFrameProperty);
+            log.trace("创建房间成功");
             //执行房间运行逻辑
-            roomHandler.getLock().lock();
             roomHandler.setRoom(room);
             ThreadPoolUtil.handlerTask(roomHandler);
         } catch (NoSuchMethodException e) {
@@ -44,6 +68,6 @@ public class RoomServiceImpl implements RoomService {
         } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
             throw new RuntimeException("Room实现类实例化失败！",e);
         }
-        return room;
+        return new RoomVO<>(room);
     }
 }

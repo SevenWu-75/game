@@ -11,8 +11,6 @@ public interface RoomHandler extends Runnable {
 
     void start(Room<? extends Player> room);
 
-    Lock getLock();
-
     void setRoom(Room<? extends Player> room);
 
     void signalSeatDown();

@@ -1,24 +1,28 @@
 dubbo:
   application:
-    id: user-service
+    name: web-application
   protocol:
     name: dubbo
     port: -1
   registry:
-    address: spring-cloud://172.30.60.82
+    address: spring-cloud://localhost
     check: false
   consumer:
+    timeout: 60000
+    retries: 0
     check: false
-  cloud:
-    subscribed-services: user-service
+#  cloud:
+#    subscribed-services: user-service,game-service
 
 spring:
   cloud:
     nacos:
       discovery:
-        server-addr: 172.30.60.82:8848
+        server-addr: localhost:8848
   main:
     allow-circular-references: true
+  thymeleaf:
+    cache: false
 
 websocket:
-  url: https://localhost/speedBoot
+  url: http://localhost:8084/speedBoot

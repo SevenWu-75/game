@@ -2,23 +2,24 @@ package com.simple.api.game.entity;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Data
-public class HistoryRank {
+public class HistoryRank implements Serializable {
 
-    private Long id;
+    protected Long id;
 
-    private Integer gameId;
+    protected Integer gameId;
 
-    private Long userId;
+    protected Long userId;
 
-    private Long playCount;
+    protected Long playCount;
 
-    private Integer winCount;
+    protected Integer winCount;
 
-    private Long bestScore;
+    protected Long bestScore;
 
-    private Date lastPlayTime;
+    protected Date lastPlayTime;
 
 }

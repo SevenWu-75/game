@@ -1,6 +1,8 @@
 package com.simple.web.controller;
 
+import com.simple.api.game.Player;
 import com.simple.api.game.Room;
+import com.simple.api.game.RoomVO;
 import com.simple.api.game.entity.HistoryRank;
 import com.simple.api.game.service.RoomManagerService;
 import com.simple.api.user.entity.User;
@@ -22,9 +24,6 @@ import javax.servlet.http.HttpSession;
 public class RoomController {
 
     @DubboReference
-    HistoryRankService historyRankService;
-
-    @DubboReference
     RoomManagerService roomManagerService;
 
     @Value("${websocket.url}")
@@ -33,11 +32,10 @@ public class RoomController {
     @GetMapping("/create")
     public String createRoom(HttpSession session){
         User user = ThreadLocalUtil.getUser();
-        Room room = ThreadLocalUtil.getRoom();
+        RoomVO<? extends Player> room = ThreadLocalUtil.getRoom();
         if(room == null){
+            log.trace("尝试创建房间");
             room = roomManagerService.createRoomByGameName("", user);
-            HistoryRank historyRank = historyRankService.getHistoryRank(user.getId(), 1);
-            user.setHistoryRank(historyRank == null ? new HistoryRank() : historyRank);
         }
         session.setAttribute("room", room);
         session.setAttribute("user",user);
@@ -48,15 +46,12 @@ public class RoomController {
     @GetMapping("/join")
     public String joinRoom(HttpSession session, @RequestParam("id") String id){
         User user = ThreadLocalUtil.getUser();
-        Room room = ThreadLocalUtil.getRoom();
+        RoomVO<? extends Player> room = ThreadLocalUtil.getRoom();
         if(room == null){
             room = roomManagerService.createRoomByGameName("", user);
             if(room == null){
                 return "login";
             }
-            room.join(user);
-            HistoryRank historyRank = historyRankService.getHistoryRank(user.getId(), 1);
-            user.setHistoryRank(historyRank == null ? new HistoryRank() : historyRank);
         }
         session.setAttribute("room",room);
         session.setAttribute("user",user);

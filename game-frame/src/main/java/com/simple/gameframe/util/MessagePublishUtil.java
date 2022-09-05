@@ -1,6 +1,7 @@
 package com.simple.gameframe.util;
 
 import com.alibaba.nacos.common.utils.ConcurrentHashSet;
+import com.simple.api.game.Player;
 import com.simple.api.user.entity.User;
 import com.simple.api.util.ThreadLocalUtil;
 import com.simple.gameframe.core.Message;
@@ -24,7 +25,7 @@ public class MessagePublishUtil {
 
     private static final Map<String, Set<Message<?>>> reconnectMessageMap = new HashMap<>();
 
-    private SimpMessagingTemplate getMessagingTemplate(){
+    private static SimpMessagingTemplate getMessagingTemplate(){
         if(messagingTemplate == null){
             messagingTemplate = ApplicationContextUtil.getSimpMessageTemplate();
         }
@@ -40,7 +41,7 @@ public class MessagePublishUtil {
         if(message != null)
             message.setPrivateMessage(false);
         setValidConfig(message);
-        messagingTemplate.convertAndSend(PREFIX_PUBLIC + PREFIX_SYSTEM, message == null ? "" : message);
+        getMessagingTemplate().convertAndSend(PREFIX_PUBLIC + PREFIX_SYSTEM, message == null ? "" : message);
     }
 
     /**
@@ -53,7 +54,7 @@ public class MessagePublishUtil {
         message.setPrivateMessage(false);
         setValidConfig(message);
         saveMessage(roomId, "", message);
-        messagingTemplate.convertAndSend(PREFIX_PUBLIC + "/" + roomId, message);
+        getMessagingTemplate().convertAndSend(PREFIX_PUBLIC + "/" + roomId, message);
         log.trace("发送id为{}的message包{}", message.getId(), message);
     }
 
@@ -67,7 +68,7 @@ public class MessagePublishUtil {
         if(message != null)
             message.setPrivateMessage(true);
         setValidConfig(message);
-        messagingTemplate.convertAndSendToUser(userId, PREFIX_SYSTEM, message == null ? "" : message);
+        getMessagingTemplate().convertAndSendToUser(userId, PREFIX_SYSTEM, message == null ? "" : message);
     }
 
     /**
@@ -83,12 +84,12 @@ public class MessagePublishUtil {
         saveMessage(roomId, userId, message);
         //TODO: 保存当前房间所发送的最大messageId，保证玩家必须回复这个id才能进行流程
         //roomMap.get(roomId).getAskAnswerUtil().setMessageId(message.getId());
-        messagingTemplate.convertAndSendToUser(userId, roomId, message);
+        getMessagingTemplate().convertAndSendToUser(userId, roomId, message);
         log.trace("发送id为{}的message包{}", message.getId(), message);
     }
 
     private static void setValidConfig(Message<?> message){
-        Room room = ThreadLocalUtil.getRoom();
+        Room<? extends Player> room = ThreadLocalUtil.getRoom();
         User user = ThreadLocalUtil.getUser();
         if(room != null && message != null){
             message.setRoomId(room.getRoomId());
