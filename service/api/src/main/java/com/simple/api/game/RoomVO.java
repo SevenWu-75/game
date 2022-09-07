@@ -22,9 +22,9 @@ public class RoomVO<T extends Player> implements Room<T> {
 
     private List<T> playerList;
 
-    private Set<User> onlooker;
+    private Set<UserVO> onlooker;
 
-    private User owner;
+    private UserVO owner;
 
     private Date endTime;
 

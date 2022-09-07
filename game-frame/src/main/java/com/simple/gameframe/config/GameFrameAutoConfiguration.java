@@ -39,6 +39,11 @@ public class GameFrameAutoConfiguration {
     @ConditionalOnMissingBean(RoomHandler.class)
     public RoomHandler roundHandlerProcessor(List<LogicHandler<?>> logicHandlerList){
         return new RoomHandlerProcessor(new RoundHandlerProcessor(
-                new LogicHandlerProcessor(logicHandlerList),new SeatHandlerProcessor()),new StartLogicHandler());
+                new LogicHandlerProcessor(logicHandlerList),new SeatHandlerProcessor()),startLogicHandler());
+    }
+
+    @Bean
+    public LogicHandler<?> startLogicHandler(){
+        return new StartLogicHandler();
     }
 }

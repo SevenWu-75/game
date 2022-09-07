@@ -10,6 +10,7 @@ import com.simple.gameframe.util.MessagePublishUtil;
 import com.simple.gameframe.util.RoomPropertyManagerUtil;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
@@ -22,7 +23,7 @@ public interface LogicHandler<T extends Command> {
      *
      * @return 返回本对象属于的指令
      */
-    T getCommand();
+    List<T> getCommands();
 
     /**
      * 如果需要ask后获取answer返回的message，则需要重写这个方法

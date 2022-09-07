@@ -1,9 +1,6 @@
 package com.simple.web.controller;
 
-import com.simple.api.game.Player;
-import com.simple.api.game.Room;
-import com.simple.api.game.RoomVO;
-import com.simple.api.game.UserVO;
+import com.simple.api.game.*;
 import com.simple.api.game.entity.HistoryRank;
 import com.simple.api.game.service.RoomManagerService;
 import com.simple.api.user.entity.User;
@@ -30,17 +27,24 @@ public class RoomController {
     @Value("${websocket.url}")
     String websocketUrl;
 
+    @DubboReference
+    HistoryRankService historyRankService;
+
     @GetMapping("/create")
     public String createRoom(HttpSession session){
         UserVO user = ThreadLocalUtil.getUser();
         RoomVO<? extends Player> room = ThreadLocalUtil.getRoom();
+        if(room != null){
+            RoomVO<? extends Player> roomByRoomIdAndGameName = roomManagerService.getRoomByRoomIdAndGameName(room.getRoomId(), "");
+            if(roomByRoomIdAndGameName == null || roomByRoomIdAndGameName.getRoomStatus() == 2){
+                room = null;
+            }
+        }
         if(room == null){
             log.trace("尝试创建房间");
             room = roomManagerService.createRoomByGameName("", user);
         }
-        session.setAttribute("room", room);
-        session.setAttribute("user",user);
-        session.setAttribute("wsUrl",websocketUrl);
+        cache(session, user, room);
         return "room";
     }
 
@@ -49,15 +53,21 @@ public class RoomController {
         UserVO user = ThreadLocalUtil.getUser();
         RoomVO<? extends Player> room = ThreadLocalUtil.getRoom();
         if(room == null){
-            room = roomManagerService.createRoomByGameName("", user);
+            room = roomManagerService.getRoomByRoomIdAndGameName(id, "");
             if(room == null){
                 return "login";
             }
         }
-        session.setAttribute("room",room);
-        session.setAttribute("user",user);
-        session.setAttribute("wsUrl",websocketUrl);
+        cache(session, user, room);
         return "room";
     }
 
+    private void cache(HttpSession session, UserVO user, RoomVO<? extends Player> room) {
+        HistoryRank historyRank = historyRankService.getHistoryRank(user.getId(), 1);
+        HistoryRankVO historyRankVO = new HistoryRankVO(historyRank);
+        user.setHistoryRankVO(historyRankVO);
+        session.setAttribute("room",room);
+        session.setAttribute("user",user);
+        session.setAttribute("wsUrl",websocketUrl);
+    }
 }

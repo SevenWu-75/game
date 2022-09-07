@@ -2,6 +2,7 @@ package com.simple.gameframe.util;
 
 import com.alibaba.nacos.common.utils.ConcurrentHashSet;
 import com.simple.api.game.Player;
+import com.simple.api.game.UserVO;
 import com.simple.api.user.entity.User;
 import com.simple.api.util.ThreadLocalUtil;
 import com.simple.gameframe.core.Message;
@@ -90,7 +91,7 @@ public class MessagePublishUtil {
 
     private static void setValidConfig(Message<?> message){
         Room<? extends Player> room = ThreadLocalUtil.getRoom();
-        User user = ThreadLocalUtil.getUser();
+        UserVO user = ThreadLocalUtil.getUser();
         if(room != null && message != null){
             message.setRoomId(room.getRoomId());
         }
@@ -121,7 +122,7 @@ public class MessagePublishUtil {
         if(!CollectionUtils.isEmpty(roomPrivateMessages)){
             allMessages.addAll(roomPrivateMessages);
         }
-        List<Message<?>> collect = allMessages.stream().sorted(Comparator.comparing(Message::getId)).collect(Collectors.toList());
+        List<Message<?>> collect = allMessages.stream().sorted(Comparator.comparing(Message::getTimestamp)).collect(Collectors.toList());
         collect.forEach(c->{
             if (c.getPrivateMessage()) {
                 c.setReconnectUserId(Long.parseLong(userId));

@@ -14,4 +14,6 @@ public interface RoomHandler extends Runnable {
     void setRoom(Room<? extends Player> room);
 
     void signalSeatDown();
+
+    void dismissRoom();
 }

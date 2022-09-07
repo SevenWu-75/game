@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
@@ -28,8 +30,8 @@ public class SelectScoreLogicHandler implements LogicHandler<SpeedBootCommand> {
     private LogicHandler<?> nextHandler;
 
     @Override
-    public SpeedBootCommand getCommand(){
-        return SpeedBootCommand.SELECT_SCORE;
+    public List<SpeedBootCommand> getCommands(){
+        return Arrays.asList(SpeedBootCommand.SELECT_SCORE, SpeedBootCommand.PLAY_DICE);
     }
 
     @Override
@@ -52,7 +54,7 @@ public class SelectScoreLogicHandler implements LogicHandler<SpeedBootCommand> {
     public Object postHandle(Player player, Room<? extends Player> room, Message<?> message, Object o) {
         SpeedBootPlayer sp = (SpeedBootPlayer) player;
         //如果是继续投骰子
-        if(message.getCode() == SpeedBootCommand.ANSWER_DICE.getCode()){
+        if(message.getCode() == SpeedBootCommand.DICE_RESULT.getCode()){
             if(sp.enoughPlayTimes())
                 setNextHandler(playDiceLogicHandler);
             return message.getContent();

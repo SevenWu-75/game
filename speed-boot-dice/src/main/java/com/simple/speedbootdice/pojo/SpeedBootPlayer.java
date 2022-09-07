@@ -1,6 +1,8 @@
 package com.simple.speedbootdice.pojo;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.simple.api.game.Player;
 import com.simple.api.game.UserVO;
 import com.simple.api.game.exception.GameException;
@@ -16,17 +18,16 @@ import java.util.stream.Collectors;
 
 @ClassInject("com.simple.api.game.Player")
 @Data
+@JsonIgnoreProperties(value = {"diceList","currentDices"})
 public class SpeedBootPlayer implements Player {
 
     private int id;
 
     private UserVO user;
 
-    @JsonIgnore
-    private final List<Dice> diceList;
+    private final transient List<Dice> diceList;
 
-    @JsonIgnore
-    private List<Integer> currentDices;
+    private transient List<Integer> currentDices;
 
     private int status;
 

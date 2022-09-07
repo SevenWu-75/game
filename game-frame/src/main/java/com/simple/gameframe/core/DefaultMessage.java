@@ -1,5 +1,8 @@
 package com.simple.gameframe.core;
 
+import lombok.ToString;
+
+@ToString
 public class DefaultMessage<T> implements Message<T> {
 
     protected int code;
@@ -19,6 +22,12 @@ public class DefaultMessage<T> implements Message<T> {
     protected Long reconnectUserId;
 
     protected boolean privateMessage;
+
+    protected long timestamp;
+
+    public DefaultMessage(){
+        timestamp = System.currentTimeMillis();
+    }
 
     @Override
     public int getCode() {
@@ -108,5 +117,10 @@ public class DefaultMessage<T> implements Message<T> {
     @Override
     public void setReconnectUserId(Long userId) {
         this.reconnectUserId = userId;
+    }
+
+    @Override
+    public long getTimestamp(){
+        return this.timestamp;
     }
 }

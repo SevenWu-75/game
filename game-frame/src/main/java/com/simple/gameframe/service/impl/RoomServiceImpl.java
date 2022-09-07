@@ -8,6 +8,7 @@ import com.simple.api.user.entity.User;
 import com.simple.gameframe.config.GameFrameProperty;
 import com.simple.gameframe.core.RoomHandler;
 import com.simple.gameframe.util.PackageUtil;
+import com.simple.gameframe.util.RoomPropertyManagerUtil;
 import com.simple.gameframe.util.ThreadPoolUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -30,27 +31,13 @@ public class RoomServiceImpl implements RoomService {
     @Autowired
     RoomHandler roomHandler;
 
-    @DubboReference
-    HistoryRankService historyRankService;
-
     @Override
     public RoomVO<? extends Player> createRoom(UserVO user) {
         Room<? extends Player> room;
         try {
             Class<?> roomImpl = PackageUtil.getRoomImpl(gameFrameProperty.getScan());
             //生成房间实例
-            HistoryRank historyRank = historyRankService.getHistoryRank(user.getId(), gameFrameProperty.getGameId());
-            if(historyRank == null){
-                historyRank = new HistoryRank();
-                historyRank.setUserId(user.getId());
-                historyRank.setGameId(gameFrameProperty.getGameId());
-                historyRank.setBestScore(0L);
-                historyRank.setPlayCount(0L);
-                historyRank.setWinCount(0);
-                historyRank.setLastPlayTime(new Date());
-            }
-            user.setHistoryRankVO(new HistoryRankVO(historyRank));
-            Constructor<?> constructor = roomImpl.getConstructor(User.class, GameFrameProperty.class);
+            Constructor<?> constructor = roomImpl.getConstructor(UserVO.class, GameFrameProperty.class);
             room = (Room<? extends Player>)constructor.newInstance(user, gameFrameProperty);
             log.trace("创建房间成功");
             //执行房间运行逻辑
@@ -62,5 +49,13 @@ public class RoomServiceImpl implements RoomService {
             throw new RuntimeException("Room实现类实例化失败！",e);
         }
         return new RoomVO<>(room);
+    }
+
+    @Override
+    public RoomVO<? extends Player> getRoom(String roomId) {
+        Room<? extends Player> roomImpl = RoomPropertyManagerUtil.getRoomImpl(roomId);
+        if(roomImpl == null)
+            return null;
+        return new RoomVO<>(roomImpl);
     }
 }

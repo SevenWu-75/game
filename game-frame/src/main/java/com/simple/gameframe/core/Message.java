@@ -37,4 +37,6 @@ public interface Message<T> {
     Long getReconnectUserId();
 
     void setReconnectUserId(Long userId);
+
+    long getTimestamp();
 }

@@ -1,7 +1,7 @@
 package com.simple.gameframe.controller;
 
 import com.simple.api.game.Player;
-import com.simple.gameframe.core.Message;
+import com.simple.gameframe.core.DefaultMessage;
 import com.simple.api.game.Room;
 import com.simple.api.util.ThreadLocalUtil;
 import com.simple.gameframe.core.RoomHandler;
@@ -31,10 +31,10 @@ public class CommandController {
     RoomHandler roomHandler;
 
     @MessageMapping("/command")
-    public void command(@RequestBody Message<?> message){
+    public void command(@RequestBody DefaultMessage<?> message){
         Room<? extends Player> room = ThreadLocalUtil.getRoom();
         logicHandlerList.forEach(logicHandler -> {
-            if(logicHandler.getCommand().getCode() == message.getCode()){
+            if(logicHandler.getCommands().stream().anyMatch(command -> command.getCode() == message.getCode())){
                 logicHandler.answer(RoomPropertyManagerUtil.getLock(room.getRoomId()),
                         room,
                         RoomPropertyManagerUtil.getCondition(room.getRoomId(), logicHandler.toString()),
@@ -73,6 +73,11 @@ public class CommandController {
 //        Room room = ThreadLocalUtil.getRoom();
 //        room.getAskAnswerUtil().answerStart(message);
 //    }
+
+    @MessageMapping("/dismiss")
+    public void dismissRoom(@RequestBody DefaultMessage<?> message) {
+        roomHandler.dismissRoom();
+    }
 
     @SubscribeMapping("/user/{userId}/{roomId}")
     public void subscribeRoomPrivate(@DestinationVariable("userId") String userId, @DestinationVariable("roomId") String roomId){

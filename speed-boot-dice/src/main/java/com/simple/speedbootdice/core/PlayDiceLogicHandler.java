@@ -16,9 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -38,14 +36,14 @@ public class PlayDiceLogicHandler implements LogicHandler<SpeedBootCommand> {
     }
 
     @Override
-    public SpeedBootCommand getCommand(){
-        return SpeedBootCommand.SELECT_SCORE;
+    public List<SpeedBootCommand> getCommands(){
+        return Collections.singletonList(SpeedBootCommand.PLAY_DICE);
     }
 
     @Override
     public Message<?> messageHandle(Player player, Room<? extends Player> room, Object o) {
         Message<Integer> message = new DefaultMessage<>();
-        message.setCode(SpeedBootCommand.ASK_DICE.getCode());
+        message.setCode(SpeedBootCommand.PLAY_DICE.getCode());
         message.setFromId(player.getUser().getId());
         message.setSeat(player.getId());
         message.setRoomId(room.getRoomId());
@@ -89,7 +87,7 @@ public class PlayDiceLogicHandler implements LogicHandler<SpeedBootCommand> {
         message.setFromId(player.getUser().getId());
         message.setSeat(player.getId());
         message.setContent(diceList);
-        message.setCode(SpeedBootCommand.ANSWER_DICE.getCode());
+        message.setCode(SpeedBootCommand.DICE_RESULT.getCode());
         MessagePublishUtil.sendToRoomPublic(roomId, message);
     }
 

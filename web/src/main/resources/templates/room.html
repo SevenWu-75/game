@@ -26,9 +26,9 @@
                     </div>
                     <h5 class="h4 lh-130 mb-1 text-center">{{content.user.realname}}</h5>
                     <p class="text-muted mb-0 text-center">
-                        历史最高分：{{content.user.historyRankVo.bestScore}}
+                        历史最高分：{{content.user.historyRankVO.bestScore}}
                         <br>
-                        胜率：{{content.user.historyRankVo.winPercent}}%  总局数：{{content.user.historyRankVo.playCount}}
+                        胜率：{{content.user.historyRankVO.winPercent}}%  总局数：{{content.user.historyRankVO.playCount}}
                     </p>
                 </div>
             </div>
@@ -183,7 +183,8 @@
                         messageId = parse.id;
                     }
                     var playDice = document.getElementById("playDice");
-                    if(parse.code === 103){
+                    //询问开始游戏
+                    if(parse.code === 104){
                         document.getElementById("start-game").disabled = false;
                     }
                     //询问投骰子
@@ -216,7 +217,7 @@
         }
 
         function playDice() {
-            stompClient.send("/command",{}, JSON.stringify({'id': messageId, 'code': 4 ,'content': lockDiceIndexList}));
+            stompClient.send("/command",{}, JSON.stringify({'id': messageId, 'code': 3 ,'content': lockDiceIndexList}));
         }
 
         function startGame(){
@@ -260,7 +261,7 @@
         }
 
         function dismissRoom(){
-            stompClient.send("/command",{},
+            stompClient.send("/dismiss",{},
                 JSON.stringify({'code': 109}));
         }
     </script>

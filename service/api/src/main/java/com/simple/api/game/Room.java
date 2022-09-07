@@ -15,7 +15,7 @@ public interface Room<T extends Player> extends Serializable {
 
     String getRoomId();
 
-    User getOwner();
+    UserVO getOwner();
 
     int getRoomStatus();
 
@@ -27,7 +27,7 @@ public interface Room<T extends Player> extends Serializable {
 
     List<T> getPlayerList();
 
-    Set<User> getOnlooker();
+    Set<UserVO> getOnlooker();
 
     int getPlayCount();
 

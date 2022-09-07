@@ -21,8 +21,11 @@ public class DefaultEventListener extends AbstractEventListener<Event> {
             command = GameCommand.CAN_START;
         if(event instanceof DisconnectEvent)
             command = GameCommand.DISCONNECT;
-        if(event instanceof DismissEvent)
+        if(event instanceof DismissEvent){
             command = GameCommand.DISMISS_ROOM;
+            RoomPropertyManagerUtil.clean(event.getRoom().getRoomId());
+            abstractRoom.end();
+        }
         if(event instanceof GameOverEvent){
             command = GameCommand.GAME_OVER;
             RoomPropertyManagerUtil.clean(event.getRoom().getRoomId());
@@ -44,6 +47,8 @@ public class DefaultEventListener extends AbstractEventListener<Event> {
             command = GameCommand.VOTE_DISMISS;
         if(event instanceof TimeOutEvent){
             command = GameCommand.TIMEOUT;
+            RoomPropertyManagerUtil.clean(event.getRoom().getRoomId());
+            abstractRoom.end();
         }
         if(event instanceof SeatDownEvent){
             command = GameCommand.SEAT_DOWN;

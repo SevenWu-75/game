@@ -8,4 +8,6 @@ import com.simple.api.user.entity.User;
 public interface RoomService {
 
     RoomVO<? extends Player> createRoom(UserVO user);
+
+    RoomVO<? extends Player> getRoom(String roomId);
 }

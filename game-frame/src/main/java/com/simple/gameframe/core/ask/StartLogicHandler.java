@@ -8,11 +8,14 @@ import com.simple.gameframe.core.Message;
 import com.simple.gameframe.util.MessagePublishUtil;
 import com.simple.gameframe.util.RoomPropertyManagerUtil;
 
+import java.util.Collections;
+import java.util.List;
+
 public class StartLogicHandler implements LogicHandler<GameCommand> {
 
     @Override
-    public GameCommand getCommand(){
-        return GameCommand.START_GAME;
+    public List<GameCommand> getCommands(){
+        return Collections.singletonList(GameCommand.START_GAME);
     }
 
     @Override

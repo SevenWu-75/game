@@ -22,8 +22,8 @@ public class LogicHandlerProcessor {
         if (logicHandlerList.size() > 0) {
             //灵活设置下一个处理器，链式执行的方式
             LogicHandler<?> firstLogicHandler = logicHandlerList.get(0);
-            LogicHandler<?> nextHandler = firstLogicHandler.getNextHandler();
-            if(nextHandler != null){
+            if(firstLogicHandler.getNextHandler() != null){
+                LogicHandler<?> nextHandler = firstLogicHandler;
                 while(nextHandler != null){
                     //如果不满足执行条件则跳过本次询问
                     if(!nextHandler.preHandle(player, room, o)){
@@ -35,6 +35,9 @@ public class LogicHandlerProcessor {
                             RoomPropertyManagerUtil.getCondition(room.getRoomId(), nextHandler.toString()));
                     o = nextHandler.postHandle(player, room, receiveMessage, o);
                     nextHandler = nextHandler.getNextHandler();
+                    //清除引用，防止循环引用。自己会根据逻辑指定下一个处理器
+                    if(nextHandler != null)
+                        nextHandler.setNextHandler(null);
                 }
             } else {
                 //自动循环执行的方式

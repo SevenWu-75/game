@@ -8,18 +8,18 @@ import java.util.Date;
 @Data
 public class HistoryRank implements Serializable {
 
-    protected Long id;
+    private Long id;
 
-    protected Integer gameId;
+    private Integer gameId;
 
-    protected Long userId;
+    private Long userId;
 
-    protected Long playCount;
+    private Long playCount;
 
-    protected Integer winCount;
+    private Integer winCount;
 
-    protected Long bestScore;
+    private Long bestScore;
 
-    protected Date lastPlayTime;
+    private Date lastPlayTime;
 
 }

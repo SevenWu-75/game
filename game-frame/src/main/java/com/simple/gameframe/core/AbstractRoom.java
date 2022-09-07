@@ -3,6 +3,7 @@ package com.simple.gameframe.core;
 import com.simple.api.game.Player;
 import com.simple.api.game.Room;
 import com.simple.api.game.RoomVO;
+import com.simple.api.game.UserVO;
 import com.simple.api.game.exception.GameException;
 import com.simple.api.game.exception.GameExceptionEnum;
 import com.simple.api.user.entity.User;
@@ -22,9 +23,9 @@ public abstract class AbstractRoom<T extends Player> extends RoomVO<T> {
 
     private final String roomId;
 
-    private final User owner;
+    private final UserVO owner;
 
-    private final Set<User> onlooker;
+    private final Set<UserVO> onlooker;
 
     private Date createTime;
 
@@ -42,7 +43,7 @@ public abstract class AbstractRoom<T extends Player> extends RoomVO<T> {
 
     private final static Random random = new Random();
 
-    public AbstractRoom(User user, GameFrameProperty gameFrameProperty){
+    public AbstractRoom(UserVO user, GameFrameProperty gameFrameProperty){
         this.gameFrameProperty = gameFrameProperty;
         this.roomId = String.valueOf(generateRoomId());
         this.owner = user;
@@ -51,7 +52,7 @@ public abstract class AbstractRoom<T extends Player> extends RoomVO<T> {
         this.playerList = new LinkedList<>();
     }
 
-    public void join(User user) {
+    public void join(UserVO user) {
         checkUser(user.getId());
         this.onlooker.add(user);
     }
@@ -62,7 +63,7 @@ public abstract class AbstractRoom<T extends Player> extends RoomVO<T> {
     }
 
     @Override
-    public User getOwner() {
+    public UserVO getOwner() {
         return this.owner;
     }
 
@@ -92,7 +93,7 @@ public abstract class AbstractRoom<T extends Player> extends RoomVO<T> {
     }
 
     @Override
-    public Set<User> getOnlooker() {
+    public Set<UserVO> getOnlooker() {
         return this.onlooker;
     }
 
@@ -106,13 +107,13 @@ public abstract class AbstractRoom<T extends Player> extends RoomVO<T> {
         this.roomStatus = 2;
     }
 
-    public Player seatDown(User user) {
+    public Player seatDown(UserVO user) {
         checkUser(user.getId());
         Class<?> playerImpl = PackageUtil.getPlayerImpl(gameFrameProperty.getScan());
         T player = null;
         try {
             //生成玩家实例
-            Constructor<?> constructor = playerImpl.getConstructor(Integer.class, User.class);
+            Constructor<?> constructor = playerImpl.getConstructor(Integer.class, UserVO.class);
             player = (T)constructor.newInstance(generatePlayerId(),user);
             getPlayerList().add(player);
             getOnlooker().remove(user);

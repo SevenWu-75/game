@@ -1,5 +1,6 @@
 package com.simple.speedbootdice.pojo;
 
+import com.simple.api.game.UserVO;
 import com.simple.api.user.entity.User;
 import com.simple.gameframe.config.GameFrameProperty;
 import com.simple.gameframe.core.AbstractRoom;
@@ -12,7 +13,7 @@ import java.io.Serializable;
 @Slf4j
 public class SpeedBootRoom extends AbstractRoom<SpeedBootPlayer> implements Serializable {
 
-    public SpeedBootRoom(User user, GameFrameProperty gameFrameProperty) {
+    public SpeedBootRoom(UserVO user, GameFrameProperty gameFrameProperty) {
         super(user, gameFrameProperty);
         this.playCount = 13;
         this.playAtLeastNum = 2;

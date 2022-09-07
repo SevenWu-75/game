@@ -3,8 +3,8 @@ package com.simple.speedbootdice.common;
 import com.simple.gameframe.common.Command;
 
 public enum SpeedBootCommand implements Command {
-    ASK_DICE(3,"询问投骰子"),
-    ANSWER_DICE(4,"应答投骰子"),
+    PLAY_DICE(3,"抛掷骰子"),
+    DICE_RESULT(4,"骰子结果"),
     SELECT_SCORE(5,"选择分数"),
     ;
 

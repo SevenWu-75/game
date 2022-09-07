@@ -9,13 +9,13 @@ import java.util.Objects;
 @Data
 public class User implements Serializable {
 
-    protected Long id;
+    private Long id;
 
-    protected String username;
+    private String username;
 
-    protected String password;
+    private String password;
 
-    protected String realname;
+    private String realname;
 
     @Override
     public boolean equals(Object o) {

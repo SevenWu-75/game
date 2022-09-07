@@ -24,12 +24,13 @@ public class LoginController {
     UserService userService;
 
     @PostMapping("/login")
-    public Result<User> login(HttpSession session, @RequestBody User user){
+    public Result<UserVO> login(HttpSession session, @RequestBody User user){
         User one = userService.getUserByUsername(user.getUsername());
         if(one != null && user.getPassword().equals(one.getPassword())){
-            session.setAttribute("user", new UserVO(user));
-            log.info("用户{}登录系统",one.getUsername());
-            return Result.success(one);
+            UserVO userVO = new UserVO(one);
+            session.setAttribute("user", userVO);
+            log.info("用户{}登录系统",userVO.getUsername());
+            return Result.success(userVO);
         }
         return Result.failed(ResultCode.LOGIN_FAILED);
     }

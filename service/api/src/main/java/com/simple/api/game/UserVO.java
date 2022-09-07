@@ -4,19 +4,34 @@ import com.simple.api.game.entity.HistoryRank;
 import com.simple.api.user.entity.User;
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
-public class UserVO extends User {
+public class UserVO implements Serializable {
+
+    private Long id;
+
+    private String username;
+
+    private String realname;
 
     private HistoryRankVO historyRankVO;
 
-    public UserVO(User user, HistoryRank historyRank) {
-        this(user);
-        this.historyRankVO = new HistoryRankVO(historyRank);
+    public void setHistoryRankVO(HistoryRankVO historyRankVO){
+        this.historyRankVO = historyRankVO;
     }
 
-    public UserVO(User user) {
-        this.id = user.getId();
-        this.username = user.getUsername();
-        this.realname = user.getRealname();
+    public HistoryRankVO getHistoryRankVO(){
+        return this.historyRankVO;
+    }
+
+    public UserVO(){
+
+    }
+
+    public UserVO(User user){
+        this.setId(user.getId());
+        this.setUsername(user.getUsername());
+        this.setRealname(user.getRealname());
     }
 }

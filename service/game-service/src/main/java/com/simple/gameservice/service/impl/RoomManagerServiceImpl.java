@@ -36,7 +36,11 @@ public class RoomManagerServiceImpl implements RoomManagerService {
 
     @Override
     public RoomVO<? extends Player> getRoomByRoomIdAndGameName(String roomId, String gameName) {
-        return null;
+        RoomVO<? extends Player> room = roomService.getRoom(roomId);
+        if(room != null){
+            roomMap.put(room.getRoomId(), room);
+        }
+        return room;
     }
 
     @Override
