@@ -190,7 +190,7 @@
                     //询问投骰子
                     if(parse.code === 3){
                         playDice.disabled = false;
-                        playDice.innerText = "投掷骰子*3";
+                        playDice.innerText = "投掷骰子*" + parse.content;
                         resetDice();
                     }
                     //返回投骰子后的结果

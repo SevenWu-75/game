@@ -1,5 +1,8 @@
 package com.simple.gameframe.aop;
 
+import com.simple.api.game.Player;
+import com.simple.api.game.RoomVO;
+import com.simple.api.util.ThreadLocalUtil;
 import com.simple.gameframe.core.DefaultMessage;
 import com.simple.gameframe.util.RoomPropertyManagerUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -45,7 +48,9 @@ public class LogAop {
             Optional<Object> first = Arrays.stream(pjp.getArgs()).filter(arg -> arg instanceof DefaultMessage).findFirst();
             if(first.isPresent()){
                 DefaultMessage<?> message = (DefaultMessage<?>) first.get();
-                if (message.getCode() != RoomPropertyManagerUtil.getPackageIdMap(message.getRoomId(), this.toString())) {
+                log.trace("接收到消息包id{},{}",message.getId(),message);
+                RoomVO<? extends Player> room = ThreadLocalUtil.getRoom();
+                if (message.getId() != RoomPropertyManagerUtil.getPackageIdMap(room.getRoomId(), pjp.getThis().toString())) {
                     return null;
                 }
             }

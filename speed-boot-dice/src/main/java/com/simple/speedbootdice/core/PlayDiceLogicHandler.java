@@ -26,9 +26,14 @@ import java.util.stream.Collectors;
 public class PlayDiceLogicHandler implements LogicHandler<SpeedBootCommand> {
 
     @Autowired
+    LogicHandler<SpeedBootCommand> playDiceOrSelectScoreLogicHandler;
+
+    @Autowired
     LogicHandler<SpeedBootCommand> selectScoreLogicHandler;
 
     private final ConcurrentHashMap<String, Message<?>> receivedMessageMap = new ConcurrentHashMap<>();
+
+    private LogicHandler<SpeedBootCommand> nextHandler;
 
     @Override
     public ConcurrentHashMap<String, Message<?>> getReceivedMessageMap() {
@@ -47,7 +52,7 @@ public class PlayDiceLogicHandler implements LogicHandler<SpeedBootCommand> {
         message.setFromId(player.getUser().getId());
         message.setSeat(player.getId());
         message.setRoomId(room.getRoomId());
-        message.setContent(3);
+        message.setContent(((SpeedBootPlayer)player).getPlayTimes());
         return message;
     }
 
@@ -57,13 +62,19 @@ public class PlayDiceLogicHandler implements LogicHandler<SpeedBootCommand> {
         if(o instanceof int[]){
             lockDice = (int[]) o;
         }
-
-        return playDiceLogic((SpeedBootPlayer) player, lockDice, room.getRoomId());
+        SpeedBootPlayer speedBootPlayer = (SpeedBootPlayer) player;
+        DiceResultVo diceResultVo = playDiceLogic(speedBootPlayer, lockDice, room.getRoomId());
+        if(speedBootPlayer.enoughPlayTimes()){
+            nextHandler = selectScoreLogicHandler;
+        } else {
+            nextHandler = playDiceOrSelectScoreLogicHandler;
+        }
+        return diceResultVo;
     }
 
     @Override
     public LogicHandler<?> getNextHandler() {
-        return selectScoreLogicHandler;
+        return this.nextHandler;
     }
 
     private DiceResultVo playDiceLogic(@NotNull SpeedBootPlayer player, int[] lockDice, String roomId){

@@ -30,9 +30,7 @@ public interface LogicHandler<T extends Command> {
      *
      * @return 返回一个有对象ConcurrentHashMap
      */
-    default ConcurrentHashMap<String, Message<?>> getReceivedMessageMap() {
-        return null;
-    }
+    ConcurrentHashMap<String, Message<?>> getReceivedMessageMap();
 
     default Long getWaitTimeSecond() {
         return 60*5L;
@@ -70,24 +68,18 @@ public interface LogicHandler<T extends Command> {
     }
 
     default Object postHandle(Player player, Room<? extends Player> room, Message<?> message, Object o) {
-        return null;
+        return o;
     }
 
     default void answer(@NotNull Lock lock, @NotNull Room<? extends Player> room, @NotNull Condition condition, Message<?> message) {
         lock.lock();
         try {
-            if(message != null && message.getId() == RoomPropertyManagerUtil.getPackageIdMap(room.getRoomId(), this.toString())){
-                if(getReceivedMessageMap() != null)
-                    getReceivedMessageMap().put(room.getRoomId(), message);
-                condition.signal();
-            }
+            if(getReceivedMessageMap() != null)
+                getReceivedMessageMap().put(room.getRoomId(), message);
+            condition.signal();
         } finally {
             lock.unlock();
         }
-    }
-
-    default void setNextHandler(LogicHandler<?> logicHandler){
-
     }
 
     LogicHandler<?> getNextHandler();

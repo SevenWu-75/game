@@ -35,12 +35,9 @@ public class RoomController {
         UserVO user = ThreadLocalUtil.getUser();
         RoomVO<? extends Player> room = ThreadLocalUtil.getRoom();
         if(room != null){
-            RoomVO<? extends Player> roomByRoomIdAndGameName = roomManagerService.getRoomByRoomIdAndGameName(room.getRoomId(), "");
-            if(roomByRoomIdAndGameName == null || roomByRoomIdAndGameName.getRoomStatus() == 2){
-                room = null;
-            }
+            room = roomManagerService.getRoomByRoomIdAndGameName(room.getRoomId(), "");
         }
-        if(room == null){
+        if(room == null || room.getRoomStatus() == 2){
             log.trace("尝试创建房间");
             room = roomManagerService.createRoomByGameName("", user);
         }
@@ -52,7 +49,10 @@ public class RoomController {
     public String joinRoom(HttpSession session, @RequestParam("id") String id){
         UserVO user = ThreadLocalUtil.getUser();
         RoomVO<? extends Player> room = ThreadLocalUtil.getRoom();
-        if(room == null){
+        if(room != null){
+            room = roomManagerService.getRoomByRoomIdAndGameName(room.getRoomId(), "");
+        }
+        if(room == null || room.getRoomStatus() == 2){
             room = roomManagerService.getRoomByRoomIdAndGameName(id, "");
             if(room == null){
                 return "login";

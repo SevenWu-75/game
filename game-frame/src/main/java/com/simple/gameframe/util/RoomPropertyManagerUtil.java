@@ -3,8 +3,8 @@ package com.simple.gameframe.util;
 import com.simple.api.game.Player;
 import com.simple.api.game.Room;
 
-import java.util.List;
-import java.util.Map;
+import java.security.Key;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.locks.Condition;
@@ -54,10 +54,10 @@ public class RoomPropertyManagerUtil {
     }
 
     public static Long incrementAndGetPackageId(String roomId, String logicId){
-        long id = 1L;
-        if(packageIdMap.containsKey(roomId + logicId)){
-            id = packageIdMap.get(roomId + logicId) + 1;
-        }
+        Set<String> keys = packageIdMap.keySet().stream().filter(key -> key.startsWith(roomId)).collect(Collectors.toSet());
+        Optional<Long> max = packageIdMap.entrySet().stream().filter(set -> keys.contains(set.getKey()))
+                .map(Map.Entry::getValue).max(Comparator.comparing(Long::valueOf));
+        long id = max.orElse(0L) + 1;
         packageIdMap.put(roomId + logicId, id);
         return id;
     }

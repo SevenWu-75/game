@@ -19,15 +19,13 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
-@Order(1)
+@Order(3)
 public class SelectScoreLogicHandler implements LogicHandler<SpeedBootCommand> {
 
     @Autowired
     LogicHandler<SpeedBootCommand> playDiceLogicHandler;
 
     private final ConcurrentHashMap<String, Message<?>> receivedMessageMap = new ConcurrentHashMap<>();
-
-    private LogicHandler<?> nextHandler;
 
     @Override
     public List<SpeedBootCommand> getCommands(){
@@ -36,7 +34,7 @@ public class SelectScoreLogicHandler implements LogicHandler<SpeedBootCommand> {
 
     @Override
     public ConcurrentHashMap<String, Message<?>> getReceivedMessageMap() {
-        return null;
+        return this.receivedMessageMap;
     }
 
     @Override
@@ -53,22 +51,15 @@ public class SelectScoreLogicHandler implements LogicHandler<SpeedBootCommand> {
     @Override
     public Object postHandle(Player player, Room<? extends Player> room, Message<?> message, Object o) {
         SpeedBootPlayer sp = (SpeedBootPlayer) player;
-        //如果是继续投骰子
-        if(message.getCode() == SpeedBootCommand.DICE_RESULT.getCode()){
-            if(sp.enoughPlayTimes())
-                setNextHandler(playDiceLogicHandler);
-            return message.getContent();
-        } else {
-            int index = (Integer) message.getContent();
-            if(o instanceof DiceResultVo){
-                DiceResultVo diceResultVo = (DiceResultVo) o;
-                int score = diceResultVo.getScores()[index];
-                sp.updateScores(index,score);
-                //广播玩家投掷骰子结果 =====》
-                sendSelectScoreResultToPublic(sp, room.getRoomId());
-                //重置玩家骰子次数
-                sp.resetPlayTimes();
-            }
+        int index = (Integer) message.getContent();
+        if(o instanceof DiceResultVo){
+            DiceResultVo diceResultVo = (DiceResultVo) o;
+            int score = diceResultVo.getScores()[index];
+            sp.updateScores(index,score);
+            //广播玩家投掷骰子结果 =====》
+            sendSelectScoreResultToPublic(sp, room.getRoomId());
+            //重置玩家骰子次数
+            sp.resetPlayTimes();
         }
         return null;
     }
@@ -84,12 +75,7 @@ public class SelectScoreLogicHandler implements LogicHandler<SpeedBootCommand> {
     }
 
     @Override
-    public void setNextHandler(LogicHandler logicHandler) {
-        this.nextHandler = logicHandler;
-    }
-
-    @Override
-    public LogicHandler getNextHandler() {
-        return this.nextHandler;
+    public LogicHandler<?> getNextHandler() {
+        return null;
     }
 }

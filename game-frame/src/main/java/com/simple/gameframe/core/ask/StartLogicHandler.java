@@ -10,12 +10,18 @@ import com.simple.gameframe.util.RoomPropertyManagerUtil;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class StartLogicHandler implements LogicHandler<GameCommand> {
 
     @Override
     public List<GameCommand> getCommands(){
         return Collections.singletonList(GameCommand.START_GAME);
+    }
+
+    @Override
+    public ConcurrentHashMap<String, Message<?>> getReceivedMessageMap() {
+        return null;
     }
 
     @Override
@@ -39,7 +45,7 @@ public class StartLogicHandler implements LogicHandler<GameCommand> {
     }
 
     @Override
-    public LogicHandler getNextHandler() {
+    public LogicHandler<?> getNextHandler() {
         return null;
     }
 }

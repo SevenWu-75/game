@@ -35,9 +35,6 @@ public class LogicHandlerProcessor {
                             RoomPropertyManagerUtil.getCondition(room.getRoomId(), nextHandler.toString()));
                     o = nextHandler.postHandle(player, room, receiveMessage, o);
                     nextHandler = nextHandler.getNextHandler();
-                    //清除引用，防止循环引用。自己会根据逻辑指定下一个处理器
-                    if(nextHandler != null)
-                        nextHandler.setNextHandler(null);
                 }
             } else {
                 //自动循环执行的方式
