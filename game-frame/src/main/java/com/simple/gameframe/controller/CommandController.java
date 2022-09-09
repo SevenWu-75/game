@@ -86,7 +86,7 @@ public class CommandController {
         Room<? extends Player> room = ThreadLocalUtil.getRoom();
         //通知用户重连
         EventPublisher eventPublisher = ApplicationContextUtil.getEventPublisher();
-        eventPublisher.reconnect(room,userId);
+        eventPublisher.reconnect(room, null, userId);
         //游戏未开始且进来的玩家并未坐下则自动让他坐下
         roomHandler.signalSeatDown();
     }

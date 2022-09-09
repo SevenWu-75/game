@@ -44,7 +44,7 @@ public class RoundHandlerProcessor implements RoundHandler {
         Object roundResult = null;
         for (int i = 0; i < room.getPlayCount(); i++) {
             //开始回合
-            eventPublisher.turnRound(room,i);
+            eventPublisher.turnRound(room, null, i);
             roundResult = round(room, seatHandler.getRoundPlayer(i, playerList, roundResult));
         }
         return roundResult;
@@ -56,7 +56,7 @@ public class RoundHandlerProcessor implements RoundHandler {
         Object o = null;
         for (Player player : players) {
             //开始换人
-            eventPublisher.turnNext(room, player);
+            eventPublisher.turnNext(room, player, players.size());
             o = handle(player, room, RoomPropertyManagerUtil.getLock(room.getRoomId()));
         }
         return o;

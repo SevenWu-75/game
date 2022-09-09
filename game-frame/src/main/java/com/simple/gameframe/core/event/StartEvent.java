@@ -5,7 +5,7 @@ import com.simple.api.game.Room;
 
 public class StartEvent extends AbstractEvent {
 
-    public StartEvent(Room<? extends Player> room, Object o) {
-        super(room, o);
+    public StartEvent(Room<? extends Player> room,Player player, Object o) {
+        super(room, player, o);
     }
 }

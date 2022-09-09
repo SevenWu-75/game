@@ -22,9 +22,6 @@ import java.util.concurrent.ConcurrentHashMap;
 @Order(3)
 public class SelectScoreLogicHandler implements LogicHandler<SpeedBootCommand> {
 
-    @Autowired
-    LogicHandler<SpeedBootCommand> playDiceLogicHandler;
-
     private final ConcurrentHashMap<String, Message<?>> receivedMessageMap = new ConcurrentHashMap<>();
 
     @Override

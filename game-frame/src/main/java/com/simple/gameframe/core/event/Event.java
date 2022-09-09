@@ -7,5 +7,7 @@ public interface Event {
 
     Room<? extends Player> getRoom();
 
+    Player getPlayer();
+
     Object getO();
 }

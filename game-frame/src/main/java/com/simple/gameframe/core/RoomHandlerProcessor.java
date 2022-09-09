@@ -54,24 +54,24 @@ public class RoomHandlerProcessor implements RoomHandler {
         EventPublisher eventPublisher = ApplicationContextUtil.getEventPublisher();
         try{
             //创建房间
-            eventPublisher.create(room,null);
+            eventPublisher.create(room, null,null);
             CountDownLatch countDownLatch = RoomPropertyManagerUtil.getCountDownLatch(room.getRoomId(), room.getPlayAtLeastNum());
             awaitStart(countDownLatch);
             //可以开始,询问开始游戏
-            eventPublisher.canStart(room, null);
+            eventPublisher.canStart(room, null,null);
             List<? extends Player> playerList = room.getPlayerList();
             preHandle(playerList.get(0),room, RoomPropertyManagerUtil.getLock(room.getRoomId()));
             //开始游戏
-            eventPublisher.start(room, null);
+            eventPublisher.start(room, null,null);
             //开始回合
             Object roundResult = roundHandler.startLogic(room);
             //游戏结果
-            eventPublisher.gameResult(room,roundResult);
+            eventPublisher.gameResult(room, null, roundResult);
             //游戏结束
-            eventPublisher.gameOver(room,null);
+            eventPublisher.gameOver(room,null,null);
         } catch (GameException e) {
             if (e.getCode().equals(GameExceptionEnum.CLOSE_FOR_OPERATE_TIMEOUT)) {
-                eventPublisher.timeout(room, null);
+                eventPublisher.timeout(room, null,null);
             }
         }
     }
@@ -106,7 +106,7 @@ public class RoomHandlerProcessor implements RoomHandler {
         try{
             if(room.getRoomStatus() == 0){
                 Player player = room.seatDown(user);
-                eventPublisher.seatDown(room, player);
+                eventPublisher.seatDown(room, player, player);
                 RoomPropertyManagerUtil.getCountDownLatch(room.getRoomId(),room.getPlayAtLeastNum()).countDown();
             }
         } finally {
@@ -120,7 +120,7 @@ public class RoomHandlerProcessor implements RoomHandler {
         AbstractRoom<? extends Player> room = (AbstractRoom<? extends Player>)RoomPropertyManagerUtil.getRoomImpl(ThreadLocalUtil.getRoom().getRoomId());
         UserVO user = ThreadLocalUtil.getUser();
         Optional<? extends Player> first = room.getPlayerList().stream().filter(player -> player.getUser().getId().equals(user.getId())).findFirst();
-        eventPublisher.dismiss(room, first.orElse(null));
+        eventPublisher.dismiss(room, first.orElse(null), null);
     }
 
     @Override

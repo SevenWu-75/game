@@ -3,6 +3,7 @@ package com.simple.gameframe.core.ask;
 import com.simple.api.game.Player;
 import com.simple.api.game.Room;
 import com.simple.gameframe.core.Message;
+import com.simple.gameframe.util.ApplicationContextUtil;
 import com.simple.gameframe.util.RoomPropertyManagerUtil;
 import lombok.Builder;
 
@@ -22,7 +23,7 @@ public class LogicHandlerProcessor {
         if (logicHandlerList.size() > 0) {
             //灵活设置下一个处理器，链式执行的方式
             LogicHandler<?> firstLogicHandler = logicHandlerList.get(0);
-            if(firstLogicHandler.getNextHandler() != null){
+            if(ApplicationContextUtil.getGameFrameProperty().getEnableLinkLogic()){
                 LogicHandler<?> nextHandler = firstLogicHandler;
                 while(nextHandler != null){
                     //如果不满足执行条件则跳过本次询问

@@ -5,7 +5,7 @@ import com.simple.api.game.Room;
 
 public class TurnNextEvent extends AbstractEvent {
 
-    public TurnNextEvent(Room<? extends Player> room, Object o) {
-        super(room, o);
+    public TurnNextEvent(Room<? extends Player> room,Player player, Object o) {
+        super(room, player, o);
     }
 }

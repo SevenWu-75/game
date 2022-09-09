@@ -1,5 +1,6 @@
 package com.simple.gameframe.util;
 
+import com.simple.gameframe.config.GameFrameProperty;
 import com.simple.gameframe.core.publisher.EventPublisher;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeansException;
@@ -18,6 +19,8 @@ public class ApplicationContextUtil implements ApplicationContextAware {
     private static ApplicationContext context;
 
     private static EventPublisher eventPublisher;
+
+    private static GameFrameProperty gameFrameProperty;
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -47,5 +50,12 @@ public class ApplicationContextUtil implements ApplicationContextAware {
             eventPublisher = getBean(EventPublisher.class);
         }
         return eventPublisher;
+    }
+
+    public static GameFrameProperty getGameFrameProperty(){
+        if(gameFrameProperty == null){
+            gameFrameProperty = context.getBean(GameFrameProperty.class);
+        }
+        return gameFrameProperty;
     }
 }

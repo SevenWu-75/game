@@ -68,8 +68,6 @@ public class RoomInterceptor implements ExecutorChannelInterceptor {
         
         Optional<? extends Player> first = playerList.stream().filter(
                 player -> player.getUser().getId().equals(ThreadLocalUtil.getUser().getId())).findFirst();
-        if(first.isPresent()){
-            eventPublisher.disconnect(room, first);
-        }
+        first.ifPresent(player -> eventPublisher.disconnect(room, player, null));
     }
 }

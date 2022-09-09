@@ -4,5 +4,5 @@ import com.simple.gameframe.core.event.Event;
 
 public interface EventListener<E extends Event> {
 
-    void eventHandle(E event);
+    boolean eventHandle(E event);
 }

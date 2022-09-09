@@ -11,7 +11,7 @@ import com.simple.gameframe.util.RoomPropertyManagerUtil;
 public class DefaultEventListener extends AbstractEventListener<Event> {
 
     @Override
-    public void eventHandle(Event event) {
+    public boolean eventHandle(Event event) {
         AbstractRoom<? extends Player> abstractRoom = (AbstractRoom<? extends Player>) event.getRoom();
         GameCommand command = GameCommand.CREATE;
         if(event instanceof CreateEvent){
@@ -53,8 +53,12 @@ public class DefaultEventListener extends AbstractEventListener<Event> {
         if(event instanceof SeatDownEvent){
             command = GameCommand.SEAT_DOWN;
         }
+        if(event instanceof GameResultEvent){
+            command = GameCommand.GAME_RESULT;
+        }
         messageHandler.setCommand(command);
-        Message<?> message = messageHandler.messageHandle(event.getRoom(), event.getO());
+        Message<?> message = messageHandler.messageHandle(event.getRoom(), event.getPlayer(), event.getO());
         MessagePublishUtil.sendToRoomPublic(event.getRoom().getRoomId(),message);
+        return true;
     }
 }

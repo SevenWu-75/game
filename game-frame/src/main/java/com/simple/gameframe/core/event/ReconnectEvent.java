@@ -5,7 +5,7 @@ import com.simple.api.game.Room;
 
 public class ReconnectEvent extends AbstractEvent {
 
-    public ReconnectEvent(Room<? extends Player> room, Object o) {
-        super(room, o);
+    public ReconnectEvent(Room<? extends Player> room,Player player, Object o){
+        super(room, player, o);
     }
 }

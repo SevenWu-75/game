@@ -15,13 +15,12 @@ public class DefaultMessageHandler implements MessageHandler {
     }
 
     @Override
-    public Message<?> messageHandle(Room room, Object o) {
+    public Message<?> messageHandle(Room<? extends Player> room, Player player, Object o) {
         Message<Object> message = new DefaultMessage<>();
         message.setRoomId(room.getRoomId());
         message.setCode(command.getCode());
-        if(o instanceof Player) {
-            message.setSeat(((Player)o).getId());
-        }
+        if(player != null)
+            message.setSeat(player.getId());
         message.setContent(o);
         return message;
     }

@@ -10,6 +10,7 @@ import com.simple.speedbootdice.pojo.SpeedBootRoom;
 import com.simple.speedbootdice.vo.GameResultVo;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.util.Comparator;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
+@Order(1)
 public class SpeedBoatGameOverEventListener extends AbstractEventListener<GameResultEvent> {
 
     @DubboReference
@@ -26,7 +28,7 @@ public class SpeedBoatGameOverEventListener extends AbstractEventListener<GameRe
     Integer gameId;
 
     @Override
-    public void eventHandle(GameResultEvent event) {
+    public boolean eventHandle(GameResultEvent event) {
         SpeedBootRoom room = (SpeedBootRoom)event.getRoom();
         List<SpeedBootPlayer> playerList = room.getPlayerList();
         SpeedBootPlayer winner = null;
@@ -42,7 +44,7 @@ public class SpeedBoatGameOverEventListener extends AbstractEventListener<GameRe
         }
         GameResultVo gameResultVo = new GameResultVo(winner, playerList);
         messageHandler.setCommand(GameCommand.GAME_RESULT);
-        messageHandler.messageHandle(event.getRoom(), gameResultVo);
+        messageHandler.messageHandle(event.getRoom(), null, gameResultVo);
 
         //保存历史记录
         for (SpeedBootPlayer player : playerList) {
@@ -50,5 +52,6 @@ public class SpeedBoatGameOverEventListener extends AbstractEventListener<GameRe
                     winner != null && winner.getUser().getId().equals(player.getUser().getId()),
                     player.getScores()[ScoreEnum.TOTAL_SUM.ordinal()]);
         }
+        return false;
     }
 }

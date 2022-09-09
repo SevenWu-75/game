@@ -21,19 +21,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Component()
-@Order(1)
+@Order(2)
 @Slf4j
 public class PlayDiceLogicHandler implements LogicHandler<SpeedBootCommand> {
 
-    @Autowired
-    LogicHandler<SpeedBootCommand> playDiceOrSelectScoreLogicHandler;
-
-    @Autowired
-    LogicHandler<SpeedBootCommand> selectScoreLogicHandler;
-
     private final ConcurrentHashMap<String, Message<?>> receivedMessageMap = new ConcurrentHashMap<>();
-
-    private LogicHandler<SpeedBootCommand> nextHandler;
 
     @Override
     public ConcurrentHashMap<String, Message<?>> getReceivedMessageMap() {
@@ -58,23 +50,21 @@ public class PlayDiceLogicHandler implements LogicHandler<SpeedBootCommand> {
 
     @Override
     public Object postHandle(Player player, Room<? extends Player> room, Message<?> message, Object o) {
+        Object content = message.getContent();
         int[] lockDice = new int[]{-1,-1,-1,-1,-1};
-        if(o instanceof int[]){
-            lockDice = (int[]) o;
+        if(content instanceof ArrayList){
+            ArrayList<?> list = (ArrayList<?>) content;
+            for (int i = 0; i < list.size(); i++) {
+                lockDice[i] = Integer.parseInt(list.get(i).toString());
+            }
         }
         SpeedBootPlayer speedBootPlayer = (SpeedBootPlayer) player;
-        DiceResultVo diceResultVo = playDiceLogic(speedBootPlayer, lockDice, room.getRoomId());
-        if(speedBootPlayer.enoughPlayTimes()){
-            nextHandler = selectScoreLogicHandler;
-        } else {
-            nextHandler = playDiceOrSelectScoreLogicHandler;
-        }
-        return diceResultVo;
+        return playDiceLogic(speedBootPlayer, lockDice, room.getRoomId());
     }
 
     @Override
     public LogicHandler<?> getNextHandler() {
-        return this.nextHandler;
+        return null;
     }
 
     private DiceResultVo playDiceLogic(@NotNull SpeedBootPlayer player, int[] lockDice, String roomId){

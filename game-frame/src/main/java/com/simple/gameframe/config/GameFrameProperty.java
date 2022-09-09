@@ -28,4 +28,14 @@ public class GameFrameProperty implements Serializable {
     public void setScan(String scan){
         this.scan = scan;
     }
+
+    private boolean enableLinkLogic;
+
+    public boolean getEnableLinkLogic(){
+        return this.enableLinkLogic;
+    }
+
+    public void setEnableLinkLogic(boolean enableLinkLogic){
+        this.enableLinkLogic = enableLinkLogic;
+    }
 }

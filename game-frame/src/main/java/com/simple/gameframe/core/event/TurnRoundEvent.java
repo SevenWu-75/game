@@ -5,7 +5,7 @@ import com.simple.api.game.Room;
 
 public class TurnRoundEvent extends AbstractEvent {
 
-    public TurnRoundEvent(Room<? extends Player> room, Object o) {
-        super(room, o);
+    public TurnRoundEvent(Room<? extends Player> room,Player player, Object o) {
+        super(room, player, o);
     }
 }

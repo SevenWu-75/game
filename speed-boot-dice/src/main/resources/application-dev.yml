@@ -1,6 +1,7 @@
 game-frame:
   scan: com.simple.speedbootdice
   game-id: 1
+  enable-link-logic: true
 
 #websocket:
 #  url: https://localhost/speedBoot
