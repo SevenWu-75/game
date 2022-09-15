@@ -64,7 +64,10 @@ public class RoomController {
 
     private void cache(HttpSession session, UserVO user, RoomVO<? extends Player> room) {
         HistoryRank historyRank = historyRankService.getHistoryRank(user.getId(), 1);
-        HistoryRankVO historyRankVO = new HistoryRankVO(historyRank);
+        HistoryRankVO historyRankVO = new HistoryRankVO();
+        if(historyRank != null){
+            historyRankVO = new HistoryRankVO(historyRank);
+        }
         user.setHistoryRankVO(historyRankVO);
         session.setAttribute("room",room);
         session.setAttribute("user",user);
