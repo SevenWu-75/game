@@ -25,4 +25,4 @@ spring:
     cache: false
 
 websocket:
-  url: http://localhost:8084/speedBoot
+  url: https://8282-115-231-52-50.ap.ngrok.io/speedBoot

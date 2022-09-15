@@ -4,6 +4,7 @@ import com.simple.api.game.service.HistoryRankService;
 import com.simple.gameframe.common.GameCommand;
 import com.simple.gameframe.core.event.GameResultEvent;
 import com.simple.gameframe.core.listener.AbstractEventListener;
+import com.simple.gameframe.util.MessagePublishUtil;
 import com.simple.speedbootdice.common.ScoreEnum;
 import com.simple.speedbootdice.pojo.SpeedBootPlayer;
 import com.simple.speedbootdice.pojo.SpeedBootRoom;
@@ -44,7 +45,7 @@ public class SpeedBoatGameOverEventListener extends AbstractEventListener<GameRe
         }
         GameResultVo gameResultVo = new GameResultVo(winner, playerList);
         messageHandler.setCommand(GameCommand.GAME_RESULT);
-        messageHandler.messageHandle(event.getRoom(), null, gameResultVo);
+        MessagePublishUtil.sendToRoomPublic(room.getRoomId(), messageHandler.messageHandle(event.getRoom(), null, gameResultVo));
 
         //保存历史记录
         for (SpeedBootPlayer player : playerList) {
