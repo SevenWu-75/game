@@ -4,11 +4,11 @@ FROM watrix-java8-base:latest
 # 设置作者
 MAINTAINER ancy
 # 设置镜像标签
-LABEL user-service 1.0.0
+LABEL game-service 1.0.0
 # 在docker容器内执行命令
 RUN mkdir /app
 # 拷贝外部文件到容器
-ADD user-service.jar /app/user-service.jar
+ADD game-service.jar /app/game-service.jar
 # 修改docker容器的时间时区
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
 && echo 'Asia/Shanghai' >/etc/timezone
@@ -16,8 +16,8 @@ RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
 ENV LANG=en_US.UTF-8 \
     LANGUAGE=en_US.UTF-8
 # 声明需要暴漏的端口
-EXPOSE 8082
+EXPOSE 8083
 # 指定工作目录
 WORKDIR /app/
-# 配置容器启动后执行的命令
-CMD ["java","-Dserver.port=8081","-jar","user-service.jar"]
+# 配置启动jar包命令
+CMD ["sh","-c","start.sh"]

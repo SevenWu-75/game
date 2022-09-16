@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>game-service</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>game-service</name>
     <description>game-service</description>
     <properties>

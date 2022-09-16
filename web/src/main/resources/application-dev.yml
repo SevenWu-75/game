@@ -25,4 +25,4 @@ spring:
     cache: false
 
 websocket:
-  url: https://8282-115-231-52-50.ap.ngrok.io/speedBoot
+  url: https://187f67320w.zicp.fun/speedBoot
