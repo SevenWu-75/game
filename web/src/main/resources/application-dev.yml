@@ -5,7 +5,7 @@ dubbo:
     name: dubbo
     port: -1
   registry:
-    address: spring-cloud://localhost
+    address: spring-cloud://nacos
     check: false
   consumer:
     timeout: 60000
@@ -18,7 +18,7 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: localhost:8848
+        server-addr: nacos:8848
   main:
     allow-circular-references: true
   thymeleaf:

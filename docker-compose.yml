@@ -1,0 +1,94 @@
+version: '3.1'
+services:
+  mysql:
+    restart: always
+    image: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+    volumes:
+      - ~/mysql/logs:/logs
+      - ~/mysql/data:/var/lib/mysql
+
+  nacos:
+    restart: always
+    image: nacos/nacos-server:v2.1.1-slim
+    ports:
+      - "8848:8848"
+    environment:
+      JVM_XMS: 256m
+      JVM_XMX: 256m
+      MODE: standalone
+    volumes:
+      - ~/nacos/logs:/home/nacos/logs
+      - ~/nacos/conf/application.properties:/home/nacos/conf/application.properties
+
+  nginx:
+    restart: always
+    image: nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ~/nginx/conf:/etc/nginx
+      - ~/nginx/log:/var/log/nginx
+      - ~/nginx/html:/usr/share/nginx/html
+
+  user-service:
+    build: ./service/user-service
+    image: user-service:1.0.0
+    ports:
+      - 8082:8082
+    volumes:
+      - ./service/user-service/target:/app
+    depends_on:
+      - nacos
+      - mysql
+    links:
+      - mysql
+      - nacos
+
+  game-service:
+    build: ./service/game-service
+    image: game-service:1.0.0
+    ports:
+      - 8083:8083
+    volumes:
+      - ./service/game-service/target:/app
+    depends_on:
+      - nacos
+      - mysql
+      - user-service
+    links:
+      - mysql
+      - nacos
+
+  speed-boot-dice:
+    build: ./speed-boot-dice
+    image: speed-boot-dice:1.0.0
+    ports:
+      - 8084:8084
+    volumes:
+      - ./speed-boot-dice/target:/app
+    depends_on:
+      - nacos
+      - user-service
+      - game-service
+    links:
+      - nacos
+      - nginx
+
+  web:
+    build: ./web
+    image: web:1.0.0
+    ports:
+      - 8081:8081
+    volumes:
+      - ./web/target:/app
+    depends_on:
+      - nginx
+      - user-service
+      - game-service
+    links:
+      - nacos
+      - nginx
