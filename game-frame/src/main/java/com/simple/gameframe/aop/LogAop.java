@@ -48,11 +48,11 @@ public class LogAop {
             Optional<Object> first = Arrays.stream(pjp.getArgs()).filter(arg -> arg instanceof DefaultMessage).findFirst();
             if(first.isPresent()){
                 DefaultMessage<?> message = (DefaultMessage<?>) first.get();
-                log.trace("接收到消息包id{},{}",message.getId(),message);
                 RoomVO<? extends Player> room = ThreadLocalUtil.getRoom();
                 if (message.getId() != RoomPropertyManagerUtil.getPackageIdMap(room.getRoomId(), pjp.getThis().toString())) {
                     return null;
                 }
+                log.trace("接收到消息包id{},{}",message.getId(),message);
             }
         }
         log.trace("===执行{}的{}方法===",split[split.length-1], name);

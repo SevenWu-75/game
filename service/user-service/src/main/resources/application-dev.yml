@@ -1,13 +1,16 @@
+server:
+  port: 7082
+
 spring:
   cloud:
     nacos:
       discovery:
-        server-addr: nacos:8848
+        server-addr: localhost:8848
   application:
-    name: user-service
+    name: user-service-dev
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://mysql:3306/yzhtzee
+    url: jdbc:mysql://localhost:3306/yzhtzee
     username: root
     password: 123456
   flyway:
@@ -23,21 +26,21 @@ spring:
 
 dubbo:
   application:
-    name: user-service
+    name: user-service-dev
   protocol:
     name: dubbo
     port: -1
   scan:
     base-packages: com.simple.userservice.service.impl
   registry:
-    address: spring-cloud://nacos
+    address: spring-cloud://localhost
     check: false
   consumer:
     check: false
     timeout: 60000
     retries: 0
-#  cloud:
-#    subscribed-services: user-service
+  cloud:
+    subscribed-services: none
 
 logging:
   level:

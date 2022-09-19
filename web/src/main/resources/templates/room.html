@@ -191,6 +191,7 @@
                     //询问投骰子还是选择分数
                     if(parse.code === 6){
                         playDice.disabled = parse.content === 0;
+                        console.log("投骰子按钮关闭状态为:" + parse.content === 0 + ",包id为" + parse.id);
                         playDice.innerText = "投掷骰子*" + parse.content;
                         if(parse.content != 3){
                             for (var i=0; i < 12; i++) {

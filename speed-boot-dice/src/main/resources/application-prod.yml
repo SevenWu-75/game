@@ -1,5 +1,5 @@
 server:
-  port: 7084
+  port: 8084
 
 game-frame:
   scan: com.simple.speedbootdice
@@ -13,20 +13,20 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: localhost:8848
+        server-addr: nacos:8848
   application:
-    name: speed-boot-dev
+    name: speed-boot
   main:
     allow-circular-references: true
 
 dubbo:
   application:
-    name: speed-boot-dev
+    name: speed-boot
   protocol:
     name: dubbo
     port: -1
   registry:
-    address: spring-cloud://localhost
+    address: spring-cloud://nacos
     check: false
   scan:
     base-packages: com.simple.gameframe.service.impl
@@ -35,4 +35,4 @@ dubbo:
     timeout: 60000
     retries: 0
   cloud:
-    subscribed-services: game-service-dev
+    subscribed-services: game-service

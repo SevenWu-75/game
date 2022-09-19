@@ -1,16 +1,16 @@
 server:
-  port: 7083
+  port: 8083
 
 spring:
   cloud:
     nacos:
       discovery:
-        server-addr: localhost:8848
+        server-addr: nacos:8848
   application:
-    name: game-service-dev
+    name: game-service
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/yzhtzee
+    url: jdbc:mysql://mysql:3306/yzhtzee
     username: root
     password: 123456
   flyway:
@@ -26,21 +26,21 @@ spring:
 
 dubbo:
   application:
-    name: game-service-dev
+    name: game-service
   protocol:
     name: dubbo
     port: -1
   scan:
     base-packages: com.simple.gameservice.service.impl
   registry:
-    address: spring-cloud://localhost
+    address: spring-cloud://nacos
     check: false
   consumer:
     timeout: 60000
     retries: 0
     check: false
   cloud:
-    subscribed-services: speed-boot-dev
+    subscribed-services: speed-boot
 
 logging:
   level:
