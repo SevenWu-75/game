@@ -20,4 +20,4 @@ EXPOSE 8081
 # 指定工作目录
 WORKDIR /app/
 # 配置容器启动后执行的命令
-CMD ["java","-Dserver.port=8081","-jar","web-1.0.0.jar"]
+CMD ["java","-Dserver.port=8081","-Dspring.profiles.active=prod","-jar","web-1.0.0.jar"]

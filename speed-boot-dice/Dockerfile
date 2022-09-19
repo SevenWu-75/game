@@ -20,4 +20,4 @@ EXPOSE 8084
 # 指定工作目录
 WORKDIR /app/
 # 配置容器启动后执行的命令
-CMD ["java","-Dserver.port=8084","-jar","speed-boot-dice-1.0.0.jar"]
+CMD ["java","-Dserver.port=8084","-Dspring.profiles.active=prod","-jar","speed-boot-dice-1.0.0.jar"]

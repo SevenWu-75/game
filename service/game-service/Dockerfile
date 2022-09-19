@@ -20,4 +20,4 @@ EXPOSE 8083
 # 指定工作目录
 WORKDIR /app/
 # 配置容器启动后执行的命令
-CMD ["java","-Dserver.port=8083","-jar","game-service-1.0.0.jar"]
+CMD ["java","-Dserver.port=8083","-Dspring.profiles.active=prod","-jar","game-service-1.0.0.jar"]
