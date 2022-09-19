@@ -129,11 +129,9 @@
                             document.getElementById(ids[13]).innerText = parse.content.haveScores[13];
                             document.getElementById(ids[14]).innerText = parse.content.haveScores[14];
                             playDice.innerText = "投掷骰子*" + parse.content.times;
-                            playDice.disabled = true;
                         }
                         //收到广播的选择分数结果
                         if(parse.code === 5){
-                            playDice.disabled = true;
                             resetDice();
                             for (var i=0;i<parse.content.length;i++)
                             {
@@ -216,6 +214,8 @@
         }
 
         function playDice() {
+            var playDice = document.getElementById("playDice");
+            playDice.disabled = true;
             stompClient.send("/command",{}, JSON.stringify({'id': messageId, 'code': 3 ,'content': lockDiceIndexList}));
         }
 
