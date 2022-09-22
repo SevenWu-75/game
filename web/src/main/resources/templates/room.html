@@ -35,28 +35,27 @@
         </div>
     </script>
     <script type="text/html" id="pre-half-html" th:inline="javascript">
-        <tr>
-            <td style="background: #ccc;text-align: center;" colspan="2">{{user.realname}}</td>
-            <td id="one-{{user.username}}" style="background: #ccc;text-align: center;" colspan="2">-</td>
-            <td id="two-{{user.username}}" style="background: #ccc;text-align: center;" colspan="2">-</td>
-            <td id="three-{{user.username}}" style="background: #ccc;text-align: center;" colspan="2">-</td>
-            <td id="four-{{user.username}}" style="background: #ccc;text-align: center;" colspan="2">-</td>
-            <td id="five-{{user.username}}" style="background: #ccc;text-align: center;" colspan="2">-</td>
-            <td id="six-{{user.username}}" style="background: #ccc;text-align: center;" colspan="2">-</td>
-            <td id="smallSum-{{user.username}}" style="background: #ccc;text-align: center;" colspan="2">0</td>
-            <td id="bonus-{{user.username}}" style="background: #ccc;text-align: center;" colspan="2">0</td>
+        <tr class="table-success">
+            <td style="text-align: center; font-weight: bold;" colspan="2">{{user.realname}}</td>
+            <td id="one-{{user.username}}" style="text-align: center; font-weight: bold;" colspan="2">-</td>
+            <td id="two-{{user.username}}" style="text-align: center; font-weight: bold;" colspan="2">-</td>
+            <td id="three-{{user.username}}" style="text-align: center; font-weight: bold;" colspan="2">-</td>
+            <td id="four-{{user.username}}" style="text-align: center; font-weight: bold;" colspan="2">-</td>
+            <td id="five-{{user.username}}" style="text-align: center; font-weight: bold;" colspan="2">-</td>
+            <td id="six-{{user.username}}" style="text-align: center; font-weight: bold;" colspan="2">-</td>
+            <td id="smallSum-{{user.username}}" style="text-align: center; font-weight: bold;" colspan="2">0/63</td>
         </tr>
     </script>
     <script type="text/html" id="post-half-html" th:inline="javascript">
-        <tr>
-            <td style="background: #ccc;text-align: center;" colspan="2">{{user.realname}}</td>
-            <td id="sum-{{user.username}}" style="background: #ccc;text-align: center;" colspan="2">-</td>
-            <td id="kind4-{{user.username}}" style="background: #ccc;text-align: center;" colspan="2">-</td>
-            <td id="fullHouse-{{user.username}}" style="background: #ccc;text-align: center;" colspan="2">-</td>
-            <td id="smallStraight-{{user.username}}" style="background: #ccc;text-align: center;" colspan="2">-</td>
-            <td id="straight-{{user.username}}" style="background: #ccc;text-align: center;" colspan="2">-</td>
-            <td id="yahtzee-{{user.username}}" style="background: #ccc;text-align: center;" colspan="2">-</td>
-            <td id="totalSum-{{user.username}}" style="background: #ccc;text-align: center;" colspan="2">0</td>
+        <tr class="table-success">
+            <td style="text-align: center; font-weight: bold;" colspan="2">{{user.realname}}</td>
+            <td id="sum-{{user.username}}" style="text-align: center; font-weight: bold;" colspan="2">-</td>
+            <td id="kind4-{{user.username}}" style="text-align: center; font-weight: bold;" colspan="2">-</td>
+            <td id="fullHouse-{{user.username}}" style="text-align: center; font-weight: bold;" colspan="2">-</td>
+            <td id="smallStraight-{{user.username}}" style="text-align: center; font-weight: bold;" colspan="2">-</td>
+            <td id="straight-{{user.username}}" style="text-align: center; font-weight: bold;" colspan="2">-</td>
+            <td id="yahtzee-{{user.username}}" style="text-align: center; font-weight: bold;" colspan="2">-</td>
+            <td id="totalSum-{{user.username}}" style="text-align: center; font-weight: bold;" colspan="2">0</td>
         </tr>
     </script>
     <script type="text/javascript" th:inline="javascript">
@@ -70,6 +69,12 @@
         var lockDiceIndexList = [-1,-1,-1,-1,-1];
 
         var messageId = null;
+
+        var dicePicList = ['/bootstrap-3.4.1-dist/images/一点.png','/bootstrap-3.4.1-dist/images/二点.png',
+            '/bootstrap-3.4.1-dist/images/三点.png','/bootstrap-3.4.1-dist/images/四点.png',
+            '/bootstrap-3.4.1-dist/images/五点.png','/bootstrap-3.4.1-dist/images/六点.png'];
+
+        var diceTaskId = null;
 
         function connect() {
             var socket = new SockJS([[${session.wsUrl}]]);
@@ -110,11 +115,13 @@
                         }
                         //收到抛出骰子的结果，需要填入到各项中
                         if(parse.code === 4){
-                            document.getElementById('number1').innerHTML = parse.content.numbers[0];
-                            document.getElementById('number2').innerHTML = parse.content.numbers[1];
-                            document.getElementById('number3').innerHTML = parse.content.numbers[2];
-                            document.getElementById('number4').innerHTML = parse.content.numbers[3];
-                            document.getElementById('number5').innerHTML = parse.content.numbers[4];
+                            //sleep(3000);
+                            clearInterval(diceTaskId);
+                            document.getElementById('number1').setAttribute("src", dicePicList[parse.content.numbers[0]-1]);
+                            document.getElementById('number2').setAttribute("src", dicePicList[parse.content.numbers[1]-1]);
+                            document.getElementById('number3').setAttribute("src", dicePicList[parse.content.numbers[2]-1]);
+                            document.getElementById('number4').setAttribute("src", dicePicList[parse.content.numbers[3]-1]);
+                            document.getElementById('number5').setAttribute("src", dicePicList[parse.content.numbers[4]-1]);
                             for (var i=0;i<parse.content.scores.length;i++)
                             {
                                 var elementById1 = document.getElementById(ids[i]);
@@ -125,8 +132,11 @@
                                     elementById1.innerHTML = parse.content.haveScores[i];
                                 }
                             }
-                            document.getElementById(ids[12]).innerText = parse.content.haveScores[12];
-                            document.getElementById(ids[13]).innerText = parse.content.haveScores[13];
+                            if(parse.content.haveScores[13] === 35){
+                                document.getElementById(ids[12]).innerText = "✓";
+                            } else {
+                                document.getElementById(ids[12]).innerText = parse.content.haveScores[12] + "/63";
+                            }
                             document.getElementById(ids[14]).innerText = parse.content.haveScores[14];
                             playDice.innerText = "投掷骰子*" + parse.content.times;
                         }
@@ -135,12 +145,23 @@
                             resetDice();
                             for (var i=0;i<parse.content.length;i++)
                             {
-                                var elementById1 = document.getElementById(ids[i]);
-                                elementById1.style.color = "black";
-                                if(parse.content[i] === -1){
-                                    elementById1.innerHTML = "-";
-                                } else {
-                                    elementById1.innerHTML = parse.content[i];
+                                //13奖励分不填出来
+                                if(i != 13){
+                                    var elementById1 = document.getElementById(ids[i]);
+                                    elementById1.style.color = "black";
+                                    if(parse.content[i] === -1){
+                                        elementById1.innerHTML = "-";
+                                    } else {
+                                        if(i === 12){
+                                            if(parse.content[13] === 35){
+                                                elementById1.innerHTML = parse.content[i] + "✓";
+                                            } else {
+                                                elementById1.innerHTML = parse.content[i] + "/63";
+                                            }
+                                        } else {
+                                            elementById1.innerHTML = parse.content[i];
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -156,6 +177,11 @@
                         //收到解散消息
                         if(parse.code === 109){
                             alert("房间已解散!")
+                            window.location.href = '/';
+                        }
+                        //收到超时
+                        if(parse.code === 113){
+                            alert("房间超时已解散!")
                             window.location.href = '/';
                         }
                         //收到换人play的消息
@@ -217,6 +243,21 @@
             var playDice = document.getElementById("playDice");
             playDice.disabled = true;
             stompClient.send("/command",{}, JSON.stringify({'id': messageId, 'code': 3 ,'content': lockDiceIndexList}));
+            let j = 0;
+            diceTaskId = setInterval(function (){
+                for (let i = 0; i < diceIdList.length; i++) {
+                    if(i % 2 === 0){
+                        document.getElementById(diceIdList[i]).setAttribute("src",dicePicList[j]);
+                    } else {
+                        document.getElementById(diceIdList[i]).setAttribute("src",dicePicList[dicePicList.length - 1 - j]);
+                    }
+                }
+                if(j === dicePicList.length){
+                    j = 0;
+                } else {
+                    j++;
+                }
+            },200);
         }
 
         function startGame(){
@@ -242,9 +283,10 @@
                 if(lockDiceIndexList[index] === -1){
                     lockDiceIndexList[index] = 1;
                     dice.style.color = "red";
+                    dice.classList.add("img-select");
                 } else {
                     lockDiceIndexList[index] = -1;
-                    dice.style.color = "black";
+                    dice.classList.remove("img-select");
                 }
 
             }
@@ -253,8 +295,8 @@
         function resetDice(){
             for (var i=0; i < diceIdList.length; i++) {
                 var dice = document.getElementById(diceIdList[i]);
-                dice.innerText = "-";
-                dice.style.color = "black";
+                dice.setAttribute("src",dicePicList[5]);
+                dice.classList.remove("img-select");
                 lockDiceIndexList[i] = -1;
             }
         }
@@ -263,30 +305,29 @@
             stompClient.send("/dismiss",{},
                 JSON.stringify({'code': 109}));
         }
+
+        function sleep(numberMillis) {
+            var now = new Date();
+            var exitTime = now.getTime() + numberMillis;
+            while (true) {
+                now = new Date();
+                if (now.getTime() > exitTime){
+                    return;
+                }
+            }
+        }
     </script>
+    <style>
+        .img-select {
+            border:dashed 2px red;
+            border-right:solid 2px red;
+            border-top: solid 2px red;
+            border-bottom: solid 2px red;
+            border-left:  solid 2px red;
+        }
+    </style>
 </head>
 <body class="loaded" onload="connect()">
-    <!-- Preloader -->
-<!--    <div class="preloader">-->
-<!--        <div class="spinner-border text-primary" role="status">-->
-<!--            <span class="sr-only">Loading...</span>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--    <div class="modal fade" tabindex="-1" role="dialog" id="modal-cookies" data-backdrop="false" aria-labelledby="modal-cookies" aria-hidden="true">-->
-<!--        <div class="modal-dialog modal-dialog-aside left-4 right-4 bottom-4">-->
-<!--            <div class="modal-content bg-dark-dark">-->
-<!--                <div class="modal-body">-->
-<!--                    &lt;!&ndash; Text &ndash;&gt;-->
-<!--                    <p class="text-sm text-white mb-3">-->
-<!--                        We use cookies so that our themes work for you. By using our website, you agree to our use of cookies.-->
-<!--                    </p>-->
-<!--                    &lt;!&ndash; Buttons &ndash;&gt;-->
-<!--                    <a href="pages/utility/terms.html" class="btn btn-sm btn-white" target="_blank">Learn more</a>-->
-<!--                    <button type="button" class="btn btn-sm btn-primary mr-2" data-dismiss="modal">OK</button>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
     <!-- Main content -->
     <section class="slice py-4">
         <div class="container">
@@ -325,89 +366,75 @@
             <!--添加游戏主体 -->
             <div style="display: flex; justify-content: center">
                 <div class="table-responsive">
-                    <table class="table table-hover table-bordered" style="text-align: center;table-layout:fixed;word-break:break-all;">
-                        <thead>
+                    <table class="table table-hover" style="text-align: center;table-layout:fixed;word-break:break-all;">
+                        <thead class="table-warning">
                             <tr>
-                                <th style="background: #ccc;text-align: center;" colspan="2">回合</th>
-                                <th style="background: #ccc;text-align: center;" colspan="2"><img src="/bootstrap-3.4.1-dist/images/骰子_一点.png" style="height: 40px;" alt="一点"></th>
-                                <th style="background: #ccc;text-align: center;" colspan="2"><img src="/bootstrap-3.4.1-dist/images/骰子_二点.png" style="height: 40px;" alt="二点"></th>
-                                <th style="background: #ccc;text-align: center;" colspan="2"><img src="/bootstrap-3.4.1-dist/images/骰子_三点.png" style="height: 40px;" alt="三点"></th>
-                                <th style="background: #ccc;text-align: center;" colspan="2"><img src="/bootstrap-3.4.1-dist/images/骰子_四点.png" style="height: 40px;" alt="四点"></th>
-                                <th style="background: #ccc;text-align: center;" colspan="2"><img src="/bootstrap-3.4.1-dist/images/骰子_五点.png" style="height: 40px;" alt="五点"></th>
-                                <th style="background: #ccc;text-align: center;" colspan="2"><img src="/bootstrap-3.4.1-dist/images/骰子_六点.png" style="height: 40px;" alt="六点"></th>
-                                <th style="background: #ccc;text-align: center;" colspan="2">小记</th>
-                                <th style="background: #ccc;text-align: center;" colspan="2">奖励</th>
+                                <th class="h4" style="text-align: center; font-weight: bold;" colspan="2">回合</th>
+                                <th style="text-align: center;" colspan="2"><img class="img-fluid" src="/bootstrap-3.4.1-dist/images/骰子_一点.png" style="height: 40px;" alt="一点"></th>
+                                <th style="text-align: center;" colspan="2"><img class="img-fluid" src="/bootstrap-3.4.1-dist/images/骰子_二点.png" style="height: 40px;" alt="二点"></th>
+                                <th style="text-align: center;" colspan="2"><img class="img-fluid" src="/bootstrap-3.4.1-dist/images/骰子_三点.png" style="height: 40px;" alt="三点"></th>
+                                <th style="text-align: center;" colspan="2"><img class="img-fluid" src="/bootstrap-3.4.1-dist/images/骰子_四点.png" style="height: 40px;" alt="四点"></th>
+                                <th style="text-align: center;" colspan="2"><img class="img-fluid" src="/bootstrap-3.4.1-dist/images/骰子_五点.png" style="height: 40px;" alt="五点"></th>
+                                <th style="text-align: center;" colspan="2"><img class="img-fluid" src="/bootstrap-3.4.1-dist/images/骰子_六点.png" style="height: 40px;" alt="六点"></th>
+                                <th class="h4" style="text-align: center; font-weight: bold;" colspan="2">奖励+35</th>
                             </tr>
                         </thead>
                         <tbody id="pre-half">
-                            <tr>
-                                <td style="background: #ccc;text-align: center;" colspan="2">己方</td>
-                                <td id="one-my" style="background: #ccc;text-align: center;" colspan="2">-</td>
-                                <td id="two-my" style="background: #ccc;text-align: center;" colspan="2">-</td>
-                                <td id="three-my" style="background: #ccc;text-align: center;" colspan="2">-</td>
-                                <td id="four-my" style="background: #ccc;text-align: center;" colspan="2">-</td>
-                                <td id="five-my" style="background: #ccc;text-align: center;" colspan="2">-</td>
-                                <td id="six-my" style="background: #ccc;text-align: center;" colspan="2">-</td>
-                                <td id="smallSum-my" style="background: #ccc;text-align: center;" colspan="2">0</td>
-                                <td id="bonus-my" style="background: #ccc;text-align: center;" colspan="2">0</td>
+                            <tr class="table-primary">
+                                <td class="h4" style="text-align: center; font-weight: bold;" colspan="2">己方</td>
+                                <td class="h4" id="one-my" style="text-align: center; font-weight: bold;" colspan="2">-</td>
+                                <td class="h4" id="two-my" style="text-align: center; font-weight: bold;" colspan="2">-</td>
+                                <td class="h4" id="three-my" style="text-align: center; font-weight: bold;" colspan="2">-</td>
+                                <td class="h4" id="four-my" style="text-align: center; font-weight: bold;" colspan="2">-</td>
+                                <td class="h4" id="five-my" style="text-align: center; font-weight: bold;" colspan="2">-</td>
+                                <td class="h4" id="six-my" style="text-align: center; font-weight: bold;" colspan="2">-</td>
+                                <td class="h4" id="smallSum-my" style="text-align: center; font-weight: bold;" colspan="2">0/63</td>
                             </tr>
                         </tbody>
                     </table>
-                    <table class="table table-hover table-bordered" style="text-align: center;table-layout:fixed;word-break:break-all;">
-                        <thead>
+                    <table class="table table-hover" style="text-align: center;table-layout:fixed;word-break:break-all;">
+                        <thead class="table-warning">
                             <tr>
-                                <th style="background: #ccc;text-align: center;" colspan="2">回合</th>
-                                <th style="background: #ccc;text-align: center;" colspan="2"><img src="/bootstrap-3.4.1-dist/images/骰子_全选.png" style="height: 40px;" alt="全选"></th>
-                                <th style="background: #ccc;text-align: center;" colspan="2"><img src="/bootstrap-3.4.1-dist/images/骰子_四条.png" style="height: 40px;" alt="四骰同花"></th>
-                                <th style="background: #ccc;text-align: center;" colspan="2"><img src="/bootstrap-3.4.1-dist/images/骰子_葫芦.png" style="height: 40px;" alt="葫芦"></th>
-                                <th style="background: #ccc;text-align: center;" colspan="2"><img src="/bootstrap-3.4.1-dist/images/骰子_小顺.png" style="height: 40px;" alt="小顺"></th>
-                                <th style="background: #ccc;text-align: center;" colspan="2"><img src="/bootstrap-3.4.1-dist/images/骰子_大顺.png" style="height: 40px;" alt="大顺"></th>
-                                <th style="background: #ccc;text-align: center;" colspan="2"><img src="/bootstrap-3.4.1-dist/images/骰子_快艇.png" style="height: 40px;" alt="快艇"></th>
-                                <th style="background: #ccc;text-align: center;" colspan="2">总计点数</th>
+                                <th class="h4" style="text-align: center; font-weight: bold;" colspan="2">回合</th>
+                                <th style="text-align: center;" colspan="2"><img class="img-fluid" src="/bootstrap-3.4.1-dist/images/骰子_全选.png" style="height: 40px;" alt="全选"></th>
+                                <th style="text-align: center;" colspan="2"><img class="img-fluid" src="/bootstrap-3.4.1-dist/images/骰子_四条.png" style="height: 40px;" alt="四骰同花"></th>
+                                <th style="text-align: center;" colspan="2"><img class="img-fluid" src="/bootstrap-3.4.1-dist/images/骰子_葫芦.png" style="height: 40px;" alt="葫芦"></th>
+                                <th style="text-align: center;" colspan="2"><img class="img-fluid" src="/bootstrap-3.4.1-dist/images/骰子_小顺.png" style="height: 40px;" alt="小顺"></th>
+                                <th style="text-align: center;" colspan="2"><img class="img-fluid" src="/bootstrap-3.4.1-dist/images/骰子_大顺.png" style="height: 40px;" alt="大顺"></th>
+                                <th style="text-align: center;" colspan="2"><img class="img-fluid" src="/bootstrap-3.4.1-dist/images/骰子_快艇.png" style="height: 40px;" alt="快艇"></th>
+                                <th class="h4" style="text-align: center; font-weight: bold;" colspan="2">总计点数</th>
                             </tr>
                         </thead>
                         <tbody id="post-half">
-                            <tr>
-                                <td style="background: #ccc;text-align: center;" colspan="2">己方</td>
-                                <td id="sum-my" style="background: #ccc;text-align: center;" colspan="2">-</td>
-                                <td id="kind4-my" style="background: #ccc;text-align: center;" colspan="2">-</td>
-                                <td id="fullHouse-my" style="background: #ccc;text-align: center;" colspan="2">-</td>
-                                <td id="smallStraight-my" style="background: #ccc;text-align: center;" colspan="2">-</td>
-                                <td id="straight-my" style="background: #ccc;text-align: center;" colspan="2">-</td>
-                                <td id="yahtzee-my" style="background: #ccc;text-align: center;" colspan="2">-</td>
-                                <td id="totalSum-my" style="background: #ccc;text-align: center;" colspan="2">0</td>
-                                <td style="background: #FFF;text-align: center;border-color: #FFF" colspan="2"></td>
+                            <tr class="table-primary">
+                                <td class="h4" style="text-align: center; font-weight: bold;" colspan="2">己方</td>
+                                <td class="h4" id="sum-my" style="text-align: center; font-weight: bold;" colspan="2">-</td>
+                                <td class="h4" id="kind4-my" style="text-align: center; font-weight: bold;" colspan="2">-</td>
+                                <td class="h4" id="fullHouse-my" style="text-align: center; font-weight: bold;" colspan="2">-</td>
+                                <td class="h4" id="smallStraight-my" style="text-align: center; font-weight: bold;" colspan="2">-</td>
+                                <td class="h4" id="straight-my" style="text-align: center; font-weight: bold;" colspan="2">-</td>
+                                <td class="h4" id="yahtzee-my" style="text-align: center; font-weight: bold;" colspan="2">-</td>
+                                <td class="h4" id="totalSum-my" style="text-align: center; font-weight: bold;" colspan="2">0</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
             <div style="display: flex; justify-content: center; margin-top: 50px">
-                <table border="1" cellspacing="0" width="300px;" style="text-align: center">
+                <table border="0" cellspacing="0" width="300px;" style="text-align: center">
                     <tr>
-                        <td id="number1">-</td>
-                        <td id="number2">-</td>
-                        <td id="number3">-</td>
-                        <td id="number4">-</td>
-                        <td id="number5">-</td>
+                        <td style="text-align: center;" colspan="2"><img id="number1" class="img-fluid" src="/bootstrap-3.4.1-dist/images/六点.png" style="height: 40px;" alt="6"></td>
+                        <td style="text-align: center;" colspan="2"><img id="number2" class="img-fluid" src="/bootstrap-3.4.1-dist/images/六点.png" style="height: 40px;" alt="6"></td>
+                        <td style="text-align: center;" colspan="2"><img id="number3" class="img-fluid" src="/bootstrap-3.4.1-dist/images/六点.png" style="height: 40px;" alt="6"></td>
+                        <td style="text-align: center;" colspan="2"><img id="number4" class="img-fluid" src="/bootstrap-3.4.1-dist/images/六点.png" style="height: 40px;" alt="6"></td>
+                        <td style="text-align: center;" colspan="2"><img id="number5" class="img-fluid" src="/bootstrap-3.4.1-dist/images/六点.png" style="height: 40px;" alt="6"></td>
                     </tr>
                 </table>
-                <button id="playDice" onclick="playDice()" disabled>投掷骰子</button>
+                <button id="playDice" onclick="playDice()" class="badge badge-soft-success badge-pill badge-lg" disabled>
+                    投掷骰子
+                </button>
             </div>
         </div>
     </section>
-    <!-- Core JS  -->
-<!--    <script src="/static/bootstrap-3.4.1-dist/js/bootstrap.bundle.min.js"></script>-->
-<!--    <script src="/static/bootstrap-3.4.1-dist/js/svg-injector.min.js"></script>-->
-<!--    <script src="/static/bootstrap-3.4.1-dist/js/feather.min.js"></script>-->
-    <!-- Quick JS -->
-<!--    <script src="/static/bootstrap-3.4.1-dist/js/quick-website.js"></script>-->
-    <!-- Feather Icons -->
-<!--    <script>-->
-<!--        feather.replace({-->
-<!--            'width': '1em',-->
-<!--            'height': '1em'-->
-<!--        })-->
-<!--    </script>-->
 </body>
 </html>

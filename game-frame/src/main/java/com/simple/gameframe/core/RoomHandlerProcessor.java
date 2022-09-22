@@ -65,14 +65,18 @@ public class RoomHandlerProcessor implements RoomHandler {
             eventPublisher.start(room, null,null);
             //开始回合
             Object roundResult = roundHandler.startLogic(room);
+            Thread.sleep(500);
             //游戏结果
             eventPublisher.gameResult(room, null, roundResult);
+            Thread.sleep(500);
             //游戏结束
             eventPublisher.gameOver(room,null,null);
         } catch (GameException e) {
             if (e.getCode().equals(GameExceptionEnum.CLOSE_FOR_OPERATE_TIMEOUT)) {
                 eventPublisher.timeout(room, null,null);
             }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 
