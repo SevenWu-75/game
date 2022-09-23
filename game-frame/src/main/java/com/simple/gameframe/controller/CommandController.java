@@ -1,6 +1,7 @@
 package com.simple.gameframe.controller;
 
 import com.simple.api.game.Player;
+import com.simple.api.game.RoomVO;
 import com.simple.gameframe.core.DefaultMessage;
 import com.simple.api.game.Room;
 import com.simple.api.util.ThreadLocalUtil;
@@ -43,37 +44,6 @@ public class CommandController {
         });
     }
 
-//    @MessageMapping("/playDice")
-//    public void playDice(@RequestBody Message<int[]> message){
-//        Room<? extends Player> room = ThreadLocalUtil.getRoom();
-//        room.getAskAnswerUtil().answerPlayDice(message);
-//    }
-//
-//    @MessageMapping("/seatDown")
-//    public void seatDown(){
-//        Room room = ThreadLocalUtil.getRoom();
-//        room.getAskAnswerUtil().signalSeatDown();
-//    }
-//
-//    @MessageMapping("/selectScoreOrContinue")
-//    public void selectScoreOrContinue(Message<Integer> message){
-//        Room room = ThreadLocalUtil.getRoom();
-//        room.getAskAnswerUtil().answerSelectScore(message);
-//    }
-//
-//    @MessageMapping("/dismissRoom")
-//    public void dismissRoom(){
-//        Room room = ThreadLocalUtil.getRoom();
-//        room.dismissRoom();
-//        room.closeRoom();
-//    }
-//
-//    @MessageMapping("/startGame")
-//    public void startGame(Message<Void> message){
-//        Room room = ThreadLocalUtil.getRoom();
-//        room.getAskAnswerUtil().answerStart(message);
-//    }
-
     @MessageMapping("/dismiss")
     public void dismissRoom(@RequestBody DefaultMessage<?> message) {
         roomHandler.dismissRoom();
@@ -89,5 +59,11 @@ public class CommandController {
         eventPublisher.reconnect(room, null, userId);
         //游戏未开始且进来的玩家并未坐下则自动让他坐下
         roomHandler.signalSeatDown();
+    }
+
+    @MessageMapping("/public")
+    public void sendPublic(@RequestBody DefaultMessage<?> message){
+        RoomVO<? extends Player> room = ThreadLocalUtil.getRoom();
+        MessagePublishUtil.sendToRoomPublic(room.getRoomId(),message);
     }
 }

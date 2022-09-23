@@ -139,7 +139,7 @@
                                 }
                                 document.getElementById(ids[14]).innerText = parse.content.haveScores[14];
                                 playDice.innerText = "投掷骰子*" + parse.content.times;
-                            },3000);
+                            },1500);
                         }
                         //收到广播的选择分数结果
                         if(parse.code === 5){
@@ -192,6 +192,7 @@
                             }
                             document.getElementById(parse.seat.toString()).style.backgroundColor = "#FFEEBB";
                             resetDice();
+                            disable();
                         }
                         //收到有人断线的消息
                         if(parse.code === 107){
@@ -200,6 +201,40 @@
                         //收到有人在线的消息
                         if(parse.code === 108){
                             document.getElementById("img-"+parse.seat).style.filter = "";
+                        }
+                        //收到有人投骰子，展示动画
+                        if(parse.code === 3){
+                            lockDiceIndexList = parse.content;
+                            let j = 0;
+                            diceTaskId = setInterval(function (){
+                                for (let i = 0; i < diceIdList.length; i++) {
+                                    if(lockDiceIndexList[i] === -1){
+                                        document.getElementById(diceIdList[i]).src = dicePicList[j];
+                                        if(i % 2 === 0){
+                                            document.getElementById(diceIdList[i]).src = dicePicList[j];
+                                        } else {
+                                            document.getElementById(diceIdList[i]).src = dicePicList[dicePicList.length - 1 - j];
+                                        }
+                                    }
+                                }
+                                if(j === dicePicList.length -1){
+                                    j = 0;
+                                } else {
+                                    j++;
+                                }
+                            },50);
+                        }
+                        //收到锁骰子的广播，展示
+                        if(parse.code === 7){
+                            lockDiceIndexList = parse.content;
+                            for (let i = 0; i < lockDiceIndexList.length; i++) {
+                                var dice = document.getElementById(diceIdList[i]);
+                                if(lockDiceIndexList[i] === 1){
+                                    dice.classList.add("img-select");
+                                } else {
+                                    dice.classList.remove("img-select");
+                                }
+                            }
                         }
                     }
                 });
@@ -219,6 +254,7 @@
                         console.log("投骰子按钮关闭状态为:" + parse.content === 0 + ",包id为" + parse.id);
                         playDice.innerText = "投掷骰子*" + parse.content;
                         if(parse.content != 3){
+                            console.log("激活选择分数按钮");
                             for (var i=0; i < 12; i++) {
                                 selectScore(i, playerScoreIdList[parse.seat][i], parse.seat);
                             }
@@ -235,7 +271,6 @@
             if (stompClient != null) {
                 stompClient.disconnect();
             }
-
             //setConnected(false);
             console.log("Disconnected");
         }
@@ -244,22 +279,6 @@
             var playDice = document.getElementById("playDice");
             playDice.disabled = true;
             stompClient.send("/command",{}, JSON.stringify({'id': messageId, 'code': 3 ,'content': lockDiceIndexList}));
-            let j = 0;
-            diceTaskId = setInterval(function (){
-                for (let i = 0; i < diceIdList.length; i++) {
-                    document.getElementById(diceIdList[i]).src = dicePicList[j];
-                    if(i % 2 === 0){
-                        document.getElementById(diceIdList[i]).src = dicePicList[j];
-                    } else {
-                        document.getElementById(diceIdList[i]).src = dicePicList[dicePicList.length - 1 - j];
-                    }
-                }
-                if(j === dicePicList.length -1){
-                    j = 0;
-                } else {
-                    j++;
-                }
-            },100);
         }
 
         function startGame(){
@@ -284,13 +303,18 @@
             dice.onmousedown = function (){
                 if(lockDiceIndexList[index] === -1){
                     lockDiceIndexList[index] = 1;
-                    dice.style.color = "red";
-                    dice.classList.add("img-select");
                 } else {
                     lockDiceIndexList[index] = -1;
-                    dice.classList.remove("img-select");
                 }
+                stompClient.send("/public",{}, JSON.stringify({"code": 7, 'content': lockDiceIndexList}));
+            }
+        }
 
+        //处理不是自己回合时，禁止一些操作
+        function disable(){
+            //禁止锁定骰子
+            for (let i = 0; i < diceIdList.length; i++) {
+                document.getElementById(diceIdList[i]).onmousedown = null;
             }
         }
 
