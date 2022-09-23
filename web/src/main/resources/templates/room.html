@@ -115,30 +115,31 @@
                         }
                         //收到抛出骰子的结果，需要填入到各项中
                         if(parse.code === 4){
-                            //sleep(3000);
-                            clearInterval(diceTaskId);
-                            document.getElementById('number1').setAttribute("src", dicePicList[parse.content.numbers[0]-1]);
-                            document.getElementById('number2').setAttribute("src", dicePicList[parse.content.numbers[1]-1]);
-                            document.getElementById('number3').setAttribute("src", dicePicList[parse.content.numbers[2]-1]);
-                            document.getElementById('number4').setAttribute("src", dicePicList[parse.content.numbers[3]-1]);
-                            document.getElementById('number5').setAttribute("src", dicePicList[parse.content.numbers[4]-1]);
-                            for (var i=0;i<parse.content.scores.length;i++)
-                            {
-                                var elementById1 = document.getElementById(ids[i]);
-                                if(parse.content.haveScores[i] === -1){
-                                    elementById1.innerHTML = parse.content.scores[i];
-                                    elementById1.style.color = "red";
-                                } else {
-                                    elementById1.innerHTML = parse.content.haveScores[i];
+                            setTimeout(()=>{
+                                clearInterval(diceTaskId);
+                                document.getElementById('number1').src = dicePicList[parse.content.numbers[0]-1];
+                                document.getElementById('number2').src = dicePicList[parse.content.numbers[1]-1];
+                                document.getElementById('number3').src = dicePicList[parse.content.numbers[2]-1];
+                                document.getElementById('number4').src = dicePicList[parse.content.numbers[3]-1];
+                                document.getElementById('number5').src = dicePicList[parse.content.numbers[4]-1];
+                                for (var i=0;i<parse.content.scores.length;i++)
+                                {
+                                    var elementById1 = document.getElementById(ids[i]);
+                                    if(parse.content.haveScores[i] === -1){
+                                        elementById1.innerHTML = parse.content.scores[i];
+                                        elementById1.style.color = "red";
+                                    } else {
+                                        elementById1.innerHTML = parse.content.haveScores[i];
+                                    }
                                 }
-                            }
-                            if(parse.content.haveScores[13] === 35){
-                                document.getElementById(ids[12]).innerText = "✓";
-                            } else {
-                                document.getElementById(ids[12]).innerText = parse.content.haveScores[12] + "/63";
-                            }
-                            document.getElementById(ids[14]).innerText = parse.content.haveScores[14];
-                            playDice.innerText = "投掷骰子*" + parse.content.times;
+                                if(parse.content.haveScores[13] === 35){
+                                    document.getElementById(ids[12]).innerText = "✓";
+                                } else {
+                                    document.getElementById(ids[12]).innerText = parse.content.haveScores[12] + "/63";
+                                }
+                                document.getElementById(ids[14]).innerText = parse.content.haveScores[14];
+                                playDice.innerText = "投掷骰子*" + parse.content.times;
+                            },3000);
                         }
                         //收到广播的选择分数结果
                         if(parse.code === 5){
@@ -246,18 +247,19 @@
             let j = 0;
             diceTaskId = setInterval(function (){
                 for (let i = 0; i < diceIdList.length; i++) {
+                    document.getElementById(diceIdList[i]).src = dicePicList[j];
                     if(i % 2 === 0){
-                        document.getElementById(diceIdList[i]).setAttribute("src",dicePicList[j]);
+                        document.getElementById(diceIdList[i]).src = dicePicList[j];
                     } else {
-                        document.getElementById(diceIdList[i]).setAttribute("src",dicePicList[dicePicList.length - 1 - j]);
+                        document.getElementById(diceIdList[i]).src = dicePicList[dicePicList.length - 1 - j];
                     }
                 }
-                if(j === dicePicList.length){
+                if(j === dicePicList.length -1){
                     j = 0;
                 } else {
                     j++;
                 }
-            },200);
+            },100);
         }
 
         function startGame(){
@@ -295,7 +297,7 @@
         function resetDice(){
             for (var i=0; i < diceIdList.length; i++) {
                 var dice = document.getElementById(diceIdList[i]);
-                dice.setAttribute("src",dicePicList[5]);
+                dice.src = dicePicList[5];
                 dice.classList.remove("img-select");
                 lockDiceIndexList[i] = -1;
             }
@@ -304,17 +306,6 @@
         function dismissRoom(){
             stompClient.send("/dismiss",{},
                 JSON.stringify({'code': 109}));
-        }
-
-        function sleep(numberMillis) {
-            var now = new Date();
-            var exitTime = now.getTime() + numberMillis;
-            while (true) {
-                now = new Date();
-                if (now.getTime() > exitTime){
-                    return;
-                }
-            }
         }
     </script>
     <style>
