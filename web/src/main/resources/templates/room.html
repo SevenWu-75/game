@@ -250,13 +250,15 @@
                     }
                     //询问投骰子还是选择分数
                     if(parse.code === 6){
-                        playDice.disabled = parse.content === 0;
-                        console.log("投骰子按钮关闭状态为:" + parse.content === 0 + ",包id为" + parse.id);
-                        playDice.innerText = "投掷骰子*" + parse.content;
-                        if(parse.content != 3){
-                            console.log("激活选择分数按钮");
+                        var times = parse.content.times;
+                        playDice.disabled = times === 0;
+                        playDice.innerText = "投掷骰子*" + times;
+                        if(times != 3){
+                            var haveScores = parse.content.haveScores;
                             for (var i=0; i < 12; i++) {
-                                selectScore(i, playerScoreIdList[parse.seat][i], parse.seat);
+                                if(haveScores[i] === -1){
+                                    selectScore(i, playerScoreIdList[parse.seat][i], parse.seat);
+                                }
                             }
                             for (var i=0; i < diceIdList.length; i++){
                                 lockDice(i,diceIdList[i]);
@@ -287,13 +289,11 @@
         }
 
         function selectScore(index, id, seat){
-            if(document.getElementById(id).style.color === "red"){
-                document.getElementById(id).onmousedown = function (){
-                    stompClient.send("/command",{}, JSON.stringify({'id': messageId, 'code': 5,'content': index}));
-                    for (var i=0;i < 12; i++)
-                    {
-                        document.getElementById(playerScoreIdList[seat][i]).onmousedown = null;
-                    }
+            document.getElementById(id).onmousedown = function (){
+                stompClient.send("/command",{}, JSON.stringify({'id': messageId, 'code': 5,'content': index}));
+                for (var i=0;i < 12; i++)
+                {
+                    document.getElementById(playerScoreIdList[seat][i]).onmousedown = null;
                 }
             }
         }

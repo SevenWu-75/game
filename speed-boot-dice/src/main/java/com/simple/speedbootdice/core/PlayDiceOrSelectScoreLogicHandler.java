@@ -11,9 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
@@ -47,8 +45,7 @@ public class PlayDiceOrSelectScoreLogicHandler implements LogicHandler<SpeedBoot
         message.setCode(SpeedBootCommand.PLAY_DICE_OR_SELECT_SCORE.getCode());
         message.setFromId(player.getUser().getId());
         message.setSeat(player.getId());
-        SpeedBootPlayer sp = (SpeedBootPlayer) player;
-        message.setContent(sp.getPlayTimes());
+        message.setContent(o);
         return message;
     }
 
