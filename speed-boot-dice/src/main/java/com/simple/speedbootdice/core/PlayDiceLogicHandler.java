@@ -50,6 +50,7 @@ public class PlayDiceLogicHandler implements LogicHandler<SpeedBootCommand> {
 
     @Override
     public Object postHandle(Player player, Room<? extends Player> room, Message<?> message, Object o) {
+        message.setId(0);
         MessagePublishUtil.sendToRoomPublic(room.getRoomId(), message);
         Object content = message.getContent();
         int[] lockDice = new int[]{-1,-1,-1,-1,-1};

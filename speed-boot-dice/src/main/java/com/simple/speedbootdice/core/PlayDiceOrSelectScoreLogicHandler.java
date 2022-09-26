@@ -7,11 +7,14 @@ import com.simple.gameframe.core.Message;
 import com.simple.gameframe.core.ask.LogicHandler;
 import com.simple.speedbootdice.common.SpeedBootCommand;
 import com.simple.speedbootdice.pojo.SpeedBootPlayer;
+import com.simple.speedbootdice.vo.DiceResultVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
@@ -45,7 +48,15 @@ public class PlayDiceOrSelectScoreLogicHandler implements LogicHandler<SpeedBoot
         message.setCode(SpeedBootCommand.PLAY_DICE_OR_SELECT_SCORE.getCode());
         message.setFromId(player.getUser().getId());
         message.setSeat(player.getId());
-        message.setContent(o);
+        if(o == null) {
+            SpeedBootPlayer sp = (SpeedBootPlayer) player;
+            DiceResultVo diceResultVo = new DiceResultVo();
+            diceResultVo.setTimes(sp.getPlayTimes());
+            diceResultVo.setHaveScores(sp.getScores());
+            message.setContent(diceResultVo);
+        } else {
+            message.setContent(o);
+        }
         return message;
     }
 
