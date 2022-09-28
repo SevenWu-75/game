@@ -15,7 +15,7 @@ public class DefaultMessageHandler implements MessageHandler {
     }
 
     @Override
-    public Message<?> messageHandle(Room<? extends Player> room, Player player, Object o) {
+    public Message<?> messageHandle(Room<Player> room, Player player, Object o) {
         Message<Object> message = new DefaultMessage<>();
         message.setRoomId(room.getRoomId());
         message.setCode(command.getCode());

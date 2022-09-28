@@ -3,7 +3,6 @@ package com.simple.web.controller;
 import com.simple.api.game.*;
 import com.simple.api.game.entity.HistoryRank;
 import com.simple.api.game.service.RoomManagerService;
-import com.simple.api.user.entity.User;
 import com.simple.api.game.service.HistoryRankService;
 import com.simple.api.util.ThreadLocalUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -32,8 +31,8 @@ public class RoomController {
 
     @GetMapping("/create")
     public String createRoom(HttpSession session){
-        UserVO user = ThreadLocalUtil.getUser();
-        RoomVO<? extends Player> room = ThreadLocalUtil.getRoom();
+        UserVO user = ThreadLocalUtil.getUserVO();
+        RoomVO<? extends Player> room = ThreadLocalUtil.getRoomVO();
         if(room != null){
             room = roomManagerService.getRoomByRoomIdAndGameName(room.getRoomId(), "");
         }
@@ -47,8 +46,8 @@ public class RoomController {
 
     @GetMapping("/join")
     public String joinRoom(HttpSession session, @RequestParam("id") String id){
-        UserVO user = ThreadLocalUtil.getUser();
-        RoomVO<? extends Player> room = ThreadLocalUtil.getRoom();
+        UserVO user = ThreadLocalUtil.getUserVO();
+        RoomVO<? extends Player> room = ThreadLocalUtil.getRoomVO();
         if(room != null){
             room = roomManagerService.getRoomByRoomIdAndGameName(room.getRoomId(), "");
         }

@@ -1,6 +1,7 @@
 package com.simple.gameframe.aop;
 
 import com.simple.api.game.Player;
+import com.simple.api.game.Room;
 import com.simple.api.game.RoomVO;
 import com.simple.api.util.ThreadLocalUtil;
 import com.simple.gameframe.core.DefaultMessage;
@@ -48,7 +49,7 @@ public class LogAop {
             Optional<Object> first = Arrays.stream(pjp.getArgs()).filter(arg -> arg instanceof DefaultMessage).findFirst();
             if(first.isPresent()){
                 DefaultMessage<?> message = (DefaultMessage<?>) first.get();
-                RoomVO<? extends Player> room = ThreadLocalUtil.getRoom();
+                Room<Player> room = ThreadLocalUtil.getRoom();
                 if (message.getId() != RoomPropertyManagerUtil.getPackageIdMap(room.getRoomId(), pjp.getThis().toString())) {
                     return null;
                 }

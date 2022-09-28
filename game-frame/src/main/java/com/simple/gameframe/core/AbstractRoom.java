@@ -17,7 +17,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public abstract class AbstractRoom<T extends Player> extends RoomVO<T> {
+public abstract class AbstractRoom<T extends Player> implements Room<T> {
 
     private final GameFrameProperty gameFrameProperty;
 
@@ -40,6 +40,8 @@ public abstract class AbstractRoom<T extends Player> extends RoomVO<T> {
     private Date startTime;
 
     private Date endTime;
+
+    private T currentPlayer;
 
     private final static Random random = new Random();
 
@@ -95,6 +97,16 @@ public abstract class AbstractRoom<T extends Player> extends RoomVO<T> {
     @Override
     public Set<UserVO> getOnlooker() {
         return this.onlooker;
+    }
+
+    @Override
+    public T getCurrentPlayer() {
+        return this.currentPlayer;
+    }
+
+    @Override
+    public void setCurrentPlayer(T player) {
+        this.currentPlayer = player;
     }
 
     public void start(){

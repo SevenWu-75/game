@@ -19,10 +19,6 @@ public class DefaultMessage<T> implements Message<T> {
 
     protected Integer seat;
 
-    protected Long reconnectUserId;
-
-    protected boolean privateMessage;
-
     protected long timestamp;
 
     public DefaultMessage(){
@@ -97,26 +93,6 @@ public class DefaultMessage<T> implements Message<T> {
     @Override
     public void setSeat(Integer seat) {
         this.seat = seat;
-    }
-
-    @Override
-    public boolean getPrivateMessage() {
-        return this.privateMessage;
-    }
-
-    @Override
-    public void setPrivateMessage(boolean isPrivate) {
-        this.privateMessage = isPrivate;
-    }
-
-    @Override
-    public Long getReconnectUserId() {
-        return this.reconnectUserId;
-    }
-
-    @Override
-    public void setReconnectUserId(Long userId) {
-        this.reconnectUserId = userId;
     }
 
     @Override

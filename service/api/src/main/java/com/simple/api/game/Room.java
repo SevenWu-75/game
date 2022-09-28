@@ -32,4 +32,8 @@ public interface Room<T extends Player> extends Serializable {
     int getPlayCount();
 
     int getPlayAtLeastNum();
+
+    T getCurrentPlayer();
+
+    void setCurrentPlayer(T player);
 }

@@ -28,7 +28,7 @@ public interface SeatHandler {
      * @param o 上轮的结果
      * @return 返回本轮玩家次序列表
      */
-    default List<? extends Player> getRoundPlayer(int round, List<? extends Player> lastPlayers, Object o) {
+    default List<Player> getRoundPlayer(int round, List<Player> lastPlayers, Object o) {
         return lastPlayers;
     }
 }

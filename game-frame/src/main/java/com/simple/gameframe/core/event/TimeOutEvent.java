@@ -5,7 +5,7 @@ import com.simple.api.game.Room;
 
 public class TimeOutEvent extends AbstractEvent{
 
-    public TimeOutEvent(Room<? extends Player> room,Player player, Object o) {
+    public TimeOutEvent(Room<Player> room,Player player, Object o) {
         super(room, player, o);
     }
 }

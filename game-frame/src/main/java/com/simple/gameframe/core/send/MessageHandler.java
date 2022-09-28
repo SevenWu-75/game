@@ -8,9 +8,9 @@ import org.jetbrains.annotations.NotNull;
 
 public interface MessageHandler {
 
-    Message<?> messageHandle(Room<? extends Player> room, Player player, Object o);
+    Message<?> messageHandle(Room<Player> room, Player player, Object o);
 
-    default void sendRoomPublic(@NotNull Room<? extends Player> room, Message<?> message){
+    default void sendRoomPublic(@NotNull Room<Player> room, Message<?> message){
         MessagePublishUtil.sendToRoomPublic(room.getRoomId(), message);
     }
 }

@@ -1,7 +1,6 @@
 package com.simple.web.interceptor;
 
 import com.simple.api.game.UserVO;
-import com.simple.api.user.entity.User;
 import com.simple.api.util.ThreadLocalUtil;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -19,7 +18,7 @@ public class UserInterceptor implements HandlerInterceptor {
         if(user == null){
             return false;
         }
-        ThreadLocalUtil.setUser((UserVO) user);
+        ThreadLocalUtil.setUserVO((UserVO) user);
         return true;
     }
 

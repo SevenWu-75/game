@@ -18,7 +18,7 @@ public class RoundHandlerProcessor implements RoundHandler {
 
     LogicHandlerProcessor logicHandlerProcessor;
 
-    Room<? extends Player> room;
+    Room<Player> room;
 
     SeatHandler seatHandler;
 
@@ -28,7 +28,7 @@ public class RoundHandlerProcessor implements RoundHandler {
     }
 
     @Override
-    public void setRoom(Room<? extends Player> room) {
+    public void setRoom(Room<Player> room) {
         this.room = room;
     }
 
@@ -38,9 +38,9 @@ public class RoundHandlerProcessor implements RoundHandler {
     }
 
     @Override
-    public Object startLogic(@NotNull Room<? extends Player> room) {
+    public Object startLogic(@NotNull Room<Player> room) {
         EventPublisher eventPublisher = ApplicationContextUtil.getEventPublisher();
-        final List<? extends Player> playerList = room.getPlayerList();
+        final List<Player> playerList = room.getPlayerList();
         Object roundResult = null;
         for (int i = 0; i < room.getPlayCount(); i++) {
             //开始回合
@@ -51,19 +51,20 @@ public class RoundHandlerProcessor implements RoundHandler {
     }
 
     @Override
-    public Object round(Room<? extends Player> room, List<? extends Player> players) {
+    public Object round(Room<Player> room, List<Player> players) {
         EventPublisher eventPublisher = ApplicationContextUtil.getEventPublisher();
         Object o = null;
         for (Player player : players) {
             //开始换人
             eventPublisher.turnNext(room, player, players.size());
+            room.setCurrentPlayer(player);
             o = handle(player, room, RoomPropertyManagerUtil.getLock(room.getRoomId()));
         }
         return o;
     }
 
 
-    public Object handle(Player player, Room<? extends Player> room, Lock lock) {
+    public Object handle(Player player, Room<Player> room, Lock lock) {
         return getLogicHandlerProcessor().handle(player, room, lock);
     }
 }

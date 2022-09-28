@@ -36,26 +36,28 @@
     </script>
     <script type="text/html" id="pre-half-html" th:inline="javascript">
         <tr class="table-success">
-            <td style="text-align: center; font-weight: bold;" colspan="2">{{user.realname}}</td>
-            <td id="one-{{user.username}}" style="text-align: center; font-weight: bold;" colspan="2">-</td>
-            <td id="two-{{user.username}}" style="text-align: center; font-weight: bold;" colspan="2">-</td>
-            <td id="three-{{user.username}}" style="text-align: center; font-weight: bold;" colspan="2">-</td>
-            <td id="four-{{user.username}}" style="text-align: center; font-weight: bold;" colspan="2">-</td>
-            <td id="five-{{user.username}}" style="text-align: center; font-weight: bold;" colspan="2">-</td>
-            <td id="six-{{user.username}}" style="text-align: center; font-weight: bold;" colspan="2">-</td>
-            <td id="smallSum-{{user.username}}" style="text-align: center; font-weight: bold;" colspan="2">0/63</td>
+            <td class="h4" style="text-align: center; font-weight: bold;" colspan="2">{{user.realname}}</td>
+            <td id="one-{{user.username}}" style="text-align: center;" colspan="2">-</td>
+            <td id="two-{{user.username}}" style="text-align: center;" colspan="2">-</td>
+            <td id="three-{{user.username}}" style="text-align: center;" colspan="2">-</td>
+            <td id="four-{{user.username}}" style="text-align: center;" colspan="2">-</td>
+            <td id="five-{{user.username}}" style="text-align: center;" colspan="2">-</td>
+            <td id="six-{{user.username}}" style="text-align: center;" colspan="2">-</td>
+            <td class="h4" id="smallSum-{{user.username}}" style="text-align: center; font-weight: bold;" colspan="2">0/63</td>
         </tr>
     </script>
     <script type="text/html" id="post-half-html" th:inline="javascript">
         <tr class="table-success">
-            <td style="text-align: center; font-weight: bold;" colspan="2">{{user.realname}}</td>
-            <td id="sum-{{user.username}}" style="text-align: center; font-weight: bold;" colspan="2">-</td>
-            <td id="kind4-{{user.username}}" style="text-align: center; font-weight: bold;" colspan="2">-</td>
-            <td id="fullHouse-{{user.username}}" style="text-align: center; font-weight: bold;" colspan="2">-</td>
-            <td id="smallStraight-{{user.username}}" style="text-align: center; font-weight: bold;" colspan="2">-</td>
-            <td id="straight-{{user.username}}" style="text-align: center; font-weight: bold;" colspan="2">-</td>
-            <td id="yahtzee-{{user.username}}" style="text-align: center; font-weight: bold;" colspan="2">-</td>
-            <td id="totalSum-{{user.username}}" style="text-align: center; font-weight: bold;" colspan="2">0</td>
+            <td class="h4" style="text-align: center; font-weight: bold;" colspan="2">{{user.realname}}</td>
+            <td id="sum-{{user.username}}" style="text-align: center;" colspan="2">-</td>
+            <td id="kind4-{{user.username}}" style="text-align: center;" colspan="2">-</td>
+            <td id="fullHouse-{{user.username}}" style="text-align: center;" colspan="2">-</td>
+            <td id="smallStraight-{{user.username}}" style="text-align: center;" colspan="2">-</td>
+            <td id="straight-{{user.username}}" style="text-align: center;" colspan="2">-</td>
+            <td id="yahtzee-{{user.username}}" style="text-align: center;" colspan="2">-</td>
+            <td id="totalSum-{{user.username}}" style="text-align: center;" colspan="2">
+                <img class="img-fluid" src="/bootstrap-3.4.1-dist/images/number-00.png" style="height: 10px; width: 10px;" alt="0">
+            </td>
         </tr>
     </script>
     <script type="text/javascript" th:inline="javascript">
@@ -74,6 +76,32 @@
             '/bootstrap-3.4.1-dist/images/三点.png','/bootstrap-3.4.1-dist/images/四点.png',
             '/bootstrap-3.4.1-dist/images/五点.png','/bootstrap-3.4.1-dist/images/六点.png'];
 
+        var numberUrlList = [
+            '<img class="img-fluid" src="/bootstrap-3.4.1-dist/images/number-00.png" style="height: 10px; width: 10px;" alt="0">',
+            '<img class="img-fluid" src="/bootstrap-3.4.1-dist/images/number-01.png" style="height: 10px; width: 10px;" alt="1">',
+            '<img class="img-fluid" src="/bootstrap-3.4.1-dist/images/number-02.png" style="height: 10px; width: 10px;" alt="2">',
+            '<img class="img-fluid" src="/bootstrap-3.4.1-dist/images/number-03.png" style="height: 10px; width: 10px;" alt="3">',
+            '<img class="img-fluid" src="/bootstrap-3.4.1-dist/images/number-04.png" style="height: 10px; width: 10px;" alt="4">',
+            '<img class="img-fluid" src="/bootstrap-3.4.1-dist/images/number-05.png" style="height: 10px; width: 10px;" alt="5">',
+            '<img class="img-fluid" src="/bootstrap-3.4.1-dist/images/number-06.png" style="height: 10px; width: 10px;" alt="6">',
+            '<img class="img-fluid" src="/bootstrap-3.4.1-dist/images/number-07.png" style="height: 10px; width: 10px;" alt="7">',
+            '<img class="img-fluid" src="/bootstrap-3.4.1-dist/images/number-08.png" style="height: 10px; width: 10px;" alt="8">',
+            '<img class="img-fluid" src="/bootstrap-3.4.1-dist/images/number-09.png" style="height: 10px; width: 10px;" alt="9">'
+        ];
+
+        var numberSelectUrlList = [
+            '<img class="img-fluid" src="/bootstrap-3.4.1-dist/images/number-00.png" style="height: 10px; width: 10px; -webkit-filter: invert(100%)" alt="0">',
+            '<img class="img-fluid" src="/bootstrap-3.4.1-dist/images/number-01.png" style="height: 10px; width: 10px; -webkit-filter: invert(100%)" alt="1">',
+            '<img class="img-fluid" src="/bootstrap-3.4.1-dist/images/number-02.png" style="height: 10px; width: 10px; -webkit-filter: invert(100%)" alt="2">',
+            '<img class="img-fluid" src="/bootstrap-3.4.1-dist/images/number-03.png" style="height: 10px; width: 10px; -webkit-filter: invert(100%)" alt="3">',
+            '<img class="img-fluid" src="/bootstrap-3.4.1-dist/images/number-04.png" style="height: 10px; width: 10px; -webkit-filter: invert(100%)" alt="4">',
+            '<img class="img-fluid" src="/bootstrap-3.4.1-dist/images/number-05.png" style="height: 10px; width: 10px; -webkit-filter: invert(100%)" alt="5">',
+            '<img class="img-fluid" src="/bootstrap-3.4.1-dist/images/number-06.png" style="height: 10px; width: 10px; -webkit-filter: invert(100%)" alt="6">',
+            '<img class="img-fluid" src="/bootstrap-3.4.1-dist/images/number-07.png" style="height: 10px; width: 10px; -webkit-filter: invert(100%)" alt="7">',
+            '<img class="img-fluid" src="/bootstrap-3.4.1-dist/images/number-08.png" style="height: 10px; width: 10px; -webkit-filter: invert(100%)" alt="8">',
+            '<img class="img-fluid" src="/bootstrap-3.4.1-dist/images/number-09.png" style="height: 10px; width: 10px; -webkit-filter: invert(100%)" alt="9">'
+        ]
+
         var diceTaskId = null;
 
         function connect() {
@@ -87,155 +115,118 @@
                     if(messageId == null || messageId < parse.id){
                         messageId = parse.id;
                     }
-                    if(parse.reconnectUserId === null || parse.reconnectUserId === [[${session.user.id}]]){
-                        //坐下，显示玩家的信息
-                        if(parse.code === 102){
-                            document.getElementById("seat_list").innerHTML += template("seat-html", {content:parse.content});
-                            if(parse.content.user.id != [[${session.user.id}]]){
-                                document.getElementById("pre-half").innerHTML += template("pre-half-html",{user:parse.content.user});
-                                document.getElementById("post-half").innerHTML += template("post-half-html",{user:parse.content.user});
-                                var idList = [];
-                                for(var i=0; i<scoreIdList.length; i++){
-                                    idList.push(scoreIdList[i] + "-" + parse.content.user.username);
-                                }
-                                playerScoreIdList.push(idList);
-                            } else {
-                                var idList = [];
-                                for(var i=0; i<scoreIdList.length; i++){
-                                    idList.push(scoreIdList[i] + "-my");
-                                }
-                                playerScoreIdList.push(idList);
-                            }
-                        }
-                        var ids = playerScoreIdList[parse.seat];
-                        var playDice = document.getElementById("playDice");
-                        //收到广播开始游戏
-                        if(parse.code === 104){
+                    //坐下，显示玩家的信息
+                    if(parse.code === 102){
+                        seatDown(parse.content);
+                    }
+                    var ids = playerScoreIdList[parse.seat];
+                    var playDice = document.getElementById("playDice");
+                    //收到广播开始游戏
+                    if(parse.code === 104){
 
+                    }
+                    //收到抛出骰子的结果，需要填入到各项中
+                    if(parse.code === 4){
+                        setTimeout(()=>{
+                            clearInterval(diceTaskId);
+                            populateScores(parse.content);
+                        },1500);
+                    }
+                    //收到广播的选择分数结果
+                    if(parse.code === 5){
+                        resetDice();
+                        populateSelectScores(parse.content);
+                    }
+                    //收到游戏结束
+                    if(parse.code === 111){
+                        if(parse.content.winner != null){
+                            alert("赢家为"+parse.content.winner.user.realname+"！");
+                        } else {
+                            alert("平局！");
                         }
-                        //收到抛出骰子的结果，需要填入到各项中
-                        if(parse.code === 4){
-                            setTimeout(()=>{
-                                clearInterval(diceTaskId);
-                                document.getElementById('number1').src = dicePicList[parse.content.numbers[0]-1];
-                                document.getElementById('number2').src = dicePicList[parse.content.numbers[1]-1];
-                                document.getElementById('number3').src = dicePicList[parse.content.numbers[2]-1];
-                                document.getElementById('number4').src = dicePicList[parse.content.numbers[3]-1];
-                                document.getElementById('number5').src = dicePicList[parse.content.numbers[4]-1];
-                                for (var i=0;i<parse.content.scores.length;i++)
-                                {
-                                    var elementById1 = document.getElementById(ids[i]);
-                                    if(parse.content.haveScores[i] === -1){
-                                        elementById1.innerHTML = parse.content.scores[i];
-                                        elementById1.style.color = "red";
-                                    } else {
-                                        elementById1.innerHTML = parse.content.haveScores[i];
-                                    }
-                                }
-                                if(parse.content.haveScores[13] === 35){
-                                    document.getElementById(ids[12]).innerText = "✓";
-                                } else {
-                                    document.getElementById(ids[12]).innerText = parse.content.haveScores[12] + "/63";
-                                }
-                                document.getElementById(ids[14]).innerText = parse.content.haveScores[14];
-                                playDice.innerText = "投掷骰子*" + parse.content.times;
-                            },1500);
+                        window.location.href = '/';
+                    }
+                    //收到解散消息
+                    if(parse.code === 109){
+                        alert("房间已解散!")
+                        window.location.href = '/';
+                    }
+                    //收到超时
+                    if(parse.code === 113){
+                        alert("房间超时已解散!")
+                        window.location.href = '/';
+                    }
+                    //收到换人play的消息
+                    if(parse.code === 105){
+                        for (let i = 0; i < parse.content; i++) {
+                            document.getElementById(i.toString()).style.backgroundColor = "#FFF";
                         }
-                        //收到广播的选择分数结果
-                        if(parse.code === 5){
-                            resetDice();
-                            for (var i=0;i<parse.content.length;i++)
-                            {
-                                //13奖励分不填出来
-                                if(i != 13){
-                                    var elementById1 = document.getElementById(ids[i]);
-                                    elementById1.style.color = "black";
-                                    if(parse.content[i] === -1){
-                                        elementById1.innerHTML = "-";
-                                    } else {
-                                        if(i === 12){
-                                            if(parse.content[13] === 35){
-                                                elementById1.innerHTML = parse.content[i] + "✓";
-                                            } else {
-                                                elementById1.innerHTML = parse.content[i] + "/63";
-                                            }
-                                        } else {
-                                            elementById1.innerHTML = parse.content[i];
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        //收到游戏结束
-                        if(parse.code === 111){
-                            if(parse.content.winner != null){
-                                alert("赢家为"+parse.content.winner.user.realname+"！");
-                            } else {
-                                alert("平局！");
-                            }
-                            window.location.href = '/';
-                        }
-                        //收到解散消息
-                        if(parse.code === 109){
-                            alert("房间已解散!")
-                            window.location.href = '/';
-                        }
-                        //收到超时
-                        if(parse.code === 113){
-                            alert("房间超时已解散!")
-                            window.location.href = '/';
-                        }
-                        //收到换人play的消息
-                        if(parse.code === 105){
-                            for (let i = 0; i < parse.content; i++) {
-                                document.getElementById(i.toString()).style.backgroundColor = "#FFF";
-                            }
-                            document.getElementById(parse.seat.toString()).style.backgroundColor = "#FFEEBB";
-                            resetDice();
-                            disable();
-                        }
-                        //收到有人断线的消息
-                        if(parse.code === 107){
-                            document.getElementById("img-"+parse.seat).style.filter = "grayscale(100%)";
-                        }
-                        //收到有人在线的消息
-                        if(parse.code === 108){
-                            document.getElementById("img-"+parse.seat).style.filter = "";
-                        }
-                        //收到有人投骰子，展示动画
-                        if(parse.code === 3){
-                            lockDiceIndexList = parse.content;
-                            let j = 0;
-                            diceTaskId = setInterval(function (){
-                                for (let i = 0; i < diceIdList.length; i++) {
-                                    if(lockDiceIndexList[i] === -1){
+                        document.getElementById(parse.seat.toString()).style.backgroundColor = "#FFEEBB";
+                        resetDice();
+                        disable();
+                    }
+                    //收到有人断线的消息
+                    if(parse.code === 107){
+                        document.getElementById("img-"+parse.seat).style.filter = "grayscale(100%)";
+                    }
+                    //收到有人在线的消息
+                    if(parse.code === 108){
+                        document.getElementById("img-"+parse.seat).style.filter = "";
+                    }
+                    //收到有人投骰子，展示动画
+                    if(parse.code === 3){
+                        lockDiceIndexList = parse.content;
+                        let j = 0;
+                        diceTaskId = setInterval(function (){
+                            for (let i = 0; i < diceIdList.length; i++) {
+                                if(lockDiceIndexList[i] === -1){
+                                    document.getElementById(diceIdList[i]).src = dicePicList[j];
+                                    if(i % 2 === 0){
                                         document.getElementById(diceIdList[i]).src = dicePicList[j];
-                                        if(i % 2 === 0){
-                                            document.getElementById(diceIdList[i]).src = dicePicList[j];
-                                        } else {
-                                            document.getElementById(diceIdList[i]).src = dicePicList[dicePicList.length - 1 - j];
-                                        }
+                                    } else {
+                                        document.getElementById(diceIdList[i]).src = dicePicList[dicePicList.length - 1 - j];
                                     }
                                 }
-                                if(j === dicePicList.length -1){
-                                    j = 0;
-                                } else {
-                                    j++;
-                                }
-                            },50);
-                        }
-                        //收到锁骰子的广播，展示
-                        if(parse.code === 7){
-                            lockDiceIndexList = parse.content;
-                            for (let i = 0; i < lockDiceIndexList.length; i++) {
-                                var dice = document.getElementById(diceIdList[i]);
-                                if(lockDiceIndexList[i] === 1){
-                                    dice.classList.add("img-select");
-                                } else {
-                                    dice.classList.remove("img-select");
-                                }
+                            }
+                            if(j === dicePicList.length -1){
+                                j = 0;
+                            } else {
+                                j++;
+                            }
+                        },50);
+                    }
+                    //收到锁骰子的广播，展示
+                    if(parse.code === 7){
+                        lockDiceIndexList = parse.content;
+                        for (let i = 0; i < lockDiceIndexList.length; i++) {
+                            var dice = document.getElementById(diceIdList[i]);
+                            if(lockDiceIndexList[i] === 1){
+                                dice.classList.add("img-select");
+                            } else {
+                                dice.classList.remove("img-select");
                             }
                         }
+                    }
+                    //收到重连
+                    if(parse.code === 108){
+                        resetDice();
+                        for (let i = 0; i < parse.content.playerList.length; i++) {
+                            var player = parse.content.playerList[i];
+                            //是否开启投骰子按钮
+                            if(player.user.id === [[${session.user.id}]] && player.playTimes > 0){
+                                document.getElementById("playDice").disabled = false;
+                            }
+                            //展示玩家
+                            seatDown(player);
+                            //展示分数和骰子
+                            if(player.currentScores != null){
+                                populateScores(player);
+                            } else {
+                                populateScores(player.scores);
+                            }
+                        }
+                        //换人标记
+                        document.getElementById(parse.content.currentPlayer.id.toString()).style.backgroundColor = "#FFEEBB";
                     }
                 });
                 stompClient.subscribe('/user/'+[[${session.user.id}]]+'/'+[[${session.room.roomId}]], function (response){
@@ -267,6 +258,93 @@
                     }
                 })
             },{});
+        }
+
+        function seatDown(player){
+            document.getElementById("seat_list").innerHTML += template("seat-html", {content:player});
+            if(parse.content.user.id != [[${session.user.id}]]){
+                document.getElementById("pre-half").innerHTML += template("pre-half-html",{user:player.user});
+                document.getElementById("post-half").innerHTML += template("post-half-html",{user:player.user});
+                var idList = [];
+                for(var i=0; i<scoreIdList.length; i++){
+                    idList.push(scoreIdList[i] + "-" + parse.content.user.username);
+                }
+                playerScoreIdList.push(idList);
+            } else {
+                var idList = [];
+                for(var i=0; i<scoreIdList.length; i++){
+                    idList.push(scoreIdList[i] + "-my");
+                }
+                playerScoreIdList.push(idList);
+            }
+        }
+
+        function populateScores(player){
+            document.getElementById('number1').src = dicePicList[player.currentDices[0]-1];
+            document.getElementById('number2').src = dicePicList[player.currentDices[1]-1];
+            document.getElementById('number3').src = dicePicList[player.currentDices[2]-1];
+            document.getElementById('number4').src = dicePicList[player.currentDices[3]-1];
+            document.getElementById('number5').src = dicePicList[player.currentDices[4]-1];
+            for (var i=0;i<player.currentScores.length;i++)
+            {
+                var elementById1 = document.getElementById(ids[i]);
+                if(player.scores[i] === -1){
+                    elementById1.innerHTML = numberHtml(player.currentScores[i], numberSelectUrlList);
+                } else {
+                    elementById1.innerHTML = numberHtml(player.scores[i], numberUrlList);
+                }
+            }
+            if(player.scores[13] === 35){
+                document.getElementById(ids[12]).innerText = "✓";
+            } else {
+                document.getElementById(ids[12]).innerText = player.scores[12] + "/63";
+            }
+            document.getElementById(ids[14]).innerHTML = numberHtml(player.scores[14],numberUrlList);
+            playDice.innerText = "投掷骰子*" + player.playTimes;
+        }
+
+        function populateSelectScores(scores){
+            for (var i=0;i<scores.length;i++)
+            {
+                //13奖励分不填出来
+                if(i != 13){
+                    var elementById1 = document.getElementById(ids[i]);
+                    if(scores[i] === -1){
+                        elementById1.innerHTML = "-";
+                    } else {
+                        if(i === 12){
+                            if(scores[13] === 35){
+                                elementById1.innerHTML = "✓";
+                            } else {
+                                elementById1.innerHTML = scores[i] + "/63";
+                            }
+                        } else {
+                            elementById1.innerHTML = numberHtml(scores[i], numberUrlList);
+                        }
+                    }
+                }
+            }
+        }
+
+        function numberHtml(score, urlList){
+            var ones = parseInt(score % 10);
+            var tens = Math.trunc(score / 10);
+            if(tens >= 10){
+                tens = parseInt(tens % 10);
+            }
+            var hundreds = parseInt(score / 100);
+            var html = "";
+            if(hundreds != 0){
+                html += urlList[hundreds];
+                if(tens === 0){
+                    html += urlList[tens];
+                }
+            }
+            if(tens != 0){
+                html += urlList[tens];
+            }
+            html += urlList[ones];
+            return html;
         }
 
         function disconnect() {
@@ -306,7 +384,7 @@
                 } else {
                     lockDiceIndexList[index] = -1;
                 }
-                stompClient.send("/public",{}, JSON.stringify({"code": 7, 'content': lockDiceIndexList}));
+                stompClient.send("/public",{}, JSON.stringify({"code": 7, 'content': lockDiceIndexList, 'fromId': [[${session.user.id}]]}));
             }
         }
 
@@ -397,12 +475,12 @@
                         <tbody id="pre-half">
                             <tr class="table-primary">
                                 <td class="h4" style="text-align: center; font-weight: bold;" colspan="2">己方</td>
-                                <td class="h4" id="one-my" style="text-align: center; font-weight: bold;" colspan="2">-</td>
-                                <td class="h4" id="two-my" style="text-align: center; font-weight: bold;" colspan="2">-</td>
-                                <td class="h4" id="three-my" style="text-align: center; font-weight: bold;" colspan="2">-</td>
-                                <td class="h4" id="four-my" style="text-align: center; font-weight: bold;" colspan="2">-</td>
-                                <td class="h4" id="five-my" style="text-align: center; font-weight: bold;" colspan="2">-</td>
-                                <td class="h4" id="six-my" style="text-align: center; font-weight: bold;" colspan="2">-</td>
+                                <td id="one-my" style="text-align: center;" colspan="2">-</td>
+                                <td id="two-my" style="text-align: center;" colspan="2">-</td>
+                                <td id="three-my" style="text-align: center;" colspan="2">-</td>
+                                <td id="four-my" style="text-align: center;" colspan="2">-</td>
+                                <td id="five-my" style="text-align: center;" colspan="2">-</td>
+                                <td id="six-my" style="text-align: center;" colspan="2">-</td>
                                 <td class="h4" id="smallSum-my" style="text-align: center; font-weight: bold;" colspan="2">0/63</td>
                             </tr>
                         </tbody>
@@ -423,13 +501,15 @@
                         <tbody id="post-half">
                             <tr class="table-primary">
                                 <td class="h4" style="text-align: center; font-weight: bold;" colspan="2">己方</td>
-                                <td class="h4" id="sum-my" style="text-align: center; font-weight: bold;" colspan="2">-</td>
-                                <td class="h4" id="kind4-my" style="text-align: center; font-weight: bold;" colspan="2">-</td>
-                                <td class="h4" id="fullHouse-my" style="text-align: center; font-weight: bold;" colspan="2">-</td>
-                                <td class="h4" id="smallStraight-my" style="text-align: center; font-weight: bold;" colspan="2">-</td>
-                                <td class="h4" id="straight-my" style="text-align: center; font-weight: bold;" colspan="2">-</td>
-                                <td class="h4" id="yahtzee-my" style="text-align: center; font-weight: bold;" colspan="2">-</td>
-                                <td class="h4" id="totalSum-my" style="text-align: center; font-weight: bold;" colspan="2">0</td>
+                                <td id="sum-my" style="text-align: center;" colspan="2">-</td>
+                                <td id="kind4-my" style="text-align: center;" colspan="2">-</td>
+                                <td id="fullHouse-my" style="text-align: center;" colspan="2">-</td>
+                                <td id="smallStraight-my" style="text-align: center;" colspan="2">-</td>
+                                <td id="straight-my" style="text-align: center;" colspan="2">-</td>
+                                <td id="yahtzee-my" style="text-align: center;" colspan="2">-</td>
+                                <td id="totalSum-my" style="text-align: center;" colspan="2">
+                                    <img class="img-fluid" src="/bootstrap-3.4.1-dist/images/number-00.png" style="height: 10px; width: 10px;" alt="0">
+                                </td>
                             </tr>
                         </tbody>
                     </table>

@@ -5,7 +5,7 @@ import com.simple.api.game.Room;
 
 public class DisconnectEvent extends AbstractEvent {
 
-    public DisconnectEvent(Room<? extends Player> room,Player player, Object o) {
+    public DisconnectEvent(Room<Player> room,Player player, Object o) {
         super(room, player, o);
     }
 }

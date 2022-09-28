@@ -2,7 +2,6 @@ package com.simple.gameframe.interceptor;
 
 import com.alibaba.fastjson.JSONObject;
 import com.simple.api.game.UserVO;
-import com.simple.api.user.entity.User;
 import com.simple.api.util.ThreadLocalUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;
@@ -34,7 +33,7 @@ public class UserInterceptor implements ExecutorChannelInterceptor {
                     log.error("获取用户信息失败",e);
                 }
             }
-            ThreadLocalUtil.setUser(user);
+            ThreadLocalUtil.setUserVO(user);
         }
         return message;
     }

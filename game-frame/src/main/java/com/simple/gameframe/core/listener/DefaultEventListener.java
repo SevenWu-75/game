@@ -12,7 +12,7 @@ public class DefaultEventListener extends AbstractEventListener<Event> {
 
     @Override
     public boolean eventHandle(Event event) {
-        AbstractRoom<? extends Player> abstractRoom = (AbstractRoom<? extends Player>) event.getRoom();
+        AbstractRoom<Player> abstractRoom = (AbstractRoom<Player>) event.getRoom();
         GameCommand command = GameCommand.CREATE;
         if(event instanceof CreateEvent){
             RoomPropertyManagerUtil.saveRoomImpl(event.getRoom());

@@ -30,13 +30,5 @@ public interface Message<T> {
 
     void setSeat(Integer seat);
 
-    boolean getPrivateMessage();
-
-    void setPrivateMessage(boolean isPrivate);
-
-    Long getReconnectUserId();
-
-    void setReconnectUserId(Long userId);
-
     long getTimestamp();
 }

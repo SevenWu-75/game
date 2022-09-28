@@ -69,27 +69,23 @@ public class PlayDiceLogicHandler implements LogicHandler<SpeedBootCommand> {
         return null;
     }
 
-    private DiceResultVo playDiceLogic(@NotNull SpeedBootPlayer player, int[] lockDice, String roomId){
+    private Player playDiceLogic(@NotNull SpeedBootPlayer player, int[] lockDice, String roomId){
         //抛骰子次数减少1
         player.costPlayTimes();
         log.debug("询问{}抛骰子，次数为{}",player.getUser().getId(), player.getPlayTimes());
-        List<Integer> diceList = player.playDices(lockDice);
-        DiceResultVo diceResultVo = new DiceResultVo();
-        diceResultVo.setNumbers(diceList);
-        diceResultVo.setScores(calculate(diceList));
-        diceResultVo.setTimes(player.getPlayTimes());
-        diceResultVo.setHaveScores(player.getScores());
+        player.playDices(lockDice);
+        player.setCurrentScores(calculate(player.getCurrentDices()));
         //广播玩家投掷骰子结果 =====》
-        sendDiceResultToPublic(player, roomId, diceResultVo);
-        return diceResultVo;
+        sendDiceResultToPublic(player, roomId);
+        return player;
     }
 
-    private void sendDiceResultToPublic(@NotNull SpeedBootPlayer player, String roomId, DiceResultVo diceList){
-        Message<DiceResultVo> message = new DefaultMessage<>();
+    private void sendDiceResultToPublic(@NotNull SpeedBootPlayer player, String roomId){
+        Message<SpeedBootPlayer> message = new DefaultMessage<>();
         message.setRoomId(roomId);
         message.setFromId(player.getUser().getId());
         message.setSeat(player.getId());
-        message.setContent(diceList);
+        message.setContent(player);
         message.setCode(SpeedBootCommand.DICE_RESULT.getCode());
         MessagePublishUtil.sendToRoomPublic(roomId, message);
     }

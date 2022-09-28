@@ -10,7 +10,7 @@ import java.util.Set;
 
 @Data
 @Accessors(chain = true)
-public class RoomVO<T extends Player> implements Room<T> {
+public class RoomVO<T extends Player> {
 
     private String roomId;
 
@@ -32,6 +32,8 @@ public class RoomVO<T extends Player> implements Room<T> {
 
     private int playAtLeastNum;
 
+    private T currentPlayer;
+
     public RoomVO(){
 
     }
@@ -47,5 +49,6 @@ public class RoomVO<T extends Player> implements Room<T> {
         this.playerList = room.getPlayerList();
         this.playAtLeastNum = room.getPlayAtLeastNum();
         this.onlooker = room.getOnlooker();
+        this.currentPlayer = room.getCurrentPlayer();
     }
 }

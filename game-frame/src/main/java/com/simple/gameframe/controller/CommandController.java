@@ -1,10 +1,12 @@
 package com.simple.gameframe.controller;
 
 import com.simple.api.game.Player;
-import com.simple.api.game.RoomVO;
-import com.simple.gameframe.core.DefaultMessage;
 import com.simple.api.game.Room;
+import com.simple.api.game.RoomVO;
+import com.simple.gameframe.common.GameCommand;
+import com.simple.gameframe.core.DefaultMessage;
 import com.simple.api.util.ThreadLocalUtil;
+import com.simple.gameframe.core.Message;
 import com.simple.gameframe.core.RoomHandler;
 import com.simple.gameframe.core.publisher.EventPublisher;
 import com.simple.gameframe.util.ApplicationContextUtil;
@@ -33,7 +35,7 @@ public class CommandController {
 
     @MessageMapping("/command")
     public void command(@RequestBody DefaultMessage<?> message){
-        Room<? extends Player> room = ThreadLocalUtil.getRoom();
+        Room<Player> room = ThreadLocalUtil.getRoom();
         logicHandlerList.forEach(logicHandler -> {
             if(logicHandler.getCommands().stream().anyMatch(command -> command.getCode() == message.getCode())){
                 logicHandler.answer(RoomPropertyManagerUtil.getLock(room.getRoomId()),
@@ -52,8 +54,13 @@ public class CommandController {
     @SubscribeMapping("/user/{userId}/{roomId}")
     public void subscribeRoomPrivate(@DestinationVariable("userId") String userId, @DestinationVariable("roomId") String roomId){
         //发送重连包
-        MessagePublishUtil.sendMessageForReconnect(roomId, userId);
-        Room<? extends Player> room = ThreadLocalUtil.getRoom();
+        Room<Player> room = ThreadLocalUtil.getRoom();
+        Message<Room<Player>> message = new DefaultMessage<>();
+        message.setRoomId(roomId);
+        message.setCode(GameCommand.RECONNECT.getCode());
+        message.setContent(room);
+        message.setToId(Long.parseLong(userId));
+        MessagePublishUtil.sendToRoomUser(userId, roomId, message);
         //通知用户重连
         EventPublisher eventPublisher = ApplicationContextUtil.getEventPublisher();
         eventPublisher.reconnect(room, null, userId);
@@ -63,7 +70,7 @@ public class CommandController {
 
     @MessageMapping("/public")
     public void sendPublic(@RequestBody DefaultMessage<?> message){
-        RoomVO<? extends Player> room = ThreadLocalUtil.getRoom();
+        Room<Player> room = ThreadLocalUtil.getRoom();
         MessagePublishUtil.sendToRoomPublic(room.getRoomId(),message);
     }
 }

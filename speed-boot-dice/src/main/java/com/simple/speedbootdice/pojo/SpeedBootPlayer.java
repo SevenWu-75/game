@@ -27,11 +27,13 @@ public class SpeedBootPlayer implements Player {
 
     private final transient List<Dice> diceList;
 
-    private transient List<Integer> currentDices;
+    private List<Integer> currentDices;
 
     private int status;
 
     private final int[] scores;
+
+    private int[] currentScores;
 
     private int playTimes = 3;
 
