@@ -2,14 +2,12 @@ package com.simple.gameframe.core;
 
 import com.simple.api.game.Player;
 import com.simple.api.game.Room;
-import com.simple.api.game.RoomVO;
 import com.simple.api.game.UserVO;
 import com.simple.api.game.exception.GameException;
 import com.simple.api.game.exception.GameExceptionEnum;
-import com.simple.api.user.entity.User;
+import com.simple.api.game.RoomStatusEnum;
 import com.simple.gameframe.config.GameFrameProperty;
 import com.simple.gameframe.util.PackageUtil;
-import com.simple.gameframe.util.ThreadPoolUtil;
 import org.apache.dubbo.common.utils.ConcurrentHashSet;
 
 import java.lang.reflect.Constructor;
@@ -41,7 +39,9 @@ public abstract class AbstractRoom<T extends Player> implements Room<T> {
 
     private Date endTime;
 
-    private T currentPlayer;
+    private int currentSeat;
+
+    private long maxMessageId;
 
     private final static Random random = new Random();
 
@@ -52,6 +52,7 @@ public abstract class AbstractRoom<T extends Player> implements Room<T> {
         this.onlooker = new ConcurrentHashSet<>();
         this.createTime = new Date();
         this.playerList = new LinkedList<>();
+        this.roomStatus = RoomStatusEnum.created.ordinal();
     }
 
     public void join(UserVO user) {
@@ -100,23 +101,38 @@ public abstract class AbstractRoom<T extends Player> implements Room<T> {
     }
 
     @Override
-    public T getCurrentPlayer() {
-        return this.currentPlayer;
+    public int getCurrentSeat() {
+        return this.currentSeat;
     }
 
     @Override
-    public void setCurrentPlayer(T player) {
-        this.currentPlayer = player;
+    public void setCurrentSeat(int player) {
+        this.currentSeat = player;
+    }
+
+    @Override
+    public long getMaxMessageId(){
+        return this.maxMessageId;
+    }
+
+    @Override
+    public void setMaxMessageId(long messageId){
+        if(this.maxMessageId < messageId)
+            this.maxMessageId = messageId;
+    }
+
+    public void canStart(){
+        this.roomStatus = RoomStatusEnum.canStart.ordinal();
     }
 
     public void start(){
         this.startTime = new Date();
-        this.roomStatus = 1;
+        this.roomStatus = RoomStatusEnum.started.ordinal();
     }
 
     public void end(){
         this.endTime = new Date();
-        this.roomStatus = 2;
+        this.roomStatus = RoomStatusEnum.over.ordinal();
     }
 
     public Player seatDown(UserVO user) {

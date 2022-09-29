@@ -5,7 +5,7 @@ import com.simple.api.game.Room;
 
 public class VoteDismissEvent extends AbstractEvent {
 
-    public VoteDismissEvent(Room<Player> room,Player player, Object o) {
+    public VoteDismissEvent(Room<? extends Player> room,Player player, Object o) {
         super(room, player, o);
     }
 }

@@ -18,7 +18,7 @@ public class LogicHandlerProcessor {
         this.logicHandlerList = logicHandlerList;
     }
 
-    public Object handle(Player player, Room<Player> room, Lock lock){
+    public Object handle(Player player, Room<? extends Player> room, Lock lock){
         Object o = null;
         if (logicHandlerList.size() > 0) {
             //灵活设置下一个处理器，链式执行的方式

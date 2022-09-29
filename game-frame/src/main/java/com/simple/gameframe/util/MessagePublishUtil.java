@@ -77,14 +77,14 @@ public class MessagePublishUtil {
     public static void sendToRoomUser(String userId, String roomId, @NotNull Message<?> message){
         setValidConfig(message);
         saveMessage(roomId, userId, message);
-        //TODO: 保存当前房间所发送的最大messageId，保证玩家必须回复这个id才能进行流程
-        //roomMap.get(roomId).getAskAnswerUtil().setMessageId(message.getId());
+        Room<? extends Player> roomImpl = RoomPropertyManagerUtil.getRoomImpl(roomId);
+        roomImpl.setMaxMessageId(message.getId());
         getMessagingTemplate().convertAndSendToUser(userId, roomId, message);
         log.trace("发送id为{}的message包{}", message.getId(), message);
     }
 
     private static void setValidConfig(Message<?> message){
-        Room<Player> room = ThreadLocalUtil.getRoom();
+        Room<? extends Player> room = ThreadLocalUtil.getRoom();
         UserVO user = ThreadLocalUtil.getUserVO();
         if(room != null && message != null){
             message.setRoomId(room.getRoomId());

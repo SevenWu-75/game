@@ -5,7 +5,7 @@ import com.simple.api.game.Room;
 
 public class JoinEvent extends AbstractEvent {
 
-    public JoinEvent(Room<Player> room,Player player, Object o) {
+    public JoinEvent(Room<? extends Player> room,Player player, Object o) {
         super(room, player, o);
     }
 }

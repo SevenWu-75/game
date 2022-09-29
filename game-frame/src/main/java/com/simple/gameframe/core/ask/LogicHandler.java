@@ -36,13 +36,13 @@ public interface LogicHandler<T extends Command> {
         return 60*5L;
     }
 
-    default boolean preHandle(Player player, Room<Player> room, Object o) {
+    default boolean preHandle(Player player, Room<? extends Player> room, Object o) {
         return true;
     }
 
-    Message<?> messageHandle(Player player, Room<Player> room, Object o);
+    Message<?> messageHandle(Player player, Room<? extends Player> room, Object o);
 
-    default Message<?> ask(Long userId, @NotNull Room<Player> room, Message<?> message, @NotNull Lock lock, Condition condition) {
+    default Message<?> ask(Long userId, @NotNull Room<? extends Player> room, Message<?> message, @NotNull Lock lock, Condition condition) {
         lock.lock();
         try {
             message.setId(RoomPropertyManagerUtil.incrementAndGetPackageId(room.getRoomId(), this.toString()));
@@ -67,11 +67,11 @@ public interface LogicHandler<T extends Command> {
         return getReceivedMessageMap().get(room.getRoomId());
     }
 
-    default Object postHandle(Player player, Room<Player> room, Message<?> message, Object o) {
+    default Object postHandle(Player player, Room<? extends Player> room, Message<?> message, Object o) {
         return o;
     }
 
-    default void answer(@NotNull Lock lock, @NotNull Room<Player> room, @NotNull Condition condition, Message<?> message) {
+    default void answer(@NotNull Lock lock, @NotNull Room<? extends Player> room, @NotNull Condition condition, Message<?> message) {
         lock.lock();
         try {
             if(getReceivedMessageMap() != null)

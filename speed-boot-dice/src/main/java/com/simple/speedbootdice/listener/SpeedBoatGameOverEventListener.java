@@ -1,5 +1,6 @@
 package com.simple.speedbootdice.listener;
 
+import com.simple.api.game.Player;
 import com.simple.api.game.service.HistoryRankService;
 import com.simple.gameframe.common.GameCommand;
 import com.simple.gameframe.core.event.GameResultEvent;

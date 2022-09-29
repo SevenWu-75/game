@@ -1,16 +1,16 @@
 package com.simple.api.game;
 
-import com.simple.api.user.entity.User;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
 @Data
 @Accessors(chain = true)
-public class RoomVO<T extends Player> {
+public class RoomVO<T extends Player> implements Serializable {
 
     private String roomId;
 
@@ -32,7 +32,9 @@ public class RoomVO<T extends Player> {
 
     private int playAtLeastNum;
 
-    private T currentPlayer;
+    private int currentSeat;
+
+    private long maxMessageId;
 
     public RoomVO(){
 
@@ -49,6 +51,7 @@ public class RoomVO<T extends Player> {
         this.playerList = room.getPlayerList();
         this.playAtLeastNum = room.getPlayAtLeastNum();
         this.onlooker = room.getOnlooker();
-        this.currentPlayer = room.getCurrentPlayer();
+        this.currentSeat = room.getCurrentSeat();
+        this.maxMessageId = room.getMaxMessageId();
     }
 }

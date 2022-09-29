@@ -22,7 +22,7 @@ public class RoomPropertyManagerUtil {
 
     private final static Map<String, Long> packageIdMap = new ConcurrentHashMap<>();
 
-    private final static Map<String, Room<Player>> roomMap = new ConcurrentHashMap<>();
+    private final static Map<String, Room<? extends Player>> roomMap = new ConcurrentHashMap<>();
 
     public static CountDownLatch getCountDownLatch(String roomId, int minPlayer) {
         if(countDownMap.containsKey(roomId))
@@ -69,11 +69,11 @@ public class RoomPropertyManagerUtil {
         return 0L;
     }
 
-    public static void saveRoomImpl(Room<Player> room){
+    public static void saveRoomImpl(Room<? extends Player> room){
         roomMap.put(room.getRoomId(), room);
     }
 
-    public static Room<Player> getRoomImpl(String roomId){
+    public static Room<? extends Player> getRoomImpl(String roomId){
         return roomMap.get(roomId);
     }
 

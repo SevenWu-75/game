@@ -49,7 +49,7 @@ public class LogAop {
             Optional<Object> first = Arrays.stream(pjp.getArgs()).filter(arg -> arg instanceof DefaultMessage).findFirst();
             if(first.isPresent()){
                 DefaultMessage<?> message = (DefaultMessage<?>) first.get();
-                Room<Player> room = ThreadLocalUtil.getRoom();
+                Room<? extends Player> room = ThreadLocalUtil.getRoom();
                 if (message.getId() != RoomPropertyManagerUtil.getPackageIdMap(room.getRoomId(), pjp.getThis().toString())) {
                     return null;
                 }

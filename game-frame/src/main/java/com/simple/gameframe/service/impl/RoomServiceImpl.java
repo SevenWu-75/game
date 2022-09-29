@@ -33,12 +33,12 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public RoomVO<? extends Player> createRoom(UserVO user) {
-        Room<Player> room;
+        Room<? extends Player> room;
         try {
             Class<?> roomImpl = PackageUtil.getRoomImpl(gameFrameProperty.getScan());
             //生成房间实例
             Constructor<?> constructor = roomImpl.getConstructor(UserVO.class, GameFrameProperty.class);
-            room = (Room<Player>)constructor.newInstance(user, gameFrameProperty);
+            room = (Room<? extends Player>)constructor.newInstance(user, gameFrameProperty);
             log.trace("创建房间成功");
             //执行房间运行逻辑
             roomHandler.setRoom(room);
@@ -53,7 +53,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public RoomVO<? extends Player> getRoom(String roomId) {
-        Room<Player> roomImpl = RoomPropertyManagerUtil.getRoomImpl(roomId);
+        Room<? extends Player> roomImpl = RoomPropertyManagerUtil.getRoomImpl(roomId);
         if(roomImpl == null)
             return null;
         return new RoomVO<>(roomImpl);

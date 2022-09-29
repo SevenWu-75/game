@@ -25,7 +25,7 @@ public class StartLogicHandler implements LogicHandler<GameCommand> {
     }
 
     @Override
-    public Message<?> messageHandle(Player player, Room<Player> room, Object o) {
+    public Message<?> messageHandle(Player player, Room<? extends Player> room, Object o) {
         //询问是否开始游戏
         Message<Void> message = new DefaultMessage<>();
         message.setCode(GameCommand.START_GAME.getCode());
@@ -36,7 +36,7 @@ public class StartLogicHandler implements LogicHandler<GameCommand> {
     }
 
     @Override
-    public Object postHandle(Player player, Room<Player> room, Message<?> message, Object o){
+    public Object postHandle(Player player, Room<? extends Player> room, Message<?> message, Object o){
         //广播开始游戏
         Message<Void> newMessage = new DefaultMessage<>();
         newMessage.setCode(GameCommand.START_GAME.getCode());

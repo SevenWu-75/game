@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 @ClassInject("com.simple.api.game.Player")
 @Data
-@JsonIgnoreProperties(value = {"diceList","currentDices"})
+@JsonIgnoreProperties(value = {"diceList"})
 public class SpeedBootPlayer implements Player {
 
     private int id;
@@ -37,11 +37,14 @@ public class SpeedBootPlayer implements Player {
 
     private int playTimes = 3;
 
+    private int[] lockDices;
+
     public SpeedBootPlayer(Integer id, UserVO user){
         this.id = id;
         this.user = user;
         diceList = Arrays.asList(new Dice(0), new Dice(1), new Dice(2), new Dice(3), new Dice(4));
         scores = new int[]{-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,0,0,0};
+        lockDices = new int[]{-1,-1,-1,-1,-1};
     }
 
     public List<Integer> playDices(int[] lockDice){

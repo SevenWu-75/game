@@ -49,11 +49,7 @@ public class PlayDiceOrSelectScoreLogicHandler implements LogicHandler<SpeedBoot
         message.setFromId(player.getUser().getId());
         message.setSeat(player.getId());
         if(o == null) {
-            SpeedBootPlayer sp = (SpeedBootPlayer) player;
-            DiceResultVo diceResultVo = new DiceResultVo();
-            diceResultVo.setTimes(sp.getPlayTimes());
-            diceResultVo.setHaveScores(sp.getScores());
-            message.setContent(diceResultVo);
+            message.setContent(player);
         } else {
             message.setContent(o);
         }

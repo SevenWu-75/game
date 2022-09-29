@@ -12,13 +12,15 @@ public class DefaultEventListener extends AbstractEventListener<Event> {
 
     @Override
     public boolean eventHandle(Event event) {
-        AbstractRoom<Player> abstractRoom = (AbstractRoom<Player>) event.getRoom();
+        AbstractRoom<? extends Player> abstractRoom = (AbstractRoom<? extends Player>) event.getRoom();
         GameCommand command = GameCommand.CREATE;
         if(event instanceof CreateEvent){
             RoomPropertyManagerUtil.saveRoomImpl(event.getRoom());
         }
-        if(event instanceof CanStartEvent)
+        if(event instanceof CanStartEvent){
             command = GameCommand.CAN_START;
+            abstractRoom.canStart();
+        }
         if(event instanceof DisconnectEvent)
             command = GameCommand.DISCONNECT;
         if(event instanceof DismissEvent){

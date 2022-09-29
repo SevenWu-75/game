@@ -29,7 +29,7 @@ public class RoomInterceptor implements ExecutorChannelInterceptor {
         StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
         if(accessor != null){
             if(accessor.getSessionAttributes() != null){
-                RoomVO<Player> room = (RoomVO<Player>)accessor.getSessionAttributes().get("room");
+                RoomVO<? extends Player> room = (RoomVO<? extends Player>)accessor.getSessionAttributes().get("room");
                  if(room == null){
                     try{
                         String roomString = (((Map<String, ArrayList>)message.getHeaders().get("nativeHeaders")).get("room").get(0)).toString();
@@ -58,11 +58,11 @@ public class RoomInterceptor implements ExecutorChannelInterceptor {
         ExecutorChannelInterceptor.super.afterMessageHandled(message, channel, handler, ex);
     }
 
-    private void sendPublicDisconnectMessage(Room<Player> room){
-        List<Player> playerList = ThreadLocalUtil.getRoom().getPlayerList();
+    private void sendPublicDisconnectMessage(Room<? extends Player> room){
+        List<? extends Player> playerList = ThreadLocalUtil.getRoom().getPlayerList();
         EventPublisher eventPublisher = ApplicationContextUtil.getEventPublisher();
         
-        Optional<Player> first = playerList.stream().filter(
+        Optional<? extends Player> first = playerList.stream().filter(
                 player -> player.getUser().getId().equals(ThreadLocalUtil.getUserVO().getId())).findFirst();
         first.ifPresent(player -> eventPublisher.disconnect(room, player, null));
     }

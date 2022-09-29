@@ -17,7 +17,7 @@ public class RoomInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        RoomVO<Player> room = (RoomVO<Player>) request.getSession().getAttribute("room");
+        RoomVO<? extends Player> room = (RoomVO<? extends Player>) request.getSession().getAttribute("room");
         if(room != null){
             ThreadLocalUtil.setRoomVO(room);
         }

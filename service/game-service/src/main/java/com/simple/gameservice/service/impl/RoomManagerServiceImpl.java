@@ -1,9 +1,6 @@
 package com.simple.gameservice.service.impl;
 
-import com.simple.api.game.Player;
-import com.simple.api.game.Room;
-import com.simple.api.game.RoomVO;
-import com.simple.api.game.UserVO;
+import com.simple.api.game.*;
 import com.simple.api.game.service.RoomManagerService;
 import com.simple.api.game.service.RoomService;
 import com.simple.api.user.entity.User;
@@ -54,7 +51,7 @@ public class RoomManagerServiceImpl implements RoomManagerService {
     @PostConstruct
     public void cleanRoom(){
         new Thread(() -> {
-            List<Room<? extends Player>> collect = roomMap.values().stream().filter(room -> room.getRoomStatus() == 3).collect(Collectors.toList());
+            List<RoomVO<? extends Player>> collect = roomMap.values().stream().filter(room -> room.getRoomStatus() == RoomStatusEnum.over.ordinal()).collect(Collectors.toList());
             collect.forEach(c -> roomMap.remove(c.getRoomId()));
             try {
                 Thread.sleep(1000 * 600);

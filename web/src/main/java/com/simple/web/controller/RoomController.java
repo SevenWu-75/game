@@ -36,7 +36,7 @@ public class RoomController {
         if(room != null){
             room = roomManagerService.getRoomByRoomIdAndGameName(room.getRoomId(), "");
         }
-        if(room == null || room.getRoomStatus() == 2){
+        if(room == null || room.getRoomStatus() == RoomStatusEnum.over.ordinal()){
             log.trace("尝试创建房间");
             room = roomManagerService.createRoomByGameName("", user);
         }
@@ -51,7 +51,7 @@ public class RoomController {
         if(room != null){
             room = roomManagerService.getRoomByRoomIdAndGameName(room.getRoomId(), "");
         }
-        if(room == null || room.getRoomStatus() == 2){
+        if(room == null || room.getRoomStatus() == RoomStatusEnum.over.ordinal()){
             room = roomManagerService.getRoomByRoomIdAndGameName(id, "");
             if(room == null){
                 return "login";

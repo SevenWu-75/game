@@ -9,9 +9,9 @@ import java.util.concurrent.locks.Lock;
 
 public interface RoomHandler extends Runnable {
 
-    void start(Room<Player> room);
+    void start(Room<? extends Player> room);
 
-    void setRoom(Room<Player> room);
+    void setRoom(Room<? extends Player> room);
 
     void signalSeatDown();
 

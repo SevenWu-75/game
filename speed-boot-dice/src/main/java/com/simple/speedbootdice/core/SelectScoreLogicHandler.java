@@ -49,9 +49,9 @@ public class SelectScoreLogicHandler implements LogicHandler<SpeedBootCommand> {
     public Object postHandle(Player player, Room<? extends Player> room, Message<?> message, Object o) {
         SpeedBootPlayer sp = (SpeedBootPlayer) player;
         int index = (Integer) message.getContent();
-        if(o instanceof DiceResultVo){
-            DiceResultVo diceResultVo = (DiceResultVo) o;
-            int score = diceResultVo.getScores()[index];
+        if(o instanceof SpeedBootPlayer){
+            SpeedBootPlayer playerVO = (SpeedBootPlayer) o;
+            int score = playerVO.getCurrentScores()[index];
             sp.updateScores(index,score);
             //广播玩家投掷骰子结果 =====》
             sendSelectScoreResultToPublic(sp, room.getRoomId());

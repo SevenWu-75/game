@@ -5,7 +5,7 @@ import com.simple.api.game.Room;
 
 public interface Event {
 
-    Room<Player> getRoom();
+    Room<? extends Player> getRoom();
 
     Player getPlayer();
 

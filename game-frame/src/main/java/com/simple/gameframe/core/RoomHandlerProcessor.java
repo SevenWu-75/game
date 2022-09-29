@@ -2,6 +2,7 @@ package com.simple.gameframe.core;
 
 import com.simple.api.game.Player;
 import com.simple.api.game.Room;
+import com.simple.api.game.RoomStatusEnum;
 import com.simple.api.game.UserVO;
 import com.simple.api.util.ThreadLocalUtil;
 import com.simple.gameframe.common.Command;
@@ -29,7 +30,7 @@ public class RoomHandlerProcessor implements RoomHandler {
 
     private final RoundHandler roundHandler;
 
-    private Room<Player> room;
+    private Room<? extends Player> room;
 
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
@@ -41,12 +42,12 @@ public class RoomHandlerProcessor implements RoomHandler {
     }
 
     @Override
-    public void setRoom(Room<Player> room){
+    public void setRoom(Room<? extends Player> room){
         lock.writeLock();
         this.room = room;
     }
 
-    public void start(Room<Player> room) {
+    public void start(Room<? extends Player> room) {
         EventPublisher eventPublisher = ApplicationContextUtil.getEventPublisher();
         try{
             //创建房间
@@ -76,7 +77,7 @@ public class RoomHandlerProcessor implements RoomHandler {
         }
     }
 
-    private void preHandle(Player player, Room<Player> room, Lock lock){
+    private void preHandle(Player player, Room<? extends Player> room, Lock lock){
         if(startLogicHandler != null){
             startLogicHandler.preHandle(player, room, null);
             Message<?> sendMessage = startLogicHandler.messageHandle(player, room, null);
@@ -100,11 +101,11 @@ public class RoomHandlerProcessor implements RoomHandler {
     @Override
     public void signalSeatDown(){
         EventPublisher eventPublisher = ApplicationContextUtil.getEventPublisher();
-        AbstractRoom<Player> room = (AbstractRoom<Player>)ThreadLocalUtil.getRoom();
+        AbstractRoom<? extends Player> room = (AbstractRoom<? extends Player>)ThreadLocalUtil.getRoom();
         UserVO user = ThreadLocalUtil.getUserVO();
         RoomPropertyManagerUtil.getLock(room.getRoomId()).lock();
         try{
-            if(room.getRoomStatus() == 0){
+            if(room.getRoomStatus() == RoomStatusEnum.created.ordinal()){
                 Player player = room.seatDown(user);
                 eventPublisher.seatDown(room, player, player);
                 RoomPropertyManagerUtil.getCountDownLatch(room.getRoomId(),room.getPlayAtLeastNum()).countDown();
@@ -117,7 +118,7 @@ public class RoomHandlerProcessor implements RoomHandler {
     @Override
     public void dismissRoom(){
         EventPublisher eventPublisher = ApplicationContextUtil.getEventPublisher();
-        AbstractRoom<Player> room = (AbstractRoom<Player>)ThreadLocalUtil.getRoom();
+        AbstractRoom<? extends Player> room = (AbstractRoom<? extends Player>)ThreadLocalUtil.getRoom();
         UserVO user = ThreadLocalUtil.getUserVO();
         Optional<? extends Player> first = room.getPlayerList().stream().filter(player -> player.getUser().getId().equals(user.getId())).findFirst();
         eventPublisher.dismiss(room, first.orElse(null), null);
@@ -125,7 +126,7 @@ public class RoomHandlerProcessor implements RoomHandler {
 
     @Override
     public void run() {
-        final Room<Player> currentRoom = this.room;
+        final Room<? extends Player> currentRoom = this.room;
         this.room = null;
         lock.writeLock();
         log.trace("开始房间逻辑");

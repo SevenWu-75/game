@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping
@@ -35,7 +36,7 @@ public class CommandController {
 
     @MessageMapping("/command")
     public void command(@RequestBody DefaultMessage<?> message){
-        Room<Player> room = ThreadLocalUtil.getRoom();
+        Room<? extends Player> room = ThreadLocalUtil.getRoom();
         logicHandlerList.forEach(logicHandler -> {
             if(logicHandler.getCommands().stream().anyMatch(command -> command.getCode() == message.getCode())){
                 logicHandler.answer(RoomPropertyManagerUtil.getLock(room.getRoomId()),
@@ -54,23 +55,26 @@ public class CommandController {
     @SubscribeMapping("/user/{userId}/{roomId}")
     public void subscribeRoomPrivate(@DestinationVariable("userId") String userId, @DestinationVariable("roomId") String roomId){
         //发送重连包
-        Room<Player> room = ThreadLocalUtil.getRoom();
-        Message<Room<Player>> message = new DefaultMessage<>();
+        Room<? extends Player> room = ThreadLocalUtil.getRoom();
+        Message<RoomVO<? extends Player>> message = new DefaultMessage<>();
         message.setRoomId(roomId);
         message.setCode(GameCommand.RECONNECT.getCode());
-        message.setContent(room);
+        message.setContent(new RoomVO<>(room));
         message.setToId(Long.parseLong(userId));
         MessagePublishUtil.sendToRoomUser(userId, roomId, message);
         //通知用户重连
         EventPublisher eventPublisher = ApplicationContextUtil.getEventPublisher();
-        eventPublisher.reconnect(room, null, userId);
+        Optional<? extends Player> first = room.getPlayerList().stream().filter(player -> userId.equals(String.valueOf(player.getUser().getId()))).findFirst();
+        if(first.isPresent()){
+            eventPublisher.reconnect(room, first.get(), userId);
+        }
         //游戏未开始且进来的玩家并未坐下则自动让他坐下
         roomHandler.signalSeatDown();
     }
 
     @MessageMapping("/public")
     public void sendPublic(@RequestBody DefaultMessage<?> message){
-        Room<Player> room = ThreadLocalUtil.getRoom();
+        Room<? extends Player> room = ThreadLocalUtil.getRoom();
         MessagePublishUtil.sendToRoomPublic(room.getRoomId(),message);
     }
 }
