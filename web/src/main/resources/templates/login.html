@@ -18,9 +18,14 @@
     <link rel="stylesheet" href="https://quick.bootmb.com/assets/css/quick-website.css">
     <script type="text/html" id="user_info" th:inline="javascript">
         <div class="card-body px-md-5 py-5">
-            <div class="mb-5">
-                <h6 class="h3">{{user.realname}}</h6>
-                <p class="text-muted mb-0">欢迎登录系统.</p>
+            <div class="row align-items-center">
+                <div class="col-6">
+                    <h6 class="h3">{{user.realname}}</h6>
+                    <p class="text-muted mb-0">欢迎登录系统.</p>
+                </div>
+                <div class="col-6">
+                    <img src="/local/images/umr.webp" class="img-fluid img-center" alt="头像">
+                </div>
             </div>
         </div>
     </script>

@@ -37,27 +37,25 @@
     <script type="text/html" id="pre-half-html" th:inline="javascript">
         <tr class="table-success">
             <td class="h4" style="text-align: center; font-weight: bold;" colspan="2">{{user.realname}}</td>
-            <td id="one-{{user.username}}" style="text-align: center;" colspan="2">-</td>
-            <td id="two-{{user.username}}" style="text-align: center;" colspan="2">-</td>
-            <td id="three-{{user.username}}" style="text-align: center;" colspan="2">-</td>
-            <td id="four-{{user.username}}" style="text-align: center;" colspan="2">-</td>
-            <td id="five-{{user.username}}" style="text-align: center;" colspan="2">-</td>
-            <td id="six-{{user.username}}" style="text-align: center;" colspan="2">-</td>
+            <td class="h4" id="one-{{user.username}}" style="text-align: center; font-weight: bold;" colspan="2">-</td>
+            <td class="h4" id="two-{{user.username}}" style="text-align: center; font-weight: bold;" colspan="2">-</td>
+            <td class="h4" id="three-{{user.username}}" style="text-align: center; font-weight: bold;" colspan="2">-</td>
+            <td class="h4" id="four-{{user.username}}" style="text-align: center; font-weight: bold;" colspan="2">-</td>
+            <td class="h4" id="five-{{user.username}}" style="text-align: center; font-weight: bold;" colspan="2">-</td>
+            <td class="h4" id="six-{{user.username}}" style="text-align: center; font-weight: bold;" colspan="2">-</td>
             <td class="h4" id="smallSum-{{user.username}}" style="text-align: center; font-weight: bold;" colspan="2">0/63</td>
         </tr>
     </script>
     <script type="text/html" id="post-half-html" th:inline="javascript">
         <tr class="table-success">
             <td class="h4" style="text-align: center; font-weight: bold;" colspan="2">{{user.realname}}</td>
-            <td id="sum-{{user.username}}" style="text-align: center;" colspan="2">-</td>
-            <td id="kind4-{{user.username}}" style="text-align: center;" colspan="2">-</td>
-            <td id="fullHouse-{{user.username}}" style="text-align: center;" colspan="2">-</td>
-            <td id="smallStraight-{{user.username}}" style="text-align: center;" colspan="2">-</td>
-            <td id="straight-{{user.username}}" style="text-align: center;" colspan="2">-</td>
-            <td id="yahtzee-{{user.username}}" style="text-align: center;" colspan="2">-</td>
-            <td id="totalSum-{{user.username}}" style="text-align: center;" colspan="2">
-                <img class="img-fluid" src="/local/images/number-00.png" style="height: 10px; width: 10px;" alt="0">
-            </td>
+            <td class="h4" id="sum-{{user.username}}" style="text-align: center; font-weight: bold;" colspan="2">-</td>
+            <td class="h4" id="kind4-{{user.username}}" style="text-align: center; font-weight: bold;" colspan="2">-</td>
+            <td class="h4" id="fullHouse-{{user.username}}" style="text-align: center; font-weight: bold;" colspan="2">-</td>
+            <td class="h4" id="smallStraight-{{user.username}}" style="text-align: center; font-weight: bold;" colspan="2">-</td>
+            <td class="h4" id="straight-{{user.username}}" style="text-align: center; font-weight: bold;" colspan="2">-</td>
+            <td class="h4" id="yahtzee-{{user.username}}" style="text-align: center; font-weight: bold;" colspan="2">-</td>
+            <td class="h4" id="totalSum-{{user.username}}" style="text-align: center; font-weight: bold;" colspan="2">0</td>
         </tr>
     </script>
     <script type="text/javascript" th:inline="javascript">
@@ -129,7 +127,7 @@
                         setTimeout(()=>{
                             clearInterval(diceTaskId);
                             populateScores(parse.content, ids);
-                            document.getElementById("playDice").innerText = "投掷骰子*" + parse.content.playTimes;
+                            document.getElementById("playDice").innerText = "掷骰*" + parse.content.playTimes;
                         },1500);
                     }
                     //收到广播的选择分数结果
@@ -223,7 +221,7 @@
                         setTimeout(()=>{
                             var times = parse.content.playTimes;
                             playDice.disabled = times <= 0;
-                            playDice.innerText = "投掷骰子*" + times;
+                            playDice.innerText = "掷骰*" + times;
                             if(times != 3){
                                 enable(parse.content.scores, parse.content.id);
                             }
@@ -265,7 +263,7 @@
                             document.getElementById("playDice").disabled = false;
                         }
                         //展示骰子次数
-                        document.getElementById("playDice").innerText = "投掷骰子*" + currentPlayer.playTimes;
+                        document.getElementById("playDice").innerText = "掷骰*" + currentPlayer.playTimes;
                     }
                 })
             },{});
@@ -488,7 +486,7 @@
             <!--添加游戏主体 -->
             <div style="display: flex; justify-content: center">
                 <div class="table-responsive">
-                    <table class="table table-hover" style="text-align: center;table-layout:fixed;word-break:break-all;">
+                    <table class="table" style="text-align: center;table-layout:fixed;word-break:break-all;">
                         <thead class="table-warning">
                             <tr>
                                 <th class="h4" style="text-align: center; font-weight: bold;" colspan="2">回合</th>
@@ -498,23 +496,23 @@
                                 <th style="text-align: center;" colspan="2"><img class="img-fluid" src="/local/images/骰子_四点.png" style="height: 40px;" alt="四点"></th>
                                 <th style="text-align: center;" colspan="2"><img class="img-fluid" src="/local/images/骰子_五点.png" style="height: 40px;" alt="五点"></th>
                                 <th style="text-align: center;" colspan="2"><img class="img-fluid" src="/local/images/骰子_六点.png" style="height: 40px;" alt="六点"></th>
-                                <th class="h4" style="text-align: center; font-weight: bold;" colspan="2">奖励+35</th>
+                                <th class="h4" style="text-align: center; font-weight: bold;" colspan="2">奖励35</th>
                             </tr>
                         </thead>
                         <tbody id="pre-half">
                             <tr class="table-primary">
                                 <td class="h4" style="text-align: center; font-weight: bold;" colspan="2">己方</td>
-                                <td id="one-my" style="text-align: center;" colspan="2">-</td>
-                                <td id="two-my" style="text-align: center;" colspan="2">-</td>
-                                <td id="three-my" style="text-align: center;" colspan="2">-</td>
-                                <td id="four-my" style="text-align: center;" colspan="2">-</td>
-                                <td id="five-my" style="text-align: center;" colspan="2">-</td>
-                                <td id="six-my" style="text-align: center;" colspan="2">-</td>
+                                <td class="h4" id="one-my" style="text-align: center; font-weight: bold;" colspan="2">-</td>
+                                <td class="h4" id="two-my" style="text-align: center; font-weight: bold;" colspan="2">-</td>
+                                <td class="h4" id="three-my" style="text-align: center; font-weight: bold;" colspan="2">-</td>
+                                <td class="h4" id="four-my" style="text-align: center; font-weight: bold;" colspan="2">-</td>
+                                <td class="h4" id="five-my" style="text-align: center; font-weight: bold;" colspan="2">-</td>
+                                <td class="h4" id="six-my" style="text-align: center; font-weight: bold;" colspan="2">-</td>
                                 <td class="h4" id="smallSum-my" style="text-align: center; font-weight: bold;" colspan="2">0/63</td>
                             </tr>
                         </tbody>
                     </table>
-                    <table class="table table-hover" style="text-align: center;table-layout:fixed;word-break:break-all;">
+                    <table class="table" style="text-align: center;table-layout:fixed;word-break:break-all;">
                         <thead class="table-warning">
                             <tr>
                                 <th class="h4" style="text-align: center; font-weight: bold;" colspan="2">回合</th>
@@ -524,21 +522,19 @@
                                 <th style="text-align: center;" colspan="2"><img class="img-fluid" src="/local/images/骰子_小顺.png" style="height: 40px;" alt="小顺"></th>
                                 <th style="text-align: center;" colspan="2"><img class="img-fluid" src="/local/images/骰子_大顺.png" style="height: 40px;" alt="大顺"></th>
                                 <th style="text-align: center;" colspan="2"><img class="img-fluid" src="/local/images/骰子_快艇.png" style="height: 40px;" alt="快艇"></th>
-                                <th class="h4" style="text-align: center; font-weight: bold;" colspan="2">总计点数</th>
+                                <th class="h4" style="text-align: center; font-weight: bold;" colspan="2">总分</th>
                             </tr>
                         </thead>
                         <tbody id="post-half">
                             <tr class="table-primary">
                                 <td class="h4" style="text-align: center; font-weight: bold;" colspan="2">己方</td>
-                                <td id="sum-my" style="text-align: center;" colspan="2">-</td>
-                                <td id="kind4-my" style="text-align: center;" colspan="2">-</td>
-                                <td id="fullHouse-my" style="text-align: center;" colspan="2">-</td>
-                                <td id="smallStraight-my" style="text-align: center;" colspan="2">-</td>
-                                <td id="straight-my" style="text-align: center;" colspan="2">-</td>
-                                <td id="yahtzee-my" style="text-align: center;" colspan="2">-</td>
-                                <td id="totalSum-my" style="text-align: center;" colspan="2">
-                                    <img class="img-fluid" src="/local/images/number-00.png" style="height: 10px; width: 10px;" alt="0">
-                                </td>
+                                <td class="h4" id="sum-my" style="text-align: center; font-weight: bold;" colspan="2">-</td>
+                                <td class="h4" id="kind4-my" style="text-align: center; font-weight: bold;" colspan="2">-</td>
+                                <td class="h4" id="fullHouse-my" style="text-align: center; font-weight: bold;" colspan="2">-</td>
+                                <td class="h4" id="smallStraight-my" style="text-align: center; font-weight: bold;" colspan="2">-</td>
+                                <td class="h4" id="straight-my" style="text-align: center; font-weight: bold;" colspan="2">-</td>
+                                <td class="h4" id="yahtzee-my" style="text-align: center; font-weight: bold;" colspan="2">-</td>
+                                <td class="h4" id="totalSum-my" style="text-align: center; font-weight: bold;" colspan="2">0</td>
                             </tr>
                         </tbody>
                     </table>
@@ -555,7 +551,7 @@
                     </tr>
                 </table>
                 <button id="playDice" onclick="playDice()" class="btn btn-success" disabled>
-                    投掷骰子
+                    掷骰
                 </button>
             </div>
         </div>
