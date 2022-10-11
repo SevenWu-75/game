@@ -105,7 +105,7 @@ public class RoomHandlerProcessor implements RoomHandler {
         UserVO user = ThreadLocalUtil.getUserVO();
         RoomPropertyManagerUtil.getLock(room.getRoomId()).lock();
         try{
-            if(room.getRoomStatus() == RoomStatusEnum.created.ordinal()){
+            if(room.getRoomStatus() <= RoomStatusEnum.canStart.ordinal()){
                 Player player = room.seatDown(user);
                 eventPublisher.seatDown(room, player, player);
                 RoomPropertyManagerUtil.getCountDownLatch(room.getRoomId(),room.getPlayAtLeastNum()).countDown();

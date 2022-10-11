@@ -1,40 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8">
   <title>Bootstrap5 实例</title>
-  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
   <link href="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/local/css/quick-website.css">
   <script src="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/js/bootstrap.bundle.min.js"></script>
 </head>
-<body data-aos-easing="ease-out-quad" data-aos-duration="700" data-aos-delay="0" onload="load()">
-
-<section>
-  <div class="container d-flex flex-column">
-    <div class="row align-items-center justify-content-center min-vh-100">
-      <div class="col-md-6 col-lg-5 col-xl-5 py-6 py-md-0">
-        <div id="login_card" class="card shadow zindex-100 mb-0">
-
-        </div>
-        <div class="card shadow zindex-100 mb-0">
-          <div class="card-body px-md-5 py-5">
-            <form action="/room/join" method="get">
-              <label>房间号:
-                <input type="number" name="id">
-              </label>
-              <button id="join" class="btn btn-block btn-primary" type="submit" disabled>加入房间</button>
-            </form>
-          </div>
-          <div class="card-footer px-md-5">
-            <form action="/room/create">
-              <button id="create" class="btn btn-block btn-primary" type="submit" disabled>创建房间</button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+<body>
 
 <div class="container mt-3">
   <h3>模态框实例</h3>
