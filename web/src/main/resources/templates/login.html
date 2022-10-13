@@ -6,6 +6,7 @@
     <title>快艇骰子</title>
     <script src="https://code.jquery.com/jquery-3.2.0.min.js"
             integrity="sha256-JAW99MJVpJBGcbzEuXk4Az05s/XyDdBomFqNlM3ic+I=" crossorigin="anonymous"></script>
+    <script src="https://cdn.bootcss.com/jquery.form/4.2.1/jquery.form.min.js"></script>
     <script src="https://cdn.bootcss.com/sockjs-client/1.1.4/sockjs.min.js"></script>
     <script src="https://cdn.bootcss.com/stomp.js/2.3.3/stomp.min.js"></script>
     <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
@@ -24,7 +25,10 @@
                     <p class="text-muted mb-0">欢迎登录系统.</p>
                 </div>
                 <div class="col-6">
-                    <img src="/local/images/umr.webp" class="img-fluid img-center" alt="头像">
+                    <form method="post" enctype="multipart/form-data" action="/user/upload_avatar"  id="imgUploadForm">
+                        <input type="file" name="file" id="btn_file" style="display:none" onchange="imgSelected()">
+                        <img id="avatar" src="{{user.avatar}}" class="img-fluid img-center" alt="头像" onclick="uploadImg()">
+                    </form>
                 </div>
             </div>
         </div>
@@ -98,47 +102,47 @@
     </div>
 </section>
 <script type="text/javascript" th:inline="javascript">
-    function load(){
+    function load() {
         var user = [[${session.user}]];
-        if(user === null){
-            document.getElementById("login_card").innerHTML = template("no_user_info",{});
+        if (user === null) {
+            document.getElementById("login_card").innerHTML = template("no_user_info", {});
         } else {
-            document.getElementById("login_card").innerHTML = template("user_info",{user});
+            document.getElementById("login_card").innerHTML = template("user_info", {user});
             document.getElementById("create").disabled = false;
             document.getElementById("join").disabled = false;
         }
         var showPassword = document.getElementById("show-password");
-        showPassword.addEventListener('click',function () {
-            let password =  document.getElementById('password');
+        showPassword.addEventListener('click', function () {
+            let password = document.getElementById('password');
             let type = password.type;
-            if (type === 'password'){
+            if (type === 'password') {
                 password.type = 'text';
-            }else{
+            } else {
                 password.type = 'password';
             }
-            if (type === 'password'){
-                showPassword.innerText="隐藏密码";
-            }else{
-                showPassword.innerText="显示密码";
+            if (type === 'password') {
+                showPassword.innerText = "隐藏密码";
+            } else {
+                showPassword.innerText = "显示密码";
             }
         });
 
         $(function () {
-            $("#login").click(function (){
+            $("#login").click(function () {
                 username = $("#username").val();
                 password = $("#password").val();
                 $.ajax({
                     url: '/login',
                     type: 'POST',
-                    dataType : "json",
+                    dataType: "json",
                     contentType: 'application/json',
                     data: JSON.stringify({
                         'username': username,
                         'password': password
                     }),
                     success: function (arg) {
-                        if(arg.code === 200){
-                            document.getElementById("login_card").innerHTML = template("user_info",{user:arg.data});
+                        if (arg.code === 200) {
+                            document.getElementById("login_card").innerHTML = template("user_info", {user: arg.data});
                             $("#create").removeAttr('disabled');
                             $("#join").removeAttr('disabled');
                         } else {
@@ -151,6 +155,17 @@
                 })
             })
         })
+    }
+
+    function uploadImg(){
+        document.getElementById("btn_file").click();
+    }
+    function imgSelected(){
+        if($("#btn_file").val()){
+            $("#imgUploadForm").ajaxSubmit(function(data) {
+                $("#avatar").prop("src", window.location.protocol+"//"+window.location.host+data.data);
+            });
+        }
     }
 </script>
 </body>

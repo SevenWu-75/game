@@ -23,4 +23,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public void addUser(User user) {
         this.baseMapper.insert(user);
     }
+
+    @Override
+    public void updateUser(User user){
+        this.baseMapper.updateById(user);
+    }
 }

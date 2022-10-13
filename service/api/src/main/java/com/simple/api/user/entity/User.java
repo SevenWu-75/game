@@ -17,6 +17,8 @@ public class User implements Serializable {
 
     private String realname;
 
+    private String avatar;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

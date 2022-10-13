@@ -15,6 +15,8 @@ public class UserVO implements Serializable {
 
     private String realname;
 
+    private String avatar;
+
     private HistoryRankVO historyRankVO;
 
     public void setHistoryRankVO(HistoryRankVO historyRankVO){
@@ -33,5 +35,6 @@ public class UserVO implements Serializable {
         this.setId(user.getId());
         this.setUsername(user.getUsername());
         this.setRealname(user.getRealname());
+        this.setAvatar(user.getAvatar());
     }
 }

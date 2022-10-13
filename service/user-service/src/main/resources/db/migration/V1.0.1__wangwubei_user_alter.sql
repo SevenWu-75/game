@@ -1,0 +1,1 @@
+ALTER TABLE `yzhtzee`.`user` ADD COLUMN `avatar` varchar(255) NULL AFTER `realname`;

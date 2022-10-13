@@ -29,3 +29,6 @@ spring:
 
 websocket:
   url: http://localhost:7084/speedBoot
+
+avatar:
+  path: /Users/wangwubei/IdeaProjects/game/img/avatar/
