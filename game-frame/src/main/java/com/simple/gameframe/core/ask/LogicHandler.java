@@ -5,6 +5,7 @@ import com.simple.api.game.Room;
 import com.simple.api.game.exception.GameException;
 import com.simple.api.game.exception.GameExceptionEnum;
 import com.simple.gameframe.common.Command;
+import com.simple.gameframe.config.GameFrameProperty;
 import com.simple.gameframe.core.Message;
 import com.simple.gameframe.util.MessagePublishUtil;
 import com.simple.gameframe.util.RoomPropertyManagerUtil;
@@ -36,12 +37,38 @@ public interface LogicHandler<T extends Command> {
         return 60*5L;
     }
 
+    /**
+     * 处理器的前置条件处理
+     *
+     * @param player 当前回合的玩家对象
+     * @param room 当前房间对象
+     * @param o 前一个处理器处理的结果
+     * @return 是否继续执行本处理器
+     */
     default boolean preHandle(Player player, Room<? extends Player> room, Object o) {
         return true;
     }
 
+    /**
+     * 消息包组装方法
+     *
+     * @param player 当前回合的玩家对象
+     * @param room 当前房间对象
+     * @param o 前一个处理器处理的结果
+     * @return 组装好的消息包
+     */
     Message<?> messageHandle(Player player, Room<? extends Player> room, Object o);
 
+    /**
+     * 本处理器的默认询问玩家操作实现
+     *
+     * @param userId 询问玩家的id
+     * @param room 当前房间对象
+     * @param message 询问的消息体
+     * @param lock 本处理器专属用来同步应答机制的锁
+     * @param condition 本处理器专属用来等待解锁的条件
+     * @return 玩家应答的消息体
+     */
     default Message<?> ask(Long userId, @NotNull Room<? extends Player> room, Message<?> message, @NotNull Lock lock, Condition condition) {
         lock.lock();
         try {
@@ -67,10 +94,27 @@ public interface LogicHandler<T extends Command> {
         return getReceivedMessageMap().get(room.getRoomId());
     }
 
+    /**
+     * 本处理器应答完成后的后置处理器
+     *
+     * @param player 当前回合的玩家对象
+     * @param room 当前房间对象
+     * @param message 玩家应答的消息体
+     * @param o 前一个处理器处理的结果
+     * @return 后置处理器处理结果
+     */
     default Object postHandle(Player player, Room<? extends Player> room, Message<?> message, Object o) {
         return o;
     }
 
+    /**
+     * 本处理器的默认应答实现
+     *
+     * @param lock 本处理器专属用来同步应答机制的锁
+     * @param room 当前房间对象
+     * @param condition 本处理器专属用来解锁的条件
+     * @param message 玩家应答的消息体
+     */
     default void answer(@NotNull Lock lock, @NotNull Room<? extends Player> room, @NotNull Condition condition, Message<?> message) {
         lock.lock();
         try {
@@ -82,5 +126,12 @@ public interface LogicHandler<T extends Command> {
         }
     }
 
+    /**
+     * 获取下一个处理器
+     * 注：只有在enable-link-logic配置开启时才有效，才会执行链式处理
+     *
+     * @see GameFrameProperty
+     * @return 下一个处理器
+     */
     LogicHandler<?> getNextHandler();
 }
