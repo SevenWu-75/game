@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 
@@ -26,15 +27,17 @@ public class UserController {
     String  imgPath;
 
     @PostMapping("/upload_avatar")
-    public Result<String> result(MultipartFile file) throws IOException {
+    public Result<String> result(HttpSession session, MultipartFile file) throws IOException {
         UserVO user = ThreadLocalUtil.getUserVO();
         String imgName = user.getId() + ".jpg";
         FileUtil.writeFromStream(file.getInputStream(), new File(imgPath + imgName));
         String avatarUrl = "/img/" + imgName + "?ts=" + System.currentTimeMillis();
+        user.setAvatar(avatarUrl);
         User u = new User();
         u.setId(user.getId());
         u.setAvatar(avatarUrl);
         userService.updateUser(u);
+        session.setAttribute("user", user);
         return Result.success(avatarUrl);
     }
 }
