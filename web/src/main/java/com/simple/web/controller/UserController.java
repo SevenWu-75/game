@@ -30,7 +30,7 @@ public class UserController {
         UserVO user = ThreadLocalUtil.getUserVO();
         String imgName = user.getId() + ".jpg";
         FileUtil.writeFromStream(file.getInputStream(), new File(imgPath + imgName));
-        String avatarUrl = "/img/" + imgName;
+        String avatarUrl = "/img/" + imgName + "?ts=" + System.currentTimeMillis();
         User u = new User();
         u.setId(user.getId());
         u.setAvatar(avatarUrl);
