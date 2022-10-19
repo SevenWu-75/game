@@ -33,7 +33,7 @@ public class IndexController {
     }
 
     @GetMapping("/register")
-    public String test(){
+    public String register(){
         return "/register";
     }
 }
