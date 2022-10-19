@@ -16,7 +16,7 @@ public enum ResultCode implements IErrorCode{
     ACCOUNT_EXIST(507,"账号已存在"),
     USERNAME_INVAILD(508,"用户名不合法"),
     PASSWORD_INVAILD(509,"密码不合法"),
-    REALNAME_INVAILD(509,"昵称不合法"),
+    REALNAME_INVAILD(510,"昵称不合法"),
     ;
 
     private int code;
