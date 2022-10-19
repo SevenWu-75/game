@@ -34,6 +34,6 @@ public class IndexController {
 
     @GetMapping("/register")
     public String register(){
-        return "/register";
+        return "register";
     }
 }
