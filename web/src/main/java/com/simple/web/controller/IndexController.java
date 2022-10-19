@@ -32,8 +32,8 @@ public class IndexController {
         return "login";
     }
 
-    @GetMapping("/test")
+    @GetMapping("/register")
     public String test(){
-        return "test";
+        return "/register";
     }
 }
