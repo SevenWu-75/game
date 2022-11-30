@@ -6,6 +6,7 @@ import com.simple.api.game.UserVO;
 import com.simple.api.game.exception.GameException;
 import com.simple.api.game.exception.GameExceptionEnum;
 import com.simple.gameframe.core.ClassInject;
+import com.simple.gameframe.core.Dice;
 import com.simple.speedbootdice.common.ScoreEnum;
 import lombok.Data;
 
