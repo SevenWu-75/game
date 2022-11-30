@@ -7,12 +7,10 @@ import com.simple.gameframe.core.ask.LogicHandler;
 import com.simple.gameframe.core.Message;
 import com.simple.gameframe.util.MessagePublishUtil;
 import com.simple.speedbootdice.common.SpeedBootCommand;
-import com.simple.speedbootdice.pojo.SpeedBootPlayer;
-import com.simple.speedbootdice.vo.DiceResultVo;
+import com.simple.speedbootdice.bo.SpeedBootPlayer;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 

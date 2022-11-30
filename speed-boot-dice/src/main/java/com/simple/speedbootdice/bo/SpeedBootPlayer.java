@@ -1,13 +1,10 @@
-package com.simple.speedbootdice.pojo;
+package com.simple.speedbootdice.bo;
 
-import com.alibaba.fastjson.annotation.JSONField;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.simple.api.game.Player;
 import com.simple.api.game.UserVO;
 import com.simple.api.game.exception.GameException;
 import com.simple.api.game.exception.GameExceptionEnum;
-import com.simple.api.user.entity.User;
 import com.simple.gameframe.core.ClassInject;
 import com.simple.speedbootdice.common.ScoreEnum;
 import lombok.Data;

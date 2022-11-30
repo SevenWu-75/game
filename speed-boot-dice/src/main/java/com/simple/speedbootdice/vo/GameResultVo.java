@@ -1,6 +1,6 @@
 package com.simple.speedbootdice.vo;
 
-import com.simple.speedbootdice.pojo.SpeedBootPlayer;
+import com.simple.speedbootdice.bo.SpeedBootPlayer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

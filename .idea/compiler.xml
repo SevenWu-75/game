@@ -7,10 +7,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="user-service" />
-        <module name="api" />
         <module name="game-service" />
         <module name="web" />
+        <module name="mar-dice" />
+        <module name="user-service" />
+        <module name="api" />
         <module name="game-frame" />
         <module name="speed-boot-dice" />
       </profile>
@@ -19,6 +20,7 @@
       <module name="api" target="1.8" />
       <module name="game-frame" target="1.8" />
       <module name="game-service" target="1.8" />
+      <module name="mar-dice" target="1.8" />
       <module name="parent" target="1.8" />
       <module name="service" target="1.8" />
       <module name="speed-boot-dice" target="1.8" />
@@ -31,6 +33,7 @@
       <module name="api" options="-parameters" />
       <module name="game-frame" options="-parameters" />
       <module name="game-service" options="-parameters" />
+      <module name="mar-dice" options="-parameters" />
       <module name="speed-boot-dice" options="-parameters" />
       <module name="user-service" options="-parameters" />
       <module name="web" options="-parameters" />

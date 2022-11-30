@@ -47,7 +47,6 @@
             <groupId>com.simple</groupId>
             <artifactId>game-frame</artifactId>
             <version>1.0.1</version>
-            <scope></scope>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>

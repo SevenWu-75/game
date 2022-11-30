@@ -11,6 +11,7 @@
         <option value="$PROJECT_DIR$/service/game-service/pom.xml" />
         <option value="$PROJECT_DIR$/service/api/pom.xml" />
         <option value="$PROJECT_DIR$/game-frame/pom.xml" />
+        <option value="$PROJECT_DIR$/mar-dice/pom.xml" />
       </list>
     </option>
   </component>

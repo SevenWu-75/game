@@ -1,14 +1,13 @@
 package com.simple.speedbootdice.listener;
 
-import com.simple.api.game.Player;
 import com.simple.api.game.service.HistoryRankService;
 import com.simple.gameframe.common.GameCommand;
 import com.simple.gameframe.core.event.GameResultEvent;
 import com.simple.gameframe.core.listener.AbstractEventListener;
 import com.simple.gameframe.util.MessagePublishUtil;
 import com.simple.speedbootdice.common.ScoreEnum;
-import com.simple.speedbootdice.pojo.SpeedBootPlayer;
-import com.simple.speedbootdice.pojo.SpeedBootRoom;
+import com.simple.speedbootdice.bo.SpeedBootPlayer;
+import com.simple.speedbootdice.bo.SpeedBootRoom;
 import com.simple.speedbootdice.vo.GameResultVo;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Value;

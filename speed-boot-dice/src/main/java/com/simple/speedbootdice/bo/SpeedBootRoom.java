@@ -1,7 +1,6 @@
-package com.simple.speedbootdice.pojo;
+package com.simple.speedbootdice.bo;
 
 import com.simple.api.game.UserVO;
-import com.simple.api.user.entity.User;
 import com.simple.gameframe.config.GameFrameProperty;
 import com.simple.gameframe.core.AbstractRoom;
 import com.simple.gameframe.core.ClassInject;

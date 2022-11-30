@@ -1,4 +1,4 @@
-package com.simple.speedbootdice.pojo;
+package com.simple.speedbootdice.bo;
 
 import lombok.Data;
 
