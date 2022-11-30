@@ -1,0 +1,38 @@
+server:
+  port: 7085
+
+game-frame:
+  scan: com.simple.mardice
+  game-id: 2
+  enable-link-logic: true
+
+#websocket:
+#  url: https://localhost/speedBoot
+
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+  application:
+    name: mar-dev
+  main:
+    allow-circular-references: true
+
+dubbo:
+  application:
+    name: mar-dev
+  protocol:
+    name: dubbo
+    port: -1
+  registry:
+    address: spring-cloud://localhost
+    check: false
+  scan:
+    base-packages: com.simple.gameframe.service.impl
+  consumer:
+    check: false
+    timeout: 60000
+    retries: 0
+  cloud:
+    subscribed-services: game-service-dev

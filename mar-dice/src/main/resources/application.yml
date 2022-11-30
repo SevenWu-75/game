@@ -1,0 +1,9 @@
+spring:
+  profiles:
+    active: dev
+
+logging:
+  level:
+    com.simple.mardice: trace
+    com.simple.gameframe: trace
+    org.springframework.messaging.simp: debug
