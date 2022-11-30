@@ -9,6 +9,7 @@ import com.simple.gameframe.core.ask.LogicHandlerProcessor;
 import com.simple.gameframe.core.ask.StartLogicHandler;
 import com.simple.gameframe.core.listener.DefaultEventListener;
 import com.simple.gameframe.core.listener.EventListener;
+import com.simple.gameframe.core.listener.GameOverListener;
 import com.simple.gameframe.core.publisher.EventPublisher;
 import com.simple.gameframe.core.publisher.RoomEventPublisher;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -25,6 +26,12 @@ public class GameFrameAutoConfiguration {
     @Bean
     public DefaultEventListener defaultEventListener(){
         return new DefaultEventListener();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(name = "gameOverListener")
+    public GameOverListener gameOverListener() {
+        return new GameOverListener();
     }
 
     @Bean

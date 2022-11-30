@@ -27,4 +27,11 @@ public interface Player extends Serializable {
      * @return 玩家状态
      */
     int getStatus();
+
+    /**
+     * 获取玩家总分数
+     *
+     * @return 玩家总分数
+     */
+    int getTotalScore();
 }

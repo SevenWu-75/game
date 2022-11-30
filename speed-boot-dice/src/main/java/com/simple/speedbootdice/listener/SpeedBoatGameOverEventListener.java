@@ -18,7 +18,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-@Component
+@Component("gameOverListener")
 @Order(1)
 public class SpeedBoatGameOverEventListener extends AbstractEventListener<GameResultEvent> {
 

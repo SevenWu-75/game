@@ -37,6 +37,8 @@ public class SpeedBootPlayer implements Player {
 
     private int[] lockDices;
 
+    private int totalScore;
+
     public SpeedBootPlayer(Integer id, UserVO user){
         this.id = id;
         this.user = user;
@@ -70,6 +72,7 @@ public class SpeedBootPlayer implements Player {
             this.scores[ScoreEnum.BONUS.ordinal()] = 35;
             this.scores[ScoreEnum.TOTAL_SUM.ordinal()] += 35;
         }
+        totalScore = this.scores[ScoreEnum.TOTAL_SUM.ordinal()];
     }
 
     public void costPlayTimes(){
@@ -82,5 +85,10 @@ public class SpeedBootPlayer implements Player {
 
     public boolean enoughPlayTimes(){
         return this.playTimes != 0;
+    }
+
+    @Override
+    public int getTotalScore() {
+        return totalScore;
     }
 }
