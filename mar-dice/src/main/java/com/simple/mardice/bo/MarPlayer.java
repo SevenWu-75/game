@@ -4,6 +4,7 @@ import com.simple.api.game.Player;
 import com.simple.api.game.UserVO;
 import com.simple.gameframe.core.ClassInject;
 import com.simple.gameframe.core.Dice;
+import com.simple.mardice.common.DiceNumEnum;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -22,7 +23,7 @@ public class MarPlayer implements Player, Serializable {
 
     private List<Dice> diceList;
 
-    private int score;
+    private int totalScore;
 
     private List<Integer> scoreList;
 
@@ -38,9 +39,26 @@ public class MarPlayer implements Player, Serializable {
         diceList.stream().filter(dice -> dice.getLockStatus() != -1).forEach(Dice::playDice);
     }
 
-    public void addScore(int score){
-        scoreList.add(score);
-        score += score;
+    public void resetDice(){
+        diceList.forEach(Dice::unlockDice);
+    }
+
+    public void calculateScore(){
+        List<Dice> diceList = getDiceList();
+        long spaceShipCount = diceList.stream().filter(dice -> dice.getCurrentNum() == DiceNumEnum.SPACE_SHIP_1.ordinal()
+                || dice.getCurrentNum() == DiceNumEnum.SPACE_SHIP_2.ordinal()).count();
+        long tankCount = diceList.stream().filter(dice -> dice.getCurrentNum() == DiceNumEnum.TANK.ordinal()).count();
+        if(spaceShipCount >= tankCount){
+            long cowCount = diceList.stream().filter(dice -> dice.getCurrentNum() == DiceNumEnum.COW.ordinal()).count();
+            long chickenCount = diceList.stream().filter(dice -> dice.getCurrentNum() == DiceNumEnum.CHICKEN.ordinal()).count();
+            long manCount = diceList.stream().filter(dice -> dice.getCurrentNum() == DiceNumEnum.MAN.ordinal()).count();
+            int score = (int)cowCount + (int)chickenCount + (int)manCount;
+            if(cowCount > 0 && chickenCount > 0 && manCount > 0){
+                score += 3;
+            }
+            scoreList.add(score);
+            score += score;
+        }
     }
 
     @Override
@@ -56,5 +74,10 @@ public class MarPlayer implements Player, Serializable {
     @Override
     public int getStatus() {
         return status;
+    }
+
+    @Override
+    public int getTotalScore() {
+        return totalScore;
     }
 }

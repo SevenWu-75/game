@@ -8,7 +8,6 @@ import com.simple.gameframe.core.Message;
 import com.simple.gameframe.core.ask.LogicHandler;
 import com.simple.mardice.bo.MarPlayer;
 import com.simple.mardice.bo.MarRoom;
-import com.simple.mardice.common.DiceNumEnum;
 import com.simple.mardice.common.MarCommand;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -79,22 +78,10 @@ public class SelectOrEndLogicHandler implements LogicHandler<MarCommand> {
     }
 
     public void processScore(@NotNull MarPlayer player, MarRoom room) {
-        List<Dice> diceList = player.getDiceList();
-        long spaceShipCount = diceList.stream().filter(dice -> dice.getCurrentNum() == DiceNumEnum.SPACE_SHIP_1.ordinal()
-                || dice.getCurrentNum() == DiceNumEnum.SPACE_SHIP_2.ordinal()).count();
-        long tankCount = diceList.stream().filter(dice -> dice.getCurrentNum() == DiceNumEnum.TANK.ordinal()).count();
-        if(spaceShipCount >= tankCount){
-            long cowCount = diceList.stream().filter(dice -> dice.getCurrentNum() == DiceNumEnum.COW.ordinal()).count();
-            long chickenCount = diceList.stream().filter(dice -> dice.getCurrentNum() == DiceNumEnum.CHICKEN.ordinal()).count();
-            long manCount = diceList.stream().filter(dice -> dice.getCurrentNum() == DiceNumEnum.MAN.ordinal()).count();
-            int score = (int)cowCount + (int)chickenCount + (int)manCount;
-            if(cowCount > 0 && chickenCount > 0 && manCount > 0){
-                score += 3;
-            }
-            player.addScore(score);
-            if(player.getScore() >= 25){
-                room.setPlayCount(0);
-            }
+        player.calculateScore();
+        if(player.getTotalScore() >= 25){
+            room.setPlayCount(0);
         }
+        player.resetDice();
     }
 }
