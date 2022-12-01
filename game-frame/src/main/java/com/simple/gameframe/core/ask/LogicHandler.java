@@ -6,6 +6,7 @@ import com.simple.api.game.exception.GameException;
 import com.simple.api.game.exception.GameExceptionEnum;
 import com.simple.gameframe.common.Command;
 import com.simple.gameframe.config.GameFrameProperty;
+import com.simple.gameframe.core.DefaultMessage;
 import com.simple.gameframe.core.Message;
 import com.simple.gameframe.util.MessagePublishUtil;
 import com.simple.gameframe.util.RoomPropertyManagerUtil;
@@ -134,4 +135,21 @@ public interface LogicHandler<T extends Command> {
      * @return 下一个处理器
      */
     LogicHandler<?> getNextHandler();
+
+    /**
+     * 默认实现的广播玩家信息的方法
+     *
+     * @param player 玩家信息
+     * @param roomId 房间号
+     * @param code 指令代码
+     */
+    default void sendPlayerMessageToPublic(@NotNull Player player, String roomId, int code){
+        Message<Player> message = new DefaultMessage<>();
+        message.setRoomId(roomId);
+        message.setFromId(player.getUser().getId());
+        message.setSeat(player.getId());
+        message.setContent(player);
+        message.setCode(code);
+        MessagePublishUtil.sendToRoomPublic(roomId, message);
+    }
 }

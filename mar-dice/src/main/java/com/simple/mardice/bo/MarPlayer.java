@@ -5,12 +5,14 @@ import com.simple.api.game.UserVO;
 import com.simple.gameframe.core.ClassInject;
 import com.simple.gameframe.core.Dice;
 import com.simple.mardice.common.DiceNumEnum;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @ClassInject("com.simple.api.game.Player")
+@Data
 public class MarPlayer implements Player, Serializable {
 
     private int id;
@@ -33,6 +35,8 @@ public class MarPlayer implements Player, Serializable {
 
     private List<Dice> spaceShipDiceList;
 
+    private Boolean canDice;
+
     public MarPlayer(Integer id, UserVO user){
         this.id = id;
         this.user = user;
@@ -43,6 +47,7 @@ public class MarPlayer implements Player, Serializable {
         scoreDiceList = new LinkedList<>();
         autoTankDiceList = new LinkedList<>();
         spaceShipDiceList = new LinkedList<>();
+        canDice = false;
     }
 
     public void playDices(){
@@ -56,6 +61,18 @@ public class MarPlayer implements Player, Serializable {
                 autoTankDiceList.add(next);
             }
         }
+        diceList.sort(Comparator.comparing(Dice::getCurrentNum));
+        boolean cow = scoreDiceList.stream().anyMatch(dice -> dice.getCurrentNum() == DiceNumEnum.COW.ordinal());
+        boolean chicken = scoreDiceList.stream().anyMatch(dice -> dice.getCurrentNum() == DiceNumEnum.CHICKEN.ordinal());
+        boolean man = scoreDiceList.stream().anyMatch(dice -> dice.getCurrentNum() == DiceNumEnum.MAN.ordinal());
+        diceList.forEach(dice -> {
+            if(cow && dice.getCurrentNum() == DiceNumEnum.COW.ordinal())
+                dice.lockDice();
+            if(chicken && dice.getCurrentNum() == DiceNumEnum.CHICKEN.ordinal())
+                dice.lockDice();
+            if(man && dice.getCurrentNum() == DiceNumEnum.MAN.ordinal())
+                dice.lockDice();
+        });
     }
 
     public void selectDice(int diceNumEnum) {
@@ -71,10 +88,29 @@ public class MarPlayer implements Player, Serializable {
                 }
             }
             calculateScore();
+            scoreDiceList.sort(Comparator.comparing(Dice::getCurrentNum));
         }
     }
 
     public void resetDice(){
+        Iterator<Dice> iterator = scoreDiceList.iterator();
+        while (iterator.hasNext()) {
+            Dice next = iterator.next();
+            iterator.remove();
+            diceList.add(next);
+        }
+        iterator = autoTankDiceList.iterator();
+        while (iterator.hasNext()) {
+            Dice next = iterator.next();
+            iterator.remove();
+            diceList.add(next);
+        }
+        iterator = spaceShipDiceList.iterator();
+        while (iterator.hasNext()) {
+            Dice next = iterator.next();
+            iterator.remove();
+            diceList.add(next);
+        }
         diceList.forEach(Dice::unlockDice);
     }
 
@@ -95,19 +131,13 @@ public class MarPlayer implements Player, Serializable {
         }
     }
 
-    @Override
-    public int getId() {
-        return id;
-    }
-
-    @Override
-    public UserVO getUser() {
-        return user;
-    }
-
-    @Override
-    public int getStatus() {
-        return status;
+    public void enableDice(){
+        boolean cow = scoreDiceList.stream().anyMatch(dice -> dice.getCurrentNum() == DiceNumEnum.COW.ordinal());
+        boolean chicken = scoreDiceList.stream().anyMatch(dice -> dice.getCurrentNum() == DiceNumEnum.CHICKEN.ordinal());
+        boolean man = scoreDiceList.stream().anyMatch(dice -> dice.getCurrentNum() == DiceNumEnum.MAN.ordinal());
+        if(!cow || !chicken || !man){
+            canDice = true;
+        }
     }
 
     @Override
@@ -115,65 +145,5 @@ public class MarPlayer implements Player, Serializable {
         AtomicInteger sum = new AtomicInteger();
         scoreList.forEach(sum::addAndGet);
         return sum.get();
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setUser(UserVO user) {
-        this.user = user;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    public List<Dice> getDiceList() {
-        return diceList;
-    }
-
-    public void setDiceList(List<Dice> diceList) {
-        this.diceList = diceList;
-    }
-
-    public List<Integer> getScoreList() {
-        return scoreList;
-    }
-
-    public void setScoreList(List<Integer> scoreList) {
-        this.scoreList = scoreList;
-    }
-
-    public int getCurrentScore() {
-        return currentScore;
-    }
-
-    public void setCurrentScore(int currentScore) {
-        this.currentScore = currentScore;
-    }
-
-    public List<Dice> getScoreDiceList() {
-        return scoreDiceList;
-    }
-
-    public void setScoreDiceList(List<Dice> scoreDiceList) {
-        this.scoreDiceList = scoreDiceList;
-    }
-
-    public List<Dice> getAutoTankDiceList() {
-        return autoTankDiceList;
-    }
-
-    public void setAutoTankDiceList(List<Dice> autoTankDiceList) {
-        this.autoTankDiceList = autoTankDiceList;
-    }
-
-    public List<Dice> getSpaceShipDiceList() {
-        return spaceShipDiceList;
-    }
-
-    public void setSpaceShipDiceList(List<Dice> spaceShipDiceList) {
-        this.spaceShipDiceList = spaceShipDiceList;
     }
 }

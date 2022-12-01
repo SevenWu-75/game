@@ -3,12 +3,11 @@ package com.simple.mardice.core;
 import com.simple.api.game.Player;
 import com.simple.api.game.Room;
 import com.simple.gameframe.core.DefaultMessage;
-import com.simple.gameframe.core.Dice;
 import com.simple.gameframe.core.Message;
 import com.simple.gameframe.core.ask.LogicHandler;
+import com.simple.gameframe.util.MessagePublishUtil;
 import com.simple.mardice.bo.MarPlayer;
 import com.simple.mardice.bo.MarRoom;
-import com.simple.mardice.common.DiceNumEnum;
 import com.simple.mardice.common.MarCommand;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -29,12 +28,9 @@ public class SelectOrEndLogicHandler implements LogicHandler<MarCommand> {
 
     private LogicHandler<MarCommand> nextHandler;
 
-    @Autowired
-    private PlayDiceLogicHandler playDiceLogicHandler;
-
     @Override
     public List<MarCommand> getCommands() {
-        return Arrays.asList(MarCommand.END_ROUND,MarCommand.SELECT_DICE);
+        return Arrays.asList(MarCommand.PLAY_DICE,MarCommand.END_ROUND,MarCommand.SELECT_DICE);
     }
 
     @Override
@@ -45,6 +41,7 @@ public class SelectOrEndLogicHandler implements LogicHandler<MarCommand> {
     @Override
     public Message<?> messageHandle(@NotNull Player player, @NotNull Room<? extends Player> room, Object o) {
         Message<Integer> message = new DefaultMessage<>();
+        ((MarPlayer)player).enableDice();
         message.setCode(MarCommand.SELECT_OR_END.getCode());
         message.setFromId(player.getUser().getId());
         message.setSeat(player.getId());
@@ -54,11 +51,21 @@ public class SelectOrEndLogicHandler implements LogicHandler<MarCommand> {
 
     @Override
     public Object postHandle(Player player, Room<? extends Player> room, @NotNull Message<?> message, Object o) {
-        if(message.getCode() == MarCommand.SELECT_DICE.getCode()){
+        if(message.getCode() == MarCommand.PLAY_DICE.getCode()){
+            message.setId(0);
+            MessagePublishUtil.sendToRoomPublic(room.getRoomId(), message);
+            MarPlayer marPlayer = (MarPlayer) player;
+            marPlayer.playDices();
+            sendPlayerMessageToPublic(player, room.getRoomId(), MarCommand.PLAY_DICE_RESULT.getCode());
+            nextHandler = this;
+        }
+        else if(message.getCode() == MarCommand.SELECT_DICE.getCode()){
             ((MarPlayer)player).selectDice((int)o);
-            nextHandler = playDiceLogicHandler;
+            sendPlayerMessageToPublic(player, room.getRoomId(), MarCommand.SELECT_DICE.getCode());
+            nextHandler = this;
         } else if(message.getCode() == MarCommand.END_ROUND.getCode()) {
             processScore((MarPlayer) player, (MarRoom) room);
+            sendPlayerMessageToPublic(player, room.getRoomId(), MarCommand.END_ROUND.getCode());
             nextHandler = null;
         }
         return o;
