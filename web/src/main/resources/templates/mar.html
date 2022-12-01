@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ch" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title th:text="火星骰子-房间号+${session.room.roomId}">Title</title>
+  <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+  <script src="/local/js/stomp.js"></script>
+  <script src="/local/js/jquery-3.6.0.min.js"></script>
+  <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+  <script src="/bootstrap5/js/bootstrap.min.js"></script>
+  <script src="/local/js/template.js"></script>
+  <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+  <link rel="stylesheet" href="/local/css/quick-website.css">
+  <link rel="stylesheet" href="/bootstrap5/css/bootstrap.min.css">
+  <!-- 可选的 Bootstrap 主题文件（一般不用引入） -->
+  <link rel="stylesheet" href="/local/css/all.min.css">
+  <script src="/bootstrap5/js/bootstrap.bundle.min.js"></script>
+  <script type="text/html" id="seat-html" th:inline="javascript">
+    <!-- Card -->
+    <div class="col-md-2 btn" tabindex="0" role="button" data-bs-toggle="popover" data-bs-trigger="focus" title="聊天框" data-bs-content="天选之人！">
+      <div class="card" id="{{content.id}}">
+        <div class="card-body pb-1">
+          <div class="pt-1 pb-1">
+            <img id="img-{{content.id}}" src="{{content.user.avatar}}" class="img-fluid img-center" style="height: 100px;" alt="头像">
+          </div>
+          <h5 class="h4 lh-130 mb-1 text-center">{{content.user.realname}}</h5>
+          <h6 id="score{{content.id}}" class="h4 lh-130 mb-1 text-center">分数:0</h6>
+          <p class="text-muted mb-0 text-center">
+            历史最高分：{{content.user.historyRankVO.bestScore}}
+            <br>
+            胜率：{{content.user.historyRankVO.winPercent}}%  总局数：{{content.user.historyRankVO.playCount}}
+          </p>
+        </div>
+      </div>
+    </div>
+  </script>
+  <script type="text/html" id="dice-html" th:inline="javascript">
+    <img id="dice{{id}}" src="{{path}}" class="img-fluid" style="height: 40px;" alt="3">
+  </script>
+  <script type="text/javascript" th:inline="javascript">
+    var stompClient = null;
+
+    var messageId = null;
+
+    var dicePicList = ['/local/images/space_ship.png','/local/images/tank.png',
+      '/local/images/cow.png','/local/images/chicken.png',
+      '/local/images/man.png'];
+
+    var diceTaskId = null;
+
+    function connect() {
+      var socket = new SockJS([[${session.wsUrl}]]);
+      stompClient = Stomp.over(socket);
+      stompClient.connect({"user": JSON.stringify([[${session.user}]]),'room': JSON.stringify([[${session.room}]])}, function (frame) {
+        //setConnected(true);
+        console.log('Connected: ' + frame);
+        stompClient.subscribe('/topic/'+[[${session.room.roomId}]], function (response) {
+          var parse = JSON.parse(response.body);
+          if(messageId == null || messageId < parse.id){
+            messageId = parse.id;
+          }
+          //坐下，显示玩家的信息
+          if(parse.code === 102){
+            seatDown(parse.content);
+          }
+          //收到广播开始游戏
+          if(parse.code === 104){
+
+          }
+          //收到抛出骰子的结果，需要填入到各项中
+          if(parse.code === 2){
+            populateScores(parse.content, ids);
+          }
+          //收到广播的选择分数结果
+          if(parse.code === 4){
+            populateSelectScores(parse.content, ids);
+            resetDiceResult();
+          }
+          //收到广播玩家结束回合
+          if(parse.code === 3){
+            document.getElementById("score"+parse.content.id).innerText = "分数:" + parse.content.totalScore;
+          }
+          //收到游戏结束
+          if(parse.code === 111){
+            if(parse.content.winner != null){
+              alert("赢家为"+parse.content.winner.user.realname+"！");
+            } else {
+              alert("平局！");
+            }
+            window.location.href = '/';
+          }
+          //收到解散消息
+          if(parse.code === 109){
+            alert("房间已解散!")
+            window.location.href = '/';
+          }
+          //收到超时
+          if(parse.code === 113){
+            alert("房间超时已解散!")
+            window.location.href = '/';
+          }
+          //收到换人play的消息
+          if(parse.code === 105){
+            for (let i = 0; i < parse.content; i++) {
+              document.getElementById(i.toString()).style.backgroundColor = "#FFF";
+            }
+            document.getElementById(parse.seat.toString()).style.backgroundColor = "#FFEEBB";
+            resetDice();
+            disable(parse.seat);
+          }
+          //收到有人断线的消息
+          if(parse.code === 107){
+            document.getElementById("img-"+parse.seat).style.filter = "grayscale(100%)";
+          }
+          //收到有人在线的消息
+          if(parse.code === 108){
+            document.getElementById("img-"+parse.seat).style.filter = "";
+          }
+          //收到有人投骰子，展示动画
+          if(parse.code === 1){
+
+          }
+        });
+        stompClient.subscribe('/user/'+[[${session.user.id}]]+'/'+[[${session.room.roomId}]], function (response){
+          let parse = JSON.parse(response.body);
+          if(messageId == null || messageId < parse.id){
+            messageId = parse.id;
+          }
+          if(parse.code === 5){
+            let canDice = parse.content.canDice;
+            if(canDice){
+              document.getElementById("playDice").disabled = false;
+            }
+          }
+          //询问开始游戏
+          if(parse.code === 104){
+            canStart();
+          }
+          //收到重连
+          if(parse.code === 108){
+            resetDice();
+            let room = parse.content;
+            messageId = room.maxMessageId;
+            let currentPlayer = null;
+            if([[${session.room.owner.id}]] != [[${session.user.id}]]){
+              document.getElementById("start-mark").getAttributeNode("data-bs-content").value = "等待房主开始游戏";
+            }
+            for (let i = 0; i < room.playerList.length; i++) {
+              let player = room.playerList[i];
+              //展示玩家
+              seatDown(player);
+              //获取当前进行回合的玩家
+              if(player.id === room.currentSeat){
+                currentPlayer = player;
+              }
+            }
+            populateScores(currentPlayer);
+            populateSelectScores(currentPlayer);
+            //可以开始标记
+            if(room.roomStatus === 1 && room.owner.id === [[${session.user.id}]]){
+              canStart();
+            }
+            //换人标记
+            if(room.roomStatus === 2){
+              document.getElementById(room.currentSeat.toString()).style.backgroundColor = "#FFEEBB";
+            }
+            //是否开启投骰子按钮
+            if([[${session.user.id}]] === currentPlayer.user.id){
+              document.getElementById("playDice").disabled = false;
+              document.getElementById("endRound").disabled = false;
+            }
+          }
+        })
+      },{});
+    }
+
+    function seatDown(player){
+      document.getElementById("seat_list").innerHTML += template("seat-html", {content:player});
+      document.getElementById("score"+player.id).innerText = "分数:" + player.totalScore;
+      reloadPopover();
+    }
+
+    function populateScores(player){
+      var diceList = player.diceList;
+      for (let i = 0; i < diceList.length; i++) {
+        document.getElementById("diceImg").innerHTML += template("dice-html",{id:diceList[i].id, path:dicePicList[diceList[i].currentNum]});
+        if(diceList[i].lockStatus === 1) {
+          document.getElementById("dice" + diceList[i].id).onmousedown = function () {
+            stompClient.send("/command",{}, JSON.stringify({'id': messageId, 'code': 4, 'content': id}));
+          }
+        }
+        if(diceList[i].lockStatus === -1) {
+          document.getElementById("dice" + diceList[i].id).onmousedown = null;
+        }
+      }
+      var autoTankList = player.autoTankDiceList;
+      for (let i = 0; i < autoTankList.length; i++) {
+        document.getElementById("tankImg").innerHTML += template("dice-html",{id:diceList[i].id, path:dicePicList[diceList[i].currentNum]});
+      }
+    }
+
+    function populateSelectScores(player){
+      var spaceShipList = player.spaceShipDiceList;
+      for (let i = 0; i < spaceShipList.length; i++) {
+        document.getElementById("spaceShipImg").innerHTML += template("dice-html",{id:spaceShipList[i].id, path:dicePicList[spaceShipList[i].currentNum]});
+      }
+      var scoreDiceList = player.scoreDiceList;
+      for (let i = 0; i < scoreDiceList.length; i++) {
+        document.getElementById("scoreImg").innerHTML += template("dice-html",{id:scoreDiceList[i].id, path:dicePicList[scoreDiceList[i].currentNum]});
+      }
+    }
+
+    function disconnect() {
+      if (stompClient != null) {
+        stompClient.disconnect();
+      }
+      //setConnected(false);
+      console.log("Disconnected");
+    }
+
+    function playDice() {
+      var playDice = document.getElementById("playDice");
+      playDice.disabled = true;
+      stompClient.send("/command",{}, JSON.stringify({'id': messageId, 'code': 1}));
+    }
+
+    function endRound() {
+      var endRound = document.getElementById("endRound");
+      endRound.disabled = true;
+      stompClient.send("/command",{}, JSON.stringify({'id': messageId, 'code': 3}));
+    }
+
+    function resetDice() {
+      resetDiceResult();
+      document.getElementById("tankImg").innerHTML = null;
+      document.getElementById("spaceShipImg").innerHTML = null;
+      document.getElementById("scoreImg").innerHTML = null;
+    }
+
+    function resetDiceResult(){
+      document.getElementById("diceImg").innerHTML = null;
+    }
+
+    function startGame(){
+      document.getElementById("start-game").disabled = true;
+      stompClient.send("/command",{}, JSON.stringify({'id': messageId, 'code': 104}));
+    }
+
+    //处理不是自己回合时，禁止一些操作
+    function disable(){
+      //禁止按按钮
+      document.getElementById("playDice").disabled = false;
+      document.getElementById("endRound").disabled = false;
+    }
+
+    function dismissRoom(){
+      stompClient.send("/dismiss",{},
+              JSON.stringify({'code': 109}));
+    }
+
+    function canStart(){
+      document.getElementById("start-mark").getAttributeNode("data-bs-content").value = "";
+      document.getElementById("start-game").disabled = false;
+      reloadPopover();
+    }
+
+    function reloadPopover(){
+      var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+      var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+        return new bootstrap.Popover(popoverTriggerEl)
+      })
+    }
+  </script>
+  <style>
+    .img-select {
+      border:dashed 2px red;
+      border-right:solid 2px red;
+      border-top: solid 2px red;
+      border-bottom: solid 2px red;
+      border-left:  solid 2px red;
+    }
+  </style>
+</head>
+<body class="loaded" onload="connect()">
+<!-- Main content -->
+<section class="slice py-4">
+  <div class="container">
+    <div class="row row-grid align-items-center">
+      <div class="col-10 col-md-4 col-lg-6 order-md-2 text-center">
+        <!-- Section title -->
+        <div class="row justify-content-center text-center">
+          <div>
+                            <span id="start-mark" class="d-inline-block" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="人数不足，无法开始">
+                                <button id="start-game" onclick="startGame()" class="btn btn-primary" type="button" disabled>开始游戏</button>
+                            </span>
+            <button onclick="dismissRoom()" class="btn btn-danger">解散游戏</button>
+          </div>
+        </div>
+      </div>
+      <div class="col-14 col-md-8 col-lg-6 order-md-1 pr-md-5">
+        <!-- Heading -->
+        <h1 class="display-4 text-center text-md-left">快艇骰子-房间号<strong th:text="${session.room.roomId}" class="text-primary">999999</strong>
+        </h1>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slice slice-lg pt-lg-3 pb-lg-3 bg-section-secondary">
+  <div class="container">
+    <!-- Card -->
+    <div id="seat_list" class="row">
+      <!--添加座位框-->
+    </div>
+  </div>
+</section>
+<section class="slice slice-sm">
+  <div class="container">
+    <!--添加游戏主体 -->
+    <div id="diceImg" style="display: flex; justify-content: center; margin-top: 50px">
+
+    </div>
+    <div id="tankImg" style="display: flex; justify-content: center; margin-top: 50px">
+
+    </div>
+    <div id="spaceShipImg" style="display: flex; justify-content: center; margin-top: 50px">
+
+    </div>
+    <div id="scoreImg" style="display: flex; justify-content: center; margin-top: 50px">
+
+    </div>
+    <div style="display: flex; justify-content: center; margin-top: 50px">
+      <button id="playDice" onclick="playDice()" class="btn btn-success" disabled>
+        掷骰
+      </button>
+      <button id="endRound" onclick="endRound()" class="btn btn-success" disabled>
+        结束
+      </button>
+    </div>
+  </div>
+</section>
+</body>
+</html>
