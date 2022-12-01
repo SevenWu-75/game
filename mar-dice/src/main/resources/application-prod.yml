@@ -3,7 +3,7 @@ server:
 
 game-frame:
   scan: com.simple.mardice
-  game-id: 1
+  game-id: 2
   enable-link-logic: true
 
 #websocket:
