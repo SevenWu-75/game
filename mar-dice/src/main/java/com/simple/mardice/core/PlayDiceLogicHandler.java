@@ -48,6 +48,8 @@ public class PlayDiceLogicHandler implements LogicHandler<MarCommand> {
 
     @Override
     public Object postHandle(Player player, Room<? extends Player> room, Message<?> message, Object o) {
+        message.setId(0);
+        MessagePublishUtil.sendToRoomPublic(room.getRoomId(), message);
         MarPlayer marPlayer = (MarPlayer) player;
         marPlayer.playDices();
         sendDiceResultToPublic(marPlayer, room.getRoomId());
@@ -65,7 +67,7 @@ public class PlayDiceLogicHandler implements LogicHandler<MarCommand> {
         message.setFromId(player.getUser().getId());
         message.setSeat(player.getId());
         message.setContent(player);
-        message.setCode(MarCommand.PLAY_DICE.getCode());
+        message.setCode(MarCommand.PLAY_DICE_RESULT.getCode());
         MessagePublishUtil.sendToRoomPublic(roomId, message);
     }
 }

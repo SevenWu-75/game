@@ -8,6 +8,7 @@ import com.simple.gameframe.core.Message;
 import com.simple.gameframe.core.ask.LogicHandler;
 import com.simple.mardice.bo.MarPlayer;
 import com.simple.mardice.bo.MarRoom;
+import com.simple.mardice.common.DiceNumEnum;
 import com.simple.mardice.common.MarCommand;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -54,7 +55,7 @@ public class SelectOrEndLogicHandler implements LogicHandler<MarCommand> {
     @Override
     public Object postHandle(Player player, Room<? extends Player> room, @NotNull Message<?> message, Object o) {
         if(message.getCode() == MarCommand.SELECT_DICE.getCode()){
-            processDice((MarPlayer) player, (int[])o);
+            ((MarPlayer)player).selectDice((int)o);
             nextHandler = playDiceLogicHandler;
         } else if(message.getCode() == MarCommand.END_ROUND.getCode()) {
             processScore((MarPlayer) player, (MarRoom) room);
@@ -68,17 +69,9 @@ public class SelectOrEndLogicHandler implements LogicHandler<MarCommand> {
         return nextHandler;
     }
 
-    public void processDice(@NotNull MarPlayer player, int[] selectDice) {
-        List<Dice> diceList = player.getDiceList();
-        diceList.forEach(dice -> {
-            if (selectDice[dice.getId()] == -1) {
-                dice.lockDice();
-            }
-        });
-    }
-
     public void processScore(@NotNull MarPlayer player, MarRoom room) {
-        player.calculateScore();
+        int currentScore = player.getCurrentScore();
+        player.getScoreList().add(currentScore);
         if(player.getTotalScore() >= 25){
             room.setPlayCount(0);
         }
