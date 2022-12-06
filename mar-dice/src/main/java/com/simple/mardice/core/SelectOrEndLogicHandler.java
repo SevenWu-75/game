@@ -61,7 +61,7 @@ public class SelectOrEndLogicHandler implements LogicHandler<MarCommand> {
             nextHandler = this;
         }
         else if(message.getCode() == MarCommand.SELECT_DICE.getCode()){
-            ((MarPlayer)player).selectDice((int)o);
+            ((MarPlayer)player).selectDice((Integer) message.getContent());
             sendPlayerMessageToPublic(player, room.getRoomId(), MarCommand.SELECT_DICE.getCode());
             nextHandler = this;
         } else if(message.getCode() == MarCommand.END_ROUND.getCode()) {

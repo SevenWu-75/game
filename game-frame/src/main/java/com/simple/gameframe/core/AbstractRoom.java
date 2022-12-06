@@ -29,7 +29,7 @@ public abstract class AbstractRoom<T extends Player> implements Room<T> {
 
     private List<T> playerList;
 
-    protected int playAtLeastNum;
+    protected int playerAtLeastNum;
 
     protected int playCount;
 

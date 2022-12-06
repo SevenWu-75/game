@@ -36,18 +36,15 @@
     </div>
   </script>
   <script type="text/html" id="dice-html" th:inline="javascript">
-    <img id="dice{{id}}" src="{{path}}" class="img-fluid" style="height: 40px;" alt="3">
+    <img id="dice{{id}}" src="{{path}}" class="img-fluid" style="height: 80px;" alt="3" onmousedown="{{select}}">
   </script>
   <script type="text/javascript" th:inline="javascript">
     var stompClient = null;
 
     var messageId = null;
 
-    var dicePicList = ['/local/images/space_ship.png','/local/images/tank.png',
-      '/local/images/cow.png','/local/images/chicken.png',
-      '/local/images/man.png'];
-
-    var diceTaskId = null;
+    var dicePicList = ['/local/images/space_ship.png','/local/images/space_ship.png','/local/images/tank.png',
+      '/local/images/cow.png','/local/images/chicken.png', '/local/images/man.png'];
 
     function connect() {
       var socket = new SockJS([[${session.wsUrl}]]);
@@ -182,21 +179,19 @@
     }
 
     function populateScores(player){
+      resetDiceResult();
       var diceList = player.diceList;
       for (let i = 0; i < diceList.length; i++) {
-        document.getElementById("diceImg").innerHTML += template("dice-html",{id:diceList[i].id, path:dicePicList[diceList[i].currentNum]});
+        var selectMethodName = "null";
         if(diceList[i].lockStatus === 1) {
-          document.getElementById("dice" + diceList[i].id).onmousedown = function () {
-            stompClient.send("/command",{}, JSON.stringify({'id': messageId, 'code': 4, 'content': id}));
-          }
+          selectMethodName = "selectScore(" + diceList[i].currentNum + ")";
         }
-        if(diceList[i].lockStatus === -1) {
-          document.getElementById("dice" + diceList[i].id).onmousedown = null;
-        }
+        document.getElementById("diceImg").innerHTML += template("dice-html",{id:diceList[i].id,
+          path:dicePicList[diceList[i].currentNum], select:selectMethodName});
       }
       var autoTankList = player.autoTankDiceList;
       for (let i = 0; i < autoTankList.length; i++) {
-        document.getElementById("tankImg").innerHTML += template("dice-html",{id:diceList[i].id, path:dicePicList[diceList[i].currentNum]});
+        document.getElementById("tankImg").innerHTML += template("dice-html",{id:autoTankList[i].id, path:dicePicList[autoTankList[i].currentNum]});
       }
     }
 
@@ -233,13 +228,17 @@
 
     function resetDice() {
       resetDiceResult();
-      document.getElementById("tankImg").innerHTML = null;
-      document.getElementById("spaceShipImg").innerHTML = null;
-      document.getElementById("scoreImg").innerHTML = null;
+      document.getElementById("tankImg").innerHtml = "";
+      document.getElementById("spaceShipImg").innerHtml = "";
+      document.getElementById("scoreImg").innerHtml = "";
     }
 
     function resetDiceResult(){
-      document.getElementById("diceImg").innerHTML = null;
+      document.getElementById("diceImg").innerHtml = "";
+    }
+
+    function selectScore(currentNum) {
+      stompClient.send("/command",{}, JSON.stringify({'id': messageId, 'code': 4, 'content': currentNum}));
     }
 
     function startGame(){
@@ -300,7 +299,7 @@
       </div>
       <div class="col-14 col-md-8 col-lg-6 order-md-1 pr-md-5">
         <!-- Heading -->
-        <h1 class="display-4 text-center text-md-left">快艇骰子-房间号<strong th:text="${session.room.roomId}" class="text-primary">999999</strong>
+        <h1 class="display-4 text-center text-md-left">火星骰子-房间号<strong th:text="${session.room.roomId}" class="text-primary">999999</strong>
         </h1>
       </div>
     </div>
