@@ -1,11 +1,12 @@
-package com.simple.gameframe.core;
+package com.simple.speedbootdice.bo;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Random;
 
 @Data
-public class Dice {
+public class SpeedBootDice implements Serializable {
 
     private int id;
 
@@ -15,7 +16,7 @@ public class Dice {
 
     private int lockStatus;
 
-    public Dice(int id){
+    public SpeedBootDice(int id){
         this.id = id;
         this.random = new Random();
         lockStatus = 1;

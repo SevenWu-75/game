@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 
 @ClassInject("com.simple.api.game.Player")
 @Data
-@JsonIgnoreProperties(value = {"diceList"})
 public class SpeedBootPlayer implements Player {
 
     private int id;

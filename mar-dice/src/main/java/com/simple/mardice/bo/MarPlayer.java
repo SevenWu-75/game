@@ -3,7 +3,6 @@ package com.simple.mardice.bo;
 import com.simple.api.game.Player;
 import com.simple.api.game.UserVO;
 import com.simple.gameframe.core.ClassInject;
-import com.simple.gameframe.core.Dice;
 import com.simple.mardice.common.DiceNumEnum;
 import lombok.Data;
 
@@ -21,7 +20,7 @@ public class MarPlayer implements Player, Serializable {
 
     private int status;
 
-    private List<Dice> diceList;
+    private List<MarDice> diceList;
 
     private int totalScore;
 
@@ -29,20 +28,20 @@ public class MarPlayer implements Player, Serializable {
 
     private int currentScore;
 
-    private List<Dice> scoreDiceList;
+    private List<MarDice> scoreDiceList;
 
-    private List<Dice> autoTankDiceList;
+    private List<MarDice> autoTankDiceList;
 
-    private List<Dice> spaceShipDiceList;
+    private List<MarDice> spaceShipDiceList;
 
     private Boolean canDice;
 
     public MarPlayer(Integer id, UserVO user){
         this.id = id;
         this.user = user;
-        diceList = new LinkedList<Dice>(){{new Dice(0); new Dice(1); new Dice(2); new Dice(3); new Dice(4);
-                new Dice(5); new Dice(6); new Dice(7); new Dice(8); new Dice(9);
-                new Dice(10); new Dice(11); new Dice(12);}};
+        diceList = new LinkedList<MarDice>(){{ add(new MarDice(0)); add(new MarDice(1)); add(new MarDice(2));
+            add(new MarDice(3)); add(new MarDice(4)); add(new MarDice(5)); add(new MarDice(6)); add(new MarDice(7));
+            add(new MarDice(8)); add(new MarDice(9)); add(new MarDice(10)); add(new MarDice(11)); add(new MarDice(12));}};
         scoreList = new LinkedList<>();
         scoreDiceList = new LinkedList<>();
         autoTankDiceList = new LinkedList<>();
@@ -51,17 +50,17 @@ public class MarPlayer implements Player, Serializable {
     }
 
     public void playDices(){
-        diceList.forEach(Dice::playDice);
+        diceList.forEach(MarDice::playDice);
         //自动将投完骰子后出现的坦克塞入坦克骰子集合
-        Iterator<Dice> iterator = diceList.iterator();
+        Iterator<MarDice> iterator = diceList.iterator();
         while (iterator.hasNext()){
-            Dice next = iterator.next();
+            MarDice next = iterator.next();
             if(next.getCurrentNum() == DiceNumEnum.TANK.ordinal()){
                 iterator.remove();
                 autoTankDiceList.add(next);
             }
         }
-        diceList.sort(Comparator.comparing(Dice::getCurrentNum));
+        diceList.sort(Comparator.comparing(MarDice::getCurrentNum));
         boolean cow = scoreDiceList.stream().anyMatch(dice -> dice.getCurrentNum() == DiceNumEnum.COW.ordinal());
         boolean chicken = scoreDiceList.stream().anyMatch(dice -> dice.getCurrentNum() == DiceNumEnum.CHICKEN.ordinal());
         boolean man = scoreDiceList.stream().anyMatch(dice -> dice.getCurrentNum() == DiceNumEnum.MAN.ordinal());
@@ -79,39 +78,39 @@ public class MarPlayer implements Player, Serializable {
         //将玩家选择的骰子塞入分数骰子集合
         boolean isExist = scoreDiceList.stream().anyMatch(dice -> dice.getCurrentNum() == diceNumEnum);
         if(!isExist){
-            Iterator<Dice> iterator = diceList.iterator();
+            Iterator<MarDice> iterator = diceList.iterator();
             while (iterator.hasNext()){
-                Dice next = iterator.next();
+                MarDice next = iterator.next();
                 if(next.getCurrentNum() == diceNumEnum){
                     iterator.remove();
                     scoreDiceList.add(next);
                 }
             }
             calculateScore();
-            scoreDiceList.sort(Comparator.comparing(Dice::getCurrentNum));
+            scoreDiceList.sort(Comparator.comparing(MarDice::getCurrentNum));
         }
     }
 
     public void resetDice(){
-        Iterator<Dice> iterator = scoreDiceList.iterator();
+        Iterator<MarDice> iterator = scoreDiceList.iterator();
         while (iterator.hasNext()) {
-            Dice next = iterator.next();
+            MarDice next = iterator.next();
             iterator.remove();
             diceList.add(next);
         }
         iterator = autoTankDiceList.iterator();
         while (iterator.hasNext()) {
-            Dice next = iterator.next();
+            MarDice next = iterator.next();
             iterator.remove();
             diceList.add(next);
         }
         iterator = spaceShipDiceList.iterator();
         while (iterator.hasNext()) {
-            Dice next = iterator.next();
+            MarDice next = iterator.next();
             iterator.remove();
             diceList.add(next);
         }
-        diceList.forEach(Dice::unlockDice);
+        diceList.forEach(MarDice::unlockDice);
     }
 
     private void calculateScore(){

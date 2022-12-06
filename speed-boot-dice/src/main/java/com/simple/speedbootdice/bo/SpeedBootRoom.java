@@ -15,7 +15,7 @@ public class SpeedBootRoom extends AbstractRoom<SpeedBootPlayer> implements Seri
     public SpeedBootRoom(UserVO user, GameFrameProperty gameFrameProperty) {
         super(user, gameFrameProperty);
         this.playCount = 12;
-        this.playAtLeastNum = 2;
+        this.playerAtLeastNum = 2;
     }
 
     @Override
@@ -25,6 +25,6 @@ public class SpeedBootRoom extends AbstractRoom<SpeedBootPlayer> implements Seri
 
     @Override
     public int getPlayAtLeastNum() {
-        return this.playAtLeastNum;
+        return this.playerAtLeastNum;
     }
 }

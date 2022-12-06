@@ -70,11 +70,11 @@
           }
           //收到抛出骰子的结果，需要填入到各项中
           if(parse.code === 2){
-            populateScores(parse.content, ids);
+            populateScores(parse.content);
           }
           //收到广播的选择分数结果
           if(parse.code === 4){
-            populateSelectScores(parse.content, ids);
+            populateSelectScores(parse.content);
             resetDiceResult();
           }
           //收到广播玩家结束回合
@@ -155,8 +155,6 @@
                 currentPlayer = player;
               }
             }
-            populateScores(currentPlayer);
-            populateSelectScores(currentPlayer);
             //可以开始标记
             if(room.roomStatus === 1 && room.owner.id === [[${session.user.id}]]){
               canStart();
@@ -164,11 +162,13 @@
             //换人标记
             if(room.roomStatus === 2){
               document.getElementById(room.currentSeat.toString()).style.backgroundColor = "#FFEEBB";
-            }
-            //是否开启投骰子按钮
-            if([[${session.user.id}]] === currentPlayer.user.id){
-              document.getElementById("playDice").disabled = false;
-              document.getElementById("endRound").disabled = false;
+              populateScores(currentPlayer);
+              populateSelectScores(currentPlayer);
+              //是否开启投骰子按钮
+              if([[${session.user.id}]] === currentPlayer.user.id){
+                document.getElementById("playDice").disabled = false;
+                document.getElementById("endRound").disabled = false;
+              }
             }
           }
         })

@@ -40,12 +40,13 @@ public class SelectOrEndLogicHandler implements LogicHandler<MarCommand> {
 
     @Override
     public Message<?> messageHandle(@NotNull Player player, @NotNull Room<? extends Player> room, Object o) {
-        Message<Integer> message = new DefaultMessage<>();
+        Message<Player> message = new DefaultMessage<>();
         ((MarPlayer)player).enableDice();
         message.setCode(MarCommand.SELECT_OR_END.getCode());
         message.setFromId(player.getUser().getId());
         message.setSeat(player.getId());
         message.setRoomId(room.getRoomId());
+        message.setContent(player);
         return message;
     }
 
