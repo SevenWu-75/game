@@ -1,11 +1,13 @@
 package com.simple.mardice.bo;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Random;
 
 @Data
+@JsonIgnoreProperties(value = {"random"})
 public class MarDice implements Serializable {
 
     private int id;
