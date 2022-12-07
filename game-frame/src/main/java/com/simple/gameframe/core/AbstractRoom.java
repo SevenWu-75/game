@@ -128,6 +128,7 @@ public abstract class AbstractRoom<T extends Player> implements Room<T> {
     public void start(){
         this.startTime = new Date();
         this.roomStatus = RoomStatusEnum.started.ordinal();
+        this.preStart();
     }
 
     public void end(){

@@ -19,8 +19,10 @@ public class DefaultMessageHandler implements MessageHandler {
         Message<Object> message = new DefaultMessage<>();
         message.setRoomId(room.getRoomId());
         message.setCode(command.getCode());
-        if(player != null)
+        if(player != null){
+            message.setToId(player.getUser().getId());
             message.setSeat(player.getId());
+        }
         message.setContent(o);
         return message;
     }

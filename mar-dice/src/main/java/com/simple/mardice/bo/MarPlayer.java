@@ -65,13 +65,30 @@ public class MarPlayer implements Player, Serializable {
         boolean chicken = scoreDiceList.stream().anyMatch(dice -> dice.getCurrentNum() == DiceNumEnum.CHICKEN.ordinal());
         boolean man = scoreDiceList.stream().anyMatch(dice -> dice.getCurrentNum() == DiceNumEnum.MAN.ordinal());
         diceList.forEach(dice -> {
-            if(cow && dice.getCurrentNum() == DiceNumEnum.COW.ordinal())
-                dice.lockDice();
-            if(chicken && dice.getCurrentNum() == DiceNumEnum.CHICKEN.ordinal())
-                dice.lockDice();
-            if(man && dice.getCurrentNum() == DiceNumEnum.MAN.ordinal())
-                dice.lockDice();
+            if(dice.getCurrentNum() == DiceNumEnum.COW.ordinal()){
+                if(cow)
+                    dice.lockDice();
+                else
+                    dice.unlockDice();
+            }
+            if(dice.getCurrentNum() == DiceNumEnum.CHICKEN.ordinal()){
+                if(chicken)
+                    dice.lockDice();
+                else
+                    dice.unlockDice();
+            }
+            if(dice.getCurrentNum() == DiceNumEnum.MAN.ordinal()){
+                if(man)
+                    dice.lockDice();
+                else
+                    dice.unlockDice();
+            }
+            if(dice.getCurrentNum() == DiceNumEnum.SPACE_SHIP_2.ordinal() || dice.getCurrentNum() == DiceNumEnum.SPACE_SHIP_1.ordinal()){
+                dice.unlockDice();
+            }
+
         });
+        canDice = false;
     }
 
     public void selectDice(int diceNumEnum) {
@@ -81,14 +98,22 @@ public class MarPlayer implements Player, Serializable {
             Iterator<MarDice> iterator = diceList.iterator();
             while (iterator.hasNext()){
                 MarDice next = iterator.next();
-                if(next.getCurrentNum() == diceNumEnum){
-                    iterator.remove();
-                    scoreDiceList.add(next);
+                if(diceNumEnum == DiceNumEnum.SPACE_SHIP_1.ordinal() || diceNumEnum == DiceNumEnum.SPACE_SHIP_2.ordinal()){
+                    if(next.getCurrentNum() == DiceNumEnum.SPACE_SHIP_1.ordinal() || next.getCurrentNum() == DiceNumEnum.SPACE_SHIP_2.ordinal()){
+                        iterator.remove();
+                        spaceShipDiceList.add(next);
+                    }
+                } else {
+                    if(next.getCurrentNum() == diceNumEnum){
+                        iterator.remove();
+                        scoreDiceList.add(next);
+                    }
                 }
             }
             calculateScore();
             scoreDiceList.sort(Comparator.comparing(MarDice::getCurrentNum));
         }
+        canDice = true;
     }
 
     public void resetDice(){
@@ -113,10 +138,10 @@ public class MarPlayer implements Player, Serializable {
         diceList.forEach(MarDice::unlockDice);
     }
 
-    private void calculateScore(){
-        long spaceShipCount = scoreDiceList.stream().filter(dice -> dice.getCurrentNum() == DiceNumEnum.SPACE_SHIP_1.ordinal()
+    public void calculateScore(){
+        long spaceShipCount = spaceShipDiceList.stream().filter(dice -> dice.getCurrentNum() == DiceNumEnum.SPACE_SHIP_1.ordinal()
                 || dice.getCurrentNum() == DiceNumEnum.SPACE_SHIP_2.ordinal()).count();
-        long tankCount = scoreDiceList.stream().filter(dice -> dice.getCurrentNum() == DiceNumEnum.TANK.ordinal()).count();
+        long tankCount = autoTankDiceList.stream().filter(dice -> dice.getCurrentNum() == DiceNumEnum.TANK.ordinal()).count();
         if(spaceShipCount >= tankCount){
             long cowCount = scoreDiceList.stream().filter(dice -> dice.getCurrentNum() == DiceNumEnum.COW.ordinal()).count();
             long chickenCount = scoreDiceList.stream().filter(dice -> dice.getCurrentNum() == DiceNumEnum.CHICKEN.ordinal()).count();
@@ -125,8 +150,9 @@ public class MarPlayer implements Player, Serializable {
             if(cowCount > 0 && chickenCount > 0 && manCount > 0){
                 score += 3;
             }
-            scoreList.add(score);
             currentScore = score;
+        } else {
+            currentScore = 0;
         }
     }
 
@@ -134,9 +160,7 @@ public class MarPlayer implements Player, Serializable {
         boolean cow = scoreDiceList.stream().anyMatch(dice -> dice.getCurrentNum() == DiceNumEnum.COW.ordinal());
         boolean chicken = scoreDiceList.stream().anyMatch(dice -> dice.getCurrentNum() == DiceNumEnum.CHICKEN.ordinal());
         boolean man = scoreDiceList.stream().anyMatch(dice -> dice.getCurrentNum() == DiceNumEnum.MAN.ordinal());
-        if(!cow || !chicken || !man){
-            canDice = true;
-        }
+        canDice = !cow || !chicken || !man;
     }
 
     @Override

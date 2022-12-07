@@ -71,8 +71,7 @@
           }
           //收到广播的选择分数结果
           if(parse.code === 4){
-            populateSelectScores(parse.content);
-            resetDiceResult();
+            populateScores(parse.content);
           }
           //收到广播玩家结束回合
           if(parse.code === 3){
@@ -105,6 +104,9 @@
             document.getElementById(parse.seat.toString()).style.backgroundColor = "#FFEEBB";
             resetDice();
             disable(parse.seat);
+            if([[${session.user.id}]] === parse.toId){
+              document.getElementById("endRound").disabled = false;
+            }
           }
           //收到有人断线的消息
           if(parse.code === 107){
@@ -160,7 +162,6 @@
             if(room.roomStatus === 2){
               document.getElementById(room.currentSeat.toString()).style.backgroundColor = "#FFEEBB";
               populateScores(currentPlayer);
-              populateSelectScores(currentPlayer);
               //是否开启投骰子按钮
               if([[${session.user.id}]] === currentPlayer.user.id){
                 document.getElementById("playDice").disabled = false;
@@ -179,7 +180,7 @@
     }
 
     function populateScores(player){
-      resetDiceResult();
+      resetDice();
       var diceList = player.diceList;
       for (let i = 0; i < diceList.length; i++) {
         var selectMethodName = "null";
@@ -193,9 +194,6 @@
       for (let i = 0; i < autoTankList.length; i++) {
         document.getElementById("tankImg").innerHTML += template("dice-html",{id:autoTankList[i].id, path:dicePicList[autoTankList[i].currentNum]});
       }
-    }
-
-    function populateSelectScores(player){
       var spaceShipList = player.spaceShipDiceList;
       for (let i = 0; i < spaceShipList.length; i++) {
         document.getElementById("spaceShipImg").innerHTML += template("dice-html",{id:spaceShipList[i].id, path:dicePicList[spaceShipList[i].currentNum]});
@@ -204,6 +202,7 @@
       for (let i = 0; i < scoreDiceList.length; i++) {
         document.getElementById("scoreImg").innerHTML += template("dice-html",{id:scoreDiceList[i].id, path:dicePicList[scoreDiceList[i].currentNum]});
       }
+      document.getElementById("playDice").disabled = player.canDice;
     }
 
     function disconnect() {
@@ -228,13 +227,13 @@
 
     function resetDice() {
       resetDiceResult();
-      document.getElementById("tankImg").innerHtml = "";
-      document.getElementById("spaceShipImg").innerHtml = "";
-      document.getElementById("scoreImg").innerHtml = "";
+      document.getElementById("tankImg").innerHTML = "";
+      document.getElementById("spaceShipImg").innerHTML = "";
+      document.getElementById("scoreImg").innerHTML = "";
     }
 
     function resetDiceResult(){
-      document.getElementById("diceImg").innerHtml = "";
+      document.getElementById("diceImg").innerHTML = '';
     }
 
     function selectScore(currentNum) {
@@ -249,8 +248,8 @@
     //处理不是自己回合时，禁止一些操作
     function disable(){
       //禁止按按钮
-      document.getElementById("playDice").disabled = false;
-      document.getElementById("endRound").disabled = false;
+      document.getElementById("playDice").disabled = true;
+      document.getElementById("endRound").disabled = true;
     }
 
     function dismissRoom(){
@@ -315,24 +314,41 @@
 </section>
 <section class="slice slice-sm">
   <div class="container">
+    <h6>剩余骰子列表</h6>
     <!--添加游戏主体 -->
     <div id="diceImg" style="display: flex; justify-content: center; margin-top: 50px">
 
     </div>
+
+  </div>
+</section>
+<section class="slice slice-sm">
+  <div class="container">
+    <h6>坦克列表</h6>
     <div id="tankImg" style="display: flex; justify-content: center; margin-top: 50px">
 
     </div>
+    <h6>飞碟列表</h6>
     <div id="spaceShipImg" style="display: flex; justify-content: center; margin-top: 50px">
 
     </div>
+  </div>
+</section>
+<section class="slice slice-sm">
+  <div class="container">
+    <h6>分数列表</h6>
     <div id="scoreImg" style="display: flex; justify-content: center; margin-top: 50px">
 
     </div>
+  </div>
+</section>
+<section class="slice slice-sm">
+  <div class="container">
     <div style="display: flex; justify-content: center; margin-top: 50px">
       <button id="playDice" onclick="playDice()" class="btn btn-success" disabled>
         掷骰
       </button>
-      <button id="endRound" onclick="endRound()" class="btn btn-success" disabled>
+      <button id="endRound" onclick="endRound()" class="btn btn-success">
         结束
       </button>
     </div>

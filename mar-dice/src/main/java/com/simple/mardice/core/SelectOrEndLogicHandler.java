@@ -11,11 +11,10 @@ import com.simple.mardice.bo.MarRoom;
 import com.simple.mardice.common.MarCommand;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -28,9 +27,16 @@ public class SelectOrEndLogicHandler implements LogicHandler<MarCommand> {
 
     private LogicHandler<MarCommand> nextHandler;
 
+    private List<MarCommand> commands = new ArrayList<MarCommand>()
+    {{add(MarCommand.PLAY_DICE);add(MarCommand.SELECT_DICE);add(MarCommand.END_ROUND);}};
+
     @Override
     public List<MarCommand> getCommands() {
-        return Arrays.asList(MarCommand.PLAY_DICE,MarCommand.END_ROUND,MarCommand.SELECT_DICE);
+        return commands;
+    }
+
+    public void setCommands(List<MarCommand> commands) {
+        this.commands = commands;
     }
 
     @Override
@@ -40,8 +46,8 @@ public class SelectOrEndLogicHandler implements LogicHandler<MarCommand> {
 
     @Override
     public Message<?> messageHandle(@NotNull Player player, @NotNull Room<? extends Player> room, Object o) {
-        Message<Player> message = new DefaultMessage<>();
         ((MarPlayer)player).enableDice();
+        Message<Player> message = new DefaultMessage<>();
         message.setCode(MarCommand.SELECT_OR_END.getCode());
         message.setFromId(player.getUser().getId());
         message.setSeat(player.getId());
@@ -59,11 +65,23 @@ public class SelectOrEndLogicHandler implements LogicHandler<MarCommand> {
             marPlayer.playDices();
             sendPlayerMessageToPublic(player, room.getRoomId(), MarCommand.PLAY_DICE_RESULT.getCode());
             nextHandler = this;
+            marPlayer.enableDice();
+            commands.clear();
+            commands.add(MarCommand.END_ROUND);
+            if(marPlayer.getCanDice()){
+                commands.add(MarCommand.SELECT_DICE);
+            }
         }
         else if(message.getCode() == MarCommand.SELECT_DICE.getCode()){
             ((MarPlayer)player).selectDice((Integer) message.getContent());
             sendPlayerMessageToPublic(player, room.getRoomId(), MarCommand.SELECT_DICE.getCode());
             nextHandler = this;
+            ((MarPlayer)player).enableDice();
+            commands.clear();
+            commands.add(MarCommand.END_ROUND);
+            if(((MarPlayer)player).getCanDice()){
+                commands.add(MarCommand.PLAY_DICE);
+            }
         } else if(message.getCode() == MarCommand.END_ROUND.getCode()) {
             processScore((MarPlayer) player, (MarRoom) room);
             sendPlayerMessageToPublic(player, room.getRoomId(), MarCommand.END_ROUND.getCode());
@@ -78,6 +96,7 @@ public class SelectOrEndLogicHandler implements LogicHandler<MarCommand> {
     }
 
     public void processScore(@NotNull MarPlayer player, MarRoom room) {
+        player.calculateScore();
         int currentScore = player.getCurrentScore();
         player.getScoreList().add(currentScore);
         if(player.getTotalScore() >= 25){

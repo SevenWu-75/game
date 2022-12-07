@@ -105,4 +105,12 @@ public interface Room<T extends Player> extends Serializable {
      * @param messageId 消息包id
      */
     void setMaxMessageId(long messageId);
+
+    /**
+     * 自定义处理房间开始时处理逻辑
+     *
+     */
+    default void preStart(){
+
+    }
 }
