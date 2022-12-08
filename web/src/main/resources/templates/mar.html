@@ -80,7 +80,7 @@
           //收到游戏结束
           if(parse.code === 111){
             if(parse.content.winner != null){
-              alert("赢家为"+parse.content.winner.user.realname+"！");
+              alert("赢家为"+parse.content.user.realname+"！");
             } else {
               alert("平局！");
             }
@@ -127,10 +127,7 @@
             messageId = parse.id;
           }
           if(parse.code === 5){
-            let canDice = parse.content.canDice;
-            if(canDice){
-              document.getElementById("playDice").disabled = false;
-            }
+            document.getElementById("playDice").disabled = !parse.content.canDice;
           }
           //询问开始游戏
           if(parse.code === 104){
@@ -202,7 +199,7 @@
       for (let i = 0; i < scoreDiceList.length; i++) {
         document.getElementById("scoreImg").innerHTML += template("dice-html",{id:scoreDiceList[i].id, path:dicePicList[scoreDiceList[i].currentNum]});
       }
-      document.getElementById("playDice").disabled = player.canDice;
+      document.getElementById("playDice").disabled = !player.canDice;
     }
 
     function disconnect() {

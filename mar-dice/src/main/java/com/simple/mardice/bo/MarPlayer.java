@@ -157,10 +157,18 @@ public class MarPlayer implements Player, Serializable {
     }
 
     public void enableDice(){
+        //如果分数都拿够了，并且确保飞碟数大于坦克数则无需继续投掷骰子
         boolean cow = scoreDiceList.stream().anyMatch(dice -> dice.getCurrentNum() == DiceNumEnum.COW.ordinal());
         boolean chicken = scoreDiceList.stream().anyMatch(dice -> dice.getCurrentNum() == DiceNumEnum.CHICKEN.ordinal());
         boolean man = scoreDiceList.stream().anyMatch(dice -> dice.getCurrentNum() == DiceNumEnum.MAN.ordinal());
-        canDice = !cow || !chicken || !man;
+        canDice = (!cow || !chicken || !man);
+        if(!canDice && spaceShipDiceList.size() < autoTankDiceList.size()) {
+            canDice = true;
+        }
+        //如果骰子没有了或者剩下骰子全是飞碟也达不到坦克数量则无需继续投掷骰子
+        if(diceList.size() == 0 || diceList.size() + spaceShipDiceList.size() < autoTankDiceList.size()) {
+            canDice = false;
+        }
     }
 
     @Override
