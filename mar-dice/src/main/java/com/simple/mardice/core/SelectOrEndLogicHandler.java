@@ -99,7 +99,7 @@ public class SelectOrEndLogicHandler implements LogicHandler<MarCommand> {
         player.calculateScore();
         int currentScore = player.getCurrentScore();
         player.getScoreList().add(currentScore);
-        if(player.getTotalScore() >= 10){
+        if(player.getTotalScore() >= 25){
             room.setPlayCount(0);
         }
         player.resetDice();
