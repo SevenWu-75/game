@@ -3,6 +3,7 @@ package com.simple.gameframe.service.impl;
 import com.simple.api.game.*;
 import com.simple.api.game.entity.HistoryRank;
 import com.simple.api.game.service.HistoryRankService;
+import com.simple.api.game.service.RoomManagerService;
 import com.simple.api.game.service.RoomService;
 import com.simple.api.user.entity.User;
 import com.simple.gameframe.config.GameFrameProperty;
@@ -20,7 +21,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 
-@DubboService
+@DubboService(version = "${game-frame.game-id}", interfaceName = "com.simple.api.game.service.RoomService")
 @Service
 @Slf4j
 public class RoomServiceImpl implements RoomService {

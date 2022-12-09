@@ -107,6 +107,13 @@ public interface Room<T extends Player> extends Serializable {
     void setMaxMessageId(long messageId);
 
     /**
+     * 获取游戏名
+     *
+     * @return 游戏名
+     */
+    String getGameName();
+
+    /**
      * 自定义处理房间开始时处理逻辑
      *
      */

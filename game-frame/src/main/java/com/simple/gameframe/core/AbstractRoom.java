@@ -7,6 +7,7 @@ import com.simple.api.game.exception.GameException;
 import com.simple.api.game.exception.GameExceptionEnum;
 import com.simple.api.game.RoomStatusEnum;
 import com.simple.gameframe.config.GameFrameProperty;
+import com.simple.gameframe.util.ApplicationContextUtil;
 import com.simple.gameframe.util.PackageUtil;
 import org.apache.dubbo.common.utils.ConcurrentHashSet;
 
@@ -119,6 +120,11 @@ public abstract class AbstractRoom<T extends Player> implements Room<T> {
     public void setMaxMessageId(long messageId){
         if(this.maxMessageId < messageId)
             this.maxMessageId = messageId;
+    }
+
+    @Override
+    public String getGameName() {
+        return String.valueOf(gameFrameProperty.getGameId());
     }
 
     public void canStart(){

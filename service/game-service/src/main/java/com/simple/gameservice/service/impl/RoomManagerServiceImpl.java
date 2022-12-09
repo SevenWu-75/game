@@ -13,6 +13,7 @@ import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -21,21 +22,30 @@ import java.util.stream.Collectors;
 @Slf4j
 public class RoomManagerServiceImpl implements RoomManagerService {
 
-    @DubboReference
-    RoomService roomService;
+    @DubboReference(version = "1")
+    RoomService speedBootRoomService;
+
+    @DubboReference(version = "2")
+    RoomService marRoomService;
 
     private final Map<String, RoomVO<? extends Player>> roomMap = new ConcurrentHashMap<>();
 
     @Override
     public RoomVO<? extends Player> getRoomByRoomId(String roomId) {
-        return roomMap.get(roomId);
+        Optional<String> first = roomMap.keySet().stream().filter(room -> room.startsWith(roomId)).findFirst();
+        return first.map(roomMap::get).orElse(null);
     }
 
     @Override
     public RoomVO<? extends Player> getRoomByRoomIdAndGameName(String roomId, String gameName) {
-        RoomVO<? extends Player> room = roomService.getRoom(roomId);
+        RoomVO<? extends Player> room = null;
+        if("1".equals(gameName)){
+            room = speedBootRoomService.getRoom(roomId);
+        } else if("2".equals(gameName)){
+            room = marRoomService.getRoom(roomId);
+        }
         if(room != null){
-            roomMap.put(room.getRoomId(), room);
+            roomMap.put(room.getRoomId() + "-" + gameName, room);
         }
         return room;
     }
@@ -43,8 +53,13 @@ public class RoomManagerServiceImpl implements RoomManagerService {
     @Override
     public RoomVO<? extends Player> createRoomByGameName(String gameName, UserVO user) {
         log.trace("房间管理器尝试创建房间");
-        RoomVO<? extends Player> room = roomService.createRoom(user);
-        roomMap.put(room.getRoomId(), room);
+        RoomVO<? extends Player> room = null;
+        if("1".equals(gameName)){
+            room = speedBootRoomService.createRoom(user);
+        } else if("2".equals(gameName)){
+            room = marRoomService.createRoom(user);
+        }
+        roomMap.put(room.getRoomId() + "-" + gameName, room);
         return room;
     }
 
@@ -52,7 +67,7 @@ public class RoomManagerServiceImpl implements RoomManagerService {
     public void cleanRoom(){
         new Thread(() -> {
             List<RoomVO<? extends Player>> collect = roomMap.values().stream().filter(room -> room.getRoomStatus() == RoomStatusEnum.over.ordinal()).collect(Collectors.toList());
-            collect.forEach(c -> roomMap.remove(c.getRoomId()));
+            collect.forEach(c -> roomMap.remove(c.getRoomId() + "-" + c.getGameName()));
             try {
                 Thread.sleep(1000 * 600);
             } catch (InterruptedException e) {

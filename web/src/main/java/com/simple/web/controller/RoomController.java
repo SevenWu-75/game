@@ -9,9 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
@@ -23,25 +21,27 @@ public class RoomController {
     @DubboReference
     RoomManagerService roomManagerService;
 
-    @Value("${websocket.url}")
-    String websocketUrl;
+    @Value("${websocket.speed-boot}")
+    String speedBootWebsocketUrl;
+
+    @Value("${websocket.mar}")
+    String marWebsocketUrl;
 
     @DubboReference
     HistoryRankService historyRankService;
 
     @GetMapping("/create")
-    public String createRoom(HttpSession session){
+    public String createRoom(HttpSession session, @RequestParam("gameId") String gameId){
         UserVO user = ThreadLocalUtil.getUserVO();
         RoomVO<? extends Player> room = ThreadLocalUtil.getRoomVO();
         if(room != null){
-            room = roomManagerService.getRoomByRoomIdAndGameName(room.getRoomId(), "");
+            room = roomManagerService.getRoomByRoomIdAndGameName(room.getRoomId(), gameId);
         }
         if(room == null || room.getRoomStatus() == RoomStatusEnum.over.ordinal()){
             log.trace("尝试创建房间");
-            room = roomManagerService.createRoomByGameName("", user);
+            room = roomManagerService.createRoomByGameName(gameId, user);
         }
-        cache(session, user, room);
-        return "room";
+        return cache(session, user, room);
     }
 
     @GetMapping("/join")
@@ -49,20 +49,19 @@ public class RoomController {
         UserVO user = ThreadLocalUtil.getUserVO();
         RoomVO<? extends Player> room = ThreadLocalUtil.getRoomVO();
         if(room != null){
-            room = roomManagerService.getRoomByRoomIdAndGameName(room.getRoomId(), "");
+            room = roomManagerService.getRoomByRoomId(room.getRoomId());
         }
         if(room == null || room.getRoomStatus() == RoomStatusEnum.over.ordinal()){
-            room = roomManagerService.getRoomByRoomIdAndGameName(id, "");
+            room = roomManagerService.getRoomByRoomId(id);
             if(room == null){
                 return "login";
             }
         }
-        cache(session, user, room);
-        return "room";
+        return cache(session, user, room);
     }
 
-    private void cache(HttpSession session, UserVO user, RoomVO<? extends Player> room) {
-        HistoryRank historyRank = historyRankService.getHistoryRank(user.getId(), 1);
+    private String cache(HttpSession session, UserVO user, RoomVO<? extends Player> room) {
+        HistoryRank historyRank = historyRankService.getHistoryRank(user.getId(), Integer.parseInt(room.getGameName()));
         HistoryRankVO historyRankVO = new HistoryRankVO();
         if(historyRank != null){
             historyRankVO = new HistoryRankVO(historyRank);
@@ -70,6 +69,11 @@ public class RoomController {
         user.setHistoryRankVO(historyRankVO);
         session.setAttribute("room",room);
         session.setAttribute("user",user);
-        session.setAttribute("wsUrl",websocketUrl);
+        if(room.getGameName().equals("2")) {
+            session.setAttribute("wsUrl",marWebsocketUrl);
+            return "mar";
+        }
+        session.setAttribute("wsUrl",speedBootWebsocketUrl);
+        return "room";
     }
 }

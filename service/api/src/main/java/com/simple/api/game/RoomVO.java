@@ -36,6 +36,8 @@ public class RoomVO<T extends Player> implements Serializable {
 
     private long maxMessageId;
 
+    private String gameName;
+
     public RoomVO(){
 
     }
@@ -53,5 +55,6 @@ public class RoomVO<T extends Player> implements Serializable {
         this.onlooker = room.getOnlooker();
         this.currentSeat = room.getCurrentSeat();
         this.maxMessageId = room.getMaxMessageId();
+        this.gameName = room.getGameName();
     }
 }

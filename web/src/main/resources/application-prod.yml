@@ -1,5 +1,8 @@
 server:
   port: 8081
+  servlet:
+    session:
+      timeout: 10080
 
 dubbo:
   application:
@@ -29,7 +32,8 @@ spring:
 
 websocket:
   #url: https://6211-115-231-52-50.jp.ngrok.io/speedBoot
-  url: https://187f67320w.zicp.fun/speedBoot
+  speed-boot: https://187f67320w.zicp.fun/speedBoot
+  mar: https://187f67320w.zicp.fun/mar
 
 avatar:
   path: /app/img/avatar/

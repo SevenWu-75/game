@@ -6,7 +6,6 @@ import com.simple.api.game.UserVO;
 import com.simple.api.game.exception.GameException;
 import com.simple.api.game.exception.GameExceptionEnum;
 import com.simple.gameframe.core.ClassInject;
-import com.simple.gameframe.core.Dice;
 import com.simple.speedbootdice.common.ScoreEnum;
 import lombok.Data;
 
@@ -23,7 +22,7 @@ public class SpeedBootPlayer implements Player {
 
     private UserVO user;
 
-    private final transient List<Dice> diceList;
+    private final transient List<SpeedBootDice> diceList;
 
     private List<Integer> currentDices;
 
@@ -42,14 +41,14 @@ public class SpeedBootPlayer implements Player {
     public SpeedBootPlayer(Integer id, UserVO user){
         this.id = id;
         this.user = user;
-        diceList = Arrays.asList(new Dice(0), new Dice(1), new Dice(2), new Dice(3), new Dice(4));
+        diceList = Arrays.asList(new SpeedBootDice(0), new SpeedBootDice(1), new SpeedBootDice(2), new SpeedBootDice(3), new SpeedBootDice(4));
         scores = new int[]{-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,0,0,0};
         lockDices = new int[]{-1,-1,-1,-1,-1};
     }
 
     public List<Integer> playDices(int[] lockDice){
         if(currentDices == null){
-            currentDices = diceList.stream().map(Dice::playDice).collect(Collectors.toList());
+            currentDices = diceList.stream().map(SpeedBootDice::playDice).collect(Collectors.toList());
         } else {
             for (int i = 0; i < lockDice.length; i++) {
                 if (lockDice[i] == -1) {

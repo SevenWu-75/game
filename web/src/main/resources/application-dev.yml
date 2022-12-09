@@ -1,5 +1,8 @@
 server:
   port: 7081
+  servlet:
+    session:
+      timeout: 10080
 
 dubbo:
   application:
@@ -28,7 +31,8 @@ spring:
     cache: false
 
 websocket:
-  url: http://localhost:7084/speedBoot
+  speed-boot: http://localhost:7084/speedBoot
+  mar: http://localhost:7085/speedBoot
 
 avatar:
   path: /Users/wangwubei/IdeaProjects/game/img/avatar/

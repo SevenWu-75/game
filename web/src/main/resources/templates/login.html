@@ -73,6 +73,28 @@
         <div class="card-footer px-md-5"><small>未注册?</small>
             <a href="/register" class="small font-weight-bold">创建一个账号</a></div>
     </script>
+    <script type="text/javascript" th:inline="javascript">
+        function selectGame(id) {
+            if(id === 1){
+                document.getElementById("game1").classList.add("img-select");
+                document.getElementById("game2").classList.remove("img-select");
+                document.getElementById("gameId").value = 1;
+            } else if (id === 2){
+                document.getElementById("game1").classList.remove("img-select");
+                document.getElementById("game2").classList.add("img-select");
+                document.getElementById("gameId").value = 2;
+            }
+        }
+    </script>
+    <style>
+        .img-select {
+            border:dashed 2px red;
+            border-right:solid 2px red;
+            border-top: solid 2px red;
+            border-bottom: solid 2px red;
+            border-left:  solid 2px red;
+        }
+    </style>
 </head>
 <body data-aos-easing="ease-out-quad" data-aos-duration="700" data-aos-delay="0" onload="load()">
 <section>
@@ -84,6 +106,8 @@
                 </div>
                 <div class="card shadow zindex-100 mb-0">
                     <div class="card-body px-md-5 py-5">
+                        <img id="game1" class="img-fluid img-select" src="/local/images/一点.png" style="height: 40px;" alt="1" onmousedown="selectGame(1)">
+                        <img id="game2" class="img-fluid" src="/local/images/二点.png" style="height: 40px;" alt="2" onmousedown="selectGame(2)">
                         <form action="/room/join" method="get">
                             <label>房间号:
                                 <input type="number" name="id">
@@ -92,7 +116,8 @@
                         </form>
                     </div>
                     <div class="card-footer px-md-5">
-                        <form action="/room/create">
+                        <form th:action="@{/room/create}">
+                            <input type="hidden" id="gameId" name="gameId" value="1"/>
                             <button id="create" class="btn btn-block btn-primary" type="submit" disabled>创建房间</button>
                         </form>
                     </div>
