@@ -40,7 +40,7 @@ dubbo:
     retries: 0
     check: false
   cloud:
-    subscribed-services: mar-dev
+    subscribed-services: mar-dev, speed-boot-dev
 
 logging:
   level:

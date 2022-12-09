@@ -78,6 +78,21 @@ services:
       - nacos
       - nginx
 
+  mar-dice:
+    build: ./mar-dice
+    image: mar-dice:1.0.0
+    ports:
+      - 8085:8085
+    volumes:
+      - ./mar-dice/target:/app
+    depends_on:
+      - nacos
+      - user-service
+      - game-service
+    links:
+      - nacos
+      - nginx
+
   web:
     build: ./web
     image: web:1.0.0

@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>mar-dice</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>mar-dice</name>
     <description>mar-dice</description>
     <properties>
