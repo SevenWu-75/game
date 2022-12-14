@@ -24,7 +24,7 @@ public class SpeedBootDice implements Serializable {
     }
 
     public int playDice(){
-        currentNum = random.nextInt(6);
+        currentNum = random.nextInt(6) + 1;
         return currentNum;
     }
 

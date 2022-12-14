@@ -28,12 +28,14 @@ public class RoomManagerServiceImpl implements RoomManagerService {
     @DubboReference(version = "2")
     RoomService marRoomService;
 
-    private final Map<String, RoomVO<? extends Player>> roomMap = new ConcurrentHashMap<>();
-
     @Override
     public RoomVO<? extends Player> getRoomByRoomId(String roomId) {
-        Optional<String> first = roomMap.keySet().stream().filter(room -> room.startsWith(roomId)).findFirst();
-        return first.map(roomMap::get).orElse(null);
+        RoomVO<? extends Player> room = speedBootRoomService.getRoom(roomId);
+        if(room != null) {
+            return room;
+        } else {
+            return marRoomService.getRoom(roomId);
+        }
     }
 
     @Override
@@ -43,9 +45,6 @@ public class RoomManagerServiceImpl implements RoomManagerService {
             room = speedBootRoomService.getRoom(roomId);
         } else if("2".equals(gameName)){
             room = marRoomService.getRoom(roomId);
-        }
-        if(room != null){
-            roomMap.put(room.getRoomId() + "-" + gameName, room);
         }
         return room;
     }
@@ -59,20 +58,6 @@ public class RoomManagerServiceImpl implements RoomManagerService {
         } else if("2".equals(gameName)){
             room = marRoomService.createRoom(user);
         }
-        roomMap.put(room.getRoomId() + "-" + gameName, room);
         return room;
-    }
-
-    @PostConstruct
-    public void cleanRoom(){
-        new Thread(() -> {
-            List<RoomVO<? extends Player>> collect = roomMap.values().stream().filter(room -> room.getRoomStatus() == RoomStatusEnum.over.ordinal()).collect(Collectors.toList());
-            collect.forEach(c -> roomMap.remove(c.getRoomId() + "-" + c.getGameName()));
-            try {
-                Thread.sleep(1000 * 600);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        });
     }
 }
