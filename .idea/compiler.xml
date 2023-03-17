@@ -12,6 +12,7 @@
         <module name="mar-dice" />
         <module name="user-service" />
         <module name="api" />
+        <module name="planet-x" />
         <module name="game-frame" />
         <module name="speed-boot-dice" />
       </profile>
@@ -22,6 +23,7 @@
       <module name="game-service" target="1.8" />
       <module name="mar-dice" target="1.8" />
       <module name="parent" target="1.8" />
+      <module name="planet-x" target="1.8" />
       <module name="service" target="1.8" />
       <module name="speed-boot-dice" target="1.8" />
       <module name="user-service" target="1.8" />
@@ -34,6 +36,7 @@
       <module name="game-frame" options="-parameters" />
       <module name="game-service" options="-parameters" />
       <module name="mar-dice" options="-parameters" />
+      <module name="planet-x" options="-parameters" />
       <module name="speed-boot-dice" options="-parameters" />
       <module name="user-service" options="-parameters" />
       <module name="web" options="-parameters" />

@@ -8,6 +8,7 @@
       <module fileurl="file://$PROJECT_DIR$/service/game-service/game-service.iml" filepath="$PROJECT_DIR$/service/game-service/game-service.iml" />
       <module fileurl="file://$PROJECT_DIR$/mar-dice/mar-dice.iml" filepath="$PROJECT_DIR$/mar-dice/mar-dice.iml" />
       <module fileurl="file://$PROJECT_DIR$/parent/parent.iml" filepath="$PROJECT_DIR$/parent/parent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/planet-x/planet-x.iml" filepath="$PROJECT_DIR$/planet-x/planet-x.iml" />
       <module fileurl="file://$PROJECT_DIR$/service/service.iml" filepath="$PROJECT_DIR$/service/service.iml" />
       <module fileurl="file://$PROJECT_DIR$/speed-boot-dice/speed-boot-dice.iml" filepath="$PROJECT_DIR$/speed-boot-dice/speed-boot-dice.iml" />
       <module fileurl="file://$PROJECT_DIR$/service/user-service/user-service.iml" filepath="$PROJECT_DIR$/service/user-service/user-service.iml" />

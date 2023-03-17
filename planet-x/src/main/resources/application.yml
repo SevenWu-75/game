@@ -1,0 +1,12 @@
+spring:
+  profiles:
+    active: dev
+  application:
+    name: planet-application
+
+  #mybatis-plus:
+  #config-location: classpath:mapper/*.xml
+  #type-aliases-package: com.simple.speedbootdice.pojo
+logging:
+  level:
+    com.simple.planetx: trace

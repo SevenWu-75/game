@@ -12,6 +12,7 @@
         <option value="$PROJECT_DIR$/service/api/pom.xml" />
         <option value="$PROJECT_DIR$/game-frame/pom.xml" />
         <option value="$PROJECT_DIR$/mar-dice/pom.xml" />
+        <option value="$PROJECT_DIR$/planet-x/pom.xml" />
       </list>
     </option>
   </component>
