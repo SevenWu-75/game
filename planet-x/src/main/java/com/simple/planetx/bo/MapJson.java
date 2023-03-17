@@ -10,6 +10,7 @@ import lombok.Data;
 import java.util.List;
 import java.util.Map;
 
+@Data
 public class MapJson {
 
     //整个地图的行星布局，key为区域编号，value为行星类型
@@ -25,6 +26,7 @@ public class MapJson {
     @JsonProperty("info")
     private StartClue startClue;
 
+    @Data
     public static class Research {
 
         @JsonProperty("title")
@@ -33,6 +35,7 @@ public class MapJson {
         @JsonProperty("body")
         private ResearchResult result;
 
+        @Data
         public static class ResearchResult {
 
             @JsonProperty("type")
@@ -49,6 +52,7 @@ public class MapJson {
         }
     }
 
+    @Data
     public static class StartClue {
 
         @JsonProperty("A")
