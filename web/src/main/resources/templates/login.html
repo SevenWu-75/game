@@ -112,6 +112,7 @@
                             <label>房间号:
                                 <input type="number" name="id">
                             </label>
+                            <input type="hidden" id="ts" name="ts"/>
                             <button id="join" class="btn btn-block btn-primary" type="submit" disabled>加入房间</button>
                         </form>
                     </div>
@@ -128,6 +129,7 @@
 </section>
 <script type="text/javascript" th:inline="javascript">
     function load() {
+        document.getElementById("ts").value = new Date().getMilliseconds();
         var user = [[${session.user}]];
         if (user === null) {
             document.getElementById("login_card").innerHTML = template("no_user_info", {});
