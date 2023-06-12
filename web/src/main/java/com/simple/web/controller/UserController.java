@@ -40,4 +40,9 @@ public class UserController {
         session.setAttribute("user", user);
         return Result.success(avatarUrl);
     }
+
+    @GetMapping("/userinfo")
+    public Result<UserVO> userinfo(HttpSession session) {
+        return Result.success((UserVO) session.getAttribute("user"));
+    }
 }
