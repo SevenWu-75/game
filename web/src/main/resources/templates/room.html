@@ -225,7 +225,9 @@
                         //如果是正在选择分数的阶段
                         if(currentPlayer.playTimes < 3){
                             populateScores(currentPlayer, playerScoreIdList[currentPlayer.id]);
-                            enable(currentPlayer.scores, currentPlayer.id);
+                            if(currentPlayer.user.id === [[${session.user.id}]]) {
+                                enable(currentPlayer.scores, currentPlayer.id);
+                            }
                         }
                         //可以开始标记
                         if(room.roomStatus === 1 && room.owner.id === [[${session.user.id}]]){
